@@ -1,0 +1,12 @@
+{
+  "name": "ticket-gate-workspace",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test \"packages/*/test/**/*.test.mjs\" \"test/**/*.test.mjs\" \"scripts/*.test.mjs\"",
+    "scrub": "node scripts/scrub.mjs",
+    "check": "npm test && npm run scrub",
+    "release": "node scripts/release.mjs"
+  }
+}

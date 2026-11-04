@@ -1,0 +1,103 @@
+# ticket-gate
+
+A configurable verification gate for agent-driven ticket work. It decides which checks a change requires, runs them in
+order, records a receipt of the result, and blocks an agent from declaring work done while that receipt is missing, stale
+or red. Projects describe their own steps in a `gate.config.mjs`; the engine ships no project knowledge.
+
+This is a pre-release (`0.1.0-rc.1`). The configuration surface may still change before `0.1.0`.
+
+## Packages
+
+| Package | What it is |
+|---|---|
+| `@ticket-gate/engine` | The CLI (`ticket-gate`), the configuration API, the hooks, the receipt and ledger code. No runtime dependencies. |
+| `@ticket-gate/supabase-next` | A pack for projects built on Supabase and Next.js: stack handling, SQL and end-to-end test selection, ratchets. It depends on the engine. |
+
+Both require Node.js 22 or newer.
+
+## Install
+
+Pin exact versions. A release candidate is published under the `next` dist-tag, so name it:
+
+```sh
+npm install --save-exact --save-dev @ticket-gate/engine@0.1.0-rc.1
+npm install --save-exact --save-dev @ticket-gate/supabase-next@0.1.0-rc.1   # only for that stack
+```
+
+Exact pins matter: the engine runs inside your agent's hooks, so a range would let a new version execute there
+unreviewed. Update by editing the version yourself.
+
+## Commands
+
+`ticket-gate <command>` at release candidate 1:
+
+| Command | What it does |
+|---|---|
+| `verify [flags]` | Run the steps the diff requires and write the receipt. |
+| `hook stop` / `hook pre-tool-use` | Hook entry points; stdin and the exit code pass through. |
+| `review-map [--base=REF] [--full]` | Print which changed files a human must read, and which gates cover the rest. |
+| `move-check [--base=REF]` | Prove a move-only diff; exit 1 while lines are unmatched. |
+| `fu list\|show\|next\|close\|check` | Work with the follow-up register. |
+| `ratchet <name> [args]` | Run a configured ratchet (`--update` where it has one). |
+
+## A minimal `gate.config.mjs`
+
+```js
+import { defineGate, step } from '@ticket-gate/engine';
+
+export default defineGate({
+  base: 'origin/main',
+  steps: [
+    step({ id: 'deps', when: true, cmd: 'npm ci', reuse: false }),
+    step({ id: 'test', when: ['src/**', 'test/**'], cmd: 'npm test', reuse: { deny: [] } }),
+  ],
+  reviewMap: {
+    rules: [],
+  },
+});
+```
+
+A step runs when its `when` matches the diff (`true` always runs it). `reuse: false` reruns a step every time; `reuse: { deny: [...] }` lets an earlier result stand and lists the paths that cannot affect the step. The engine validates the file on load and names the
+key to fix when something is wrong.
+
+## What the hooks do and do not do
+
+- The hooks read the working tree and the receipt, and they exit. They make no network call and collect no telemetry.
+  A test in this repository walks every module reachable from the hooks and fails on a network import.
+- Nothing updates itself. The CLI does not check for newer versions.
+- The packages ship no secrets and read none, other than what your own `gate.config.mjs` and steps read.
+
+## Contributing
+
+```sh
+npm ci            # installs the workspace links; nothing is downloaded
+npm test          # every test, offline
+npm run check     # npm test, then the scrub (below)
+```
+
+`npm run check` is the gate for a pull request. The scrub (`scripts/scrub.mjs`) scans the working tree and every commit
+for material that does not belong in a public repository: hosted project references, tokens, user-shaped paths, planning
+documents, non-public email addresses. It reads an optional private denylist from the file named by `TICKET_GATE_DENYLIST`
+(a path outside every git work tree); without it the two denylist rows report `SKIPPED`.
+
+Commits use a public noreply address; the scrub rejects any other author email.
+
+## Releasing
+
+Maintainers only. Publishing runs from CI, by trusted publishing with provenance; no token is stored.
+
+1. Write the changes under `## Unreleased` in `CHANGELOG.md`.
+2. On `main` with a clean tree, with `gitleaks` and `trufflehog` installed and `TICKET_GATE_DENYLIST` exported:
+   `npm run release -- <version>` (add `--dry-run` to check the gates only). It runs the scrub and both scanners, runs
+   the tests, sets both versions and the exact engine dependency, moves the changelog entry, commits and tags. It does
+   not push and does not publish.
+3. Push `main`, then push the tag it printed. The tag push starts the `publish` workflow, which waits on the
+   `npm-publish` environment's reviewer, re-checks that the tag matches the manifests, and publishes the engine, then the
+   pack. A version containing `-` goes to the `next` dist-tag; any other goes to `latest`.
+
+One-time setup on npmjs.com: add a trusted publisher to each package (this repository, workflow `publish.yml`,
+environment `npm-publish`).
+
+## Licence
+
+Apache-2.0. See `LICENSE`.

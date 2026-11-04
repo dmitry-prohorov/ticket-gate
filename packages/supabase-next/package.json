@@ -1,0 +1,21 @@
+{
+  "name": "@ticket-gate/supabase-next",
+  "version": "0.1.0-rc.1",
+  "description": "The Supabase and Next.js pack for @ticket-gate/engine.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "exports": {
+    "./*": "./*",
+    "./package.json": "./package.json"
+  },
+  "imports": { "#engine/*": "@ticket-gate/engine/*" },
+  "dependencies": { "@ticket-gate/engine": "0.1.0-rc.1" },
+  "files": ["*", "!test"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmitry-prohorov/ticket-gate.git",
+    "directory": "packages/supabase-next"
+  },
+  "publishConfig": { "access": "public", "provenance": true }
+}

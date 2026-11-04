@@ -1,0 +1,21 @@
+{
+  "name": "@ticket-gate/engine",
+  "version": "0.1.0-rc.1",
+  "description": "A configurable verification gate for agent-driven ticket work.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "bin": { "ticket-gate": "bin/ticket-gate.mjs" },
+  "exports": {
+    ".": "./config.mjs",
+    "./*": "./*",
+    "./package.json": "./package.json"
+  },
+  "files": ["*", "!test"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmitry-prohorov/ticket-gate.git",
+    "directory": "packages/engine"
+  },
+  "publishConfig": { "access": "public", "provenance": true }
+}

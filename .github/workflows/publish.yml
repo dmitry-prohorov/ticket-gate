@@ -1,0 +1,67 @@
+name: publish
+
+# Publishes both packages with provenance when a version tag is pushed. This is the only
+# workflow. It authenticates to npm with a short-lived OIDC token (trusted publishing), so
+# it holds no registry secret. The npm-publish environment requires a reviewer.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Require npm 11.5.1 or newer
+        run: |
+          node -e '
+            const v = process.argv[1].split(".").map(Number);
+            const ok = v[0] > 11 || (v[0] === 11 && (v[1] > 5 || (v[1] === 5 && v[2] >= 1)));
+            if (!ok) {
+              console.error("npm " + process.argv[1] + " cannot publish with trusted publishing; need 11.5.1 or newer.");
+              process.exit(1);
+            }
+          ' "$(npm --version)"
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Check the tag matches the manifests
+        run: node scripts/release.mjs --verify-tag "$GITHUB_REF_NAME"
+
+      - name: Choose the dist-tag
+        id: dist
+        run: |
+          case "$GITHUB_REF_NAME" in
+            *-*) echo "tag=next" >> "$GITHUB_OUTPUT" ;;
+            *) echo "tag=latest" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Publish the engine
+        env:
+          DIST_TAG: ${{ steps.dist.outputs.tag }}
+        run: npm publish --workspace packages/engine --provenance --access public --tag "$DIST_TAG"
+
+      - name: Publish the supabase-next pack
+        env:
+          DIST_TAG: ${{ steps.dist.outputs.tag }}
+        run: npm publish --workspace packages/supabase-next --provenance --access public --tag "$DIST_TAG"
