@@ -16,3 +16,15 @@ export async function packHookAsync(name, config = GATE) {
   const hook = packHook(name, config);
   return typeof hook === 'function' ? await hook() : hook;
 }
+
+/**
+ * Every pack's hook of that name, in `packs` order, as `{ by, value }` (`by` is the pack's name).
+ * For hooks that all packs contribute to, such as mutation kinds and harnesses.
+ */
+export function packHooksAll(name, config = GATE) {
+  const out = [];
+  for (const pack of config.packs ?? [])
+    if (pack?.[name] !== undefined && pack[name] !== null)
+      out.push({ by: pack.name, value: pack[name] });
+  return out;
+}

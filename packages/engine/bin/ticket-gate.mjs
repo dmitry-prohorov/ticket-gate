@@ -15,7 +15,11 @@ const USAGE = `usage: ticket-gate <command> [args]
   review-map [--base=REF] [--full]
   move-check [--base=REF]     prove a move-only diff (exit 1 while lines are unmatched)
   fu list|show|next|close|check [args]
-  ratchet <name> [args]       run a configured ratchet (--update where it has one)`;
+  ratchet <name> [args]       run a configured ratchet (--update where it has one)
+  mutate <ID> | --registry (--ids=|--all|--changed) [--dry-run --typecheck --digest --only --file --defer]
+                              prove a ticket's registry guards bite (needs mutations in gate.config.mjs)
+  mutations check [--fix]     validate (and repair) the mutation registry
+  mutations select [--affected --paths=]   list the registry entries a diff selects`;
 
 const say = (s) => console.log(s);
 const warn = (s) => console.error(s);
@@ -51,6 +55,12 @@ async function fu(args) {
     out: say,
     err: warn,
   });
+}
+
+async function mutation(cmd, args) {
+  const { GATE } = await import('../project.mjs');
+  const { runMutationCommand } = await import('../mutations/gate.mjs');
+  return runMutationCommand(cmd, args, GATE, { out: say, err: warn });
 }
 
 async function ratchet(name, args) {
@@ -93,6 +103,15 @@ export async function run(argv) {
     const { GATE } = await import('../project.mjs');
     main({ moveCheck: commandsOf(GATE).moveCheck, args: rest });
     return 0;
+  }
+  if (cmd === 'mutate') return mutation('mutate', rest);
+  if (cmd === 'mutations') {
+    const sub = rest[0];
+    if (sub !== 'check' && sub !== 'select') {
+      warn(`ticket-gate: mutations takes check or select, got ${sub ?? '(nothing)'}\n${USAGE}`);
+      return 2;
+    }
+    return mutation(`mutations ${sub}`, rest.slice(1));
   }
   if (cmd === 'hook') return hook(rest[0]);
   if (cmd === 'fu') return fu(rest);

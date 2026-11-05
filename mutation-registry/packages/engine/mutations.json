@@ -1,0 +1,1755 @@
+{
+  "FU182/M1": {
+    "kind": "patch",
+    "protects": "3#I1 zero-test baseline is error, nothing applied",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "baseline.set(m.test, { ...r, zero: zeroTestRun(m.test, r.out, extra) });",
+    "replace": "baseline.set(m.test, { ...r, zero: null });",
+    "test": "node --test --test-name-pattern='^MC-15 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-15 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:baseline zeroTestRun call (gained the extra zeroTests arg)"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M2": {
+    "kind": "patch",
+    "protects": "3#I2 zero-test under the mutation is error, never survived or killed",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (zero) return zeroResult(m, zero, 'under the mutation');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-16 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-16 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M3": {
+    "kind": "patch",
+    "protects": "3#I3 vitest No test files found",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (VITEST_NO_FILES.test(text)) return 'vitest: No test files found';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^ZT-1 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M4": {
+    "kind": "patch",
+    "protects": "3#I3 vitest all-skipped / no tests summary",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (v && v.passed + v.failed === 0 && !v.filesFailed) return `vitest: ${v.line}`;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^ZT-1 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M5": {
+    "kind": "patch",
+    "protects": "3#I3 a vitest file that failed to load is not a zero-test run",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "v.passed + v.failed === 0 && !v.filesFailed",
+    "replace": "v.passed + v.failed === 0",
+    "test": "node --test --test-name-pattern='^ZT-1 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M6": {
+    "kind": "patch",
+    "protects": "3#I3 jest No tests found",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (JEST_NO_TESTS.test(text)) return 'jest: No tests found';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^ZT-2 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M7": {
+    "kind": "patch",
+    "protects": "3#I3 jest Tests: N skipped, 0 passed, 0 failed",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (j && j.passed + j.failed === 0 && !j.suitesFailed) return `jest: ${j.line}`;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^ZT-2 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M8": {
+    "kind": "patch",
+    "protects": "3#I3 a jest suite that failed to run is not a zero-test run",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "j.passed + j.failed === 0 && !j.suitesFailed",
+    "replace": "j.passed + j.failed === 0",
+    "test": "node --test --test-name-pattern='^ZT-2 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M9": {
+    "kind": "patch",
+    "protects": "3#I3 node --test summary with no executed test",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (n && n.pass - n.fileOnly <= 0 && n.fail + n.cancelled === 0) return `node --test: ${n.line}`;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^ZT-3 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M10": {
+    "kind": "patch",
+    "protects": "3#I3 node --test file-only pass (process isolation) is zero tests",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "n.pass - n.fileOnly <= 0",
+    "replace": "n.pass <= 0",
+    "test": "node --test --test-name-pattern='^ZT-3 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M11": {
+    "kind": "patch",
+    "protects": "3#I3 colored runner output is parsed",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "const text = out.replace(ANSI, '');",
+    "replace": "const text = out;",
+    "test": "node --test --test-name-pattern='^ZT-4 ' packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "ZT-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "FU182/M12": {
+    "kind": "patch",
+    "protects": "3#I4 leading ^ on -t/-g is a validation error",
+    "file": "packages/engine/mutations/validate.mjs",
+    "find": "if (CARET_FILTER.test(m.test)) errors.push(`${at}: ${CARET_HINT}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-17 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-17 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/validate.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/validate.mjs -> packages/engine/mutations/validate.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M13": {
+    "kind": "patch",
+    "protects": "3#I5 SIGTERM to the tool pid is handled",
+    "file": "packages/engine/mutations/cli.mjs",
+    "find": "process.on('SIGTERM', onSignal);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SIGTERM to the tool pid alone ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "SIGTERM to the tool pid alone ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/cli.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/cli.mjs -> packages/engine/mutations/cli.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M14": {
+    "kind": "patch",
+    "protects": "3#I6 SIGINT to the tool pid is handled",
+    "file": "packages/engine/mutations/cli.mjs",
+    "find": "process.on('SIGINT', onSignal);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SIGINT to the tool pid alone ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "SIGINT to the tool pid alone ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/cli.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/cli.mjs -> packages/engine/mutations/cli.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M15": {
+    "kind": "patch",
+    "protects": "3#I5 the in-flight child's group gets the signal (no wait for it)",
+    "file": "packages/engine/mutations/cli.mjs",
+    "find": "process.kill(-c.pid, sig);",
+    "replace": "void c;",
+    "test": "node --test --test-name-pattern='^SIGTERM to the tool pid alone ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "SIGTERM to the tool pid alone ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/cli.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/cli.mjs -> packages/engine/mutations/cli.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M16": {
+    "kind": "patch",
+    "protects": "3#I5 an interrupted child ends the run through interruptHandler",
+    "file": "packages/engine/mutations/exec.mjs",
+    "find": "if (sig) await onInterrupt(sig);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SIGTERM to the tool pid alone ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "SIGTERM to the tool pid alone ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/exec.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/exec.mjs -> packages/engine/mutations/exec.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M17": {
+    "kind": "patch",
+    "protects": "3#I7 SIGTERM exits 143, SIGINT 130",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "exit(signal === 'SIGTERM' ? 143 : 130);",
+    "replace": "exit(130);",
+    "test": "node --test --test-name-pattern='^MC-18 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-18 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M18": {
+    "kind": "patch",
+    "protects": "3#I13 a core-src patch with a non-core test rebuilds core",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "&& !rule.unlessTest.test(m.test)",
+    "replace": "&& false",
+    "test": "node --test --test-name-pattern='^MC-19 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-19 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:&& !CORE_CMD.test(m.test) -> the rebuild rule unlessTest in ruleMatches"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M19": {
+    "kind": "patch",
+    "protects": "3#I13 a core-package test command never triggers a build",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "&& !rule.unlessTest.test(m.test)",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-20 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-20 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:&& !CORE_CMD.test(m.test) -> the rebuild rule unlessTest in ruleMatches"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M20": {
+    "kind": "patch",
+    "protects": "3#I14 a build failure after restore is fatal",
+    "file": "packages/engine/mutations/harness.mjs",
+    "within": "async runOne(m, io, state, ctx) {",
+    "find": "ctx.fatal = `${rule.cmd} failed after restoring",
+    "replace": "const ignored = `${rule.cmd} failed after restoring",
+    "test": "node --test --test-name-pattern='^MC-21 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-21 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "within added: the message now appears in runGroup and runPatch; MC-21 covers runPatch"
+      },
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:runPatch fatal after restore -> harness.mjs:localHarness.runOne rule.cmd fatal"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M21": {
+    "kind": "patch",
+    "protects": "R9 a signal after a core-src build rebuilds dist (MC-22)",
+    "file": "packages/engine/mutations/run.mjs",
+    "within": "export async function interruptHandler(",
+    "find": "state[rule.flag] && (await io[rule.io]()).code !== 0",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^MC-22 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-22 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:signal rebuild on coreDirty -> run.mjs:interruptHandler rebuild-rule loop"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M22": {
+    "kind": "patch",
+    "protects": "R9 runPatch marks core dirty while a built patch is live (TEST-1; MC-23)",
+    "file": "packages/engine/mutations/harness.mjs",
+    "within": "async runOne(m, io, state, ctx) {",
+    "find": "for (const rule of rules) state[rule.flag] = true;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-23 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-23 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:runPatch coreDirty = true -> harness.mjs:localHarness.runOne rule flag set"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M23": {
+    "kind": "patch",
+    "protects": "R9 a successful rebuild after restore clears core dirty (TEST-1; MC-23)",
+    "file": "packages/engine/mutations/harness.mjs",
+    "within": "async runOne(m, io, state, ctx) {",
+    "find": "if (b.code === 0) state[rule.flag] = false;",
+    "replace": "if (b.code === 0) void 0;",
+    "test": "node --test --test-name-pattern='^MC-23 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-23 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "within added: the line now appears in runGroup and runPatch; MC-23 covers runPatch"
+      },
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:runPatch coreDirty = false -> harness.mjs:localHarness.runOne rule flag clear"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M24": {
+    "kind": "patch",
+    "protects": "R9 a signal during the pre-baseline build rebuilds dist (BUG-1; MC-22b)",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "state[rule.flag] = true;\n    const b = await io[rule.io]();",
+    "replace": "const b = await io[rule.io]();",
+    "test": "node --test --test-name-pattern='^MC-22b ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-22b ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:pre-baseline coreDirty = true -> run.mjs:rebuild-rule loop flag set"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "FU182/M25": {
+    "kind": "patch",
+    "protects": "R9 a failed pre-baseline build is fatal before any test runs (TEST-2; MC-21)",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "if (b.code !== 0)\n      return stop({\n        fatal: `${rule.cmd} failed before the baselines",
+    "replace": "if (false)\n      return stop({\n        fatal: `${rule.cmd} failed before the baselines",
+    "test": "node --test --test-name-pattern='^MC-21 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-21 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:failed pre-baseline build result -> run.mjs:rebuild-rule loop stop()"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M9": {
+    "kind": "patch",
+    "protects": "3 I8 MC-3 fatal writes no receipt",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "if (report.fatal) return { code: 1, writeReceipt: false };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-3 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-18/M13": {
+    "kind": "patch",
+    "protects": "G12 timed-out test is error",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (t.timedOut === true) return timedOutResult(m, t);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"^MC-T1 \" packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-T1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-18/M14": {
+    "kind": "patch",
+    "protects": "INFRA-18 G12 test MC-T2: the run timeout kills the child once --timeout seconds elapse; without the timer a hung mutation run never ends",
+    "file": "packages/engine/mutations/exec.mjs",
+    "find": "if (limitS !== undefined) timer = setTimeout(() => timeOut(c), limitS * 1000);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"^MC-T2 \" packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-T2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/exec.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/exec.mjs -> packages/engine/mutations/exec.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M10": {
+    "kind": "patch",
+    "protects": "5 LK-1 mutate:check takes the lock",
+    "file": "packages/engine/mutations/cli.mjs",
+    "find": "takeOrExit('mutate:check');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^LK-1 ' packages/engine/test/mutations/lock.test.mjs",
+    "testFile": "packages/engine/test/mutations/lock.test.mjs",
+    "testName": "LK-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/cli.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/cli.mjs -> packages/engine/mutations/cli.mjs; test tools/verify-ticket-lock.test.mjs -> packages/engine/test/mutations/lock.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M11": {
+    "kind": "patch",
+    "protects": "5.1 MC-Z1 playwright No tests found is error",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (PW_NO_TESTS.test(text)) return 'playwright: No tests found';",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"MC-Z1 \" packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "MC-Z1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M12": {
+    "kind": "patch",
+    "protects": "5.1 MC-Z2 MC-Z5 webServer failure is error, not a kill",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (PW_NO_SERVER.test(text)) return 'playwright: webServer did not start';",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"MC-Z[25] \" packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "MC-Z2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M13": {
+    "kind": "patch",
+    "protects": "5.1 MC-Z3 a skip-only playwright run is error",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (pw && pw.ran === 0) return `playwright: ${pw.line}`;",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"MC-Z3 \" packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "MC-Z3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M14": {
+    "kind": "patch",
+    "protects": "5.1 MC-B1 MC-B2 one build per patch, not per entry",
+    "file": "packages/engine/mutations/served.mjs",
+    "within": "group(entries) {",
+    "find": "const key = patchKey(m);",
+    "replace": "const key = m.id;",
+    "test": "node --test --test-name-pattern=\"MC-B[12] \" packages/engine/test/mutations/served.test.mjs",
+    "testFile": "packages/engine/test/mutations/served.test.mjs",
+    "testName": "MC-B1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/served.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:patchKey grouping -> served.mjs:served session group"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/served.mjs -> packages/engine/mutations/served.mjs; test tools/mutations/engine/served.test.mjs -> packages/engine/test/mutations/served.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M15": {
+    "kind": "patch",
+    "protects": "5.1 MC-B5 a busy port refuses the run",
+    "file": "packages/engine/mutations/served.mjs",
+    "find": "return (await io.portInUse(opts.port))",
+    "replace": "return (false)",
+    "test": "node --test --test-name-pattern=\"MC-B5 \" packages/engine/test/mutations/served.test.mjs",
+    "testFile": "packages/engine/test/mutations/served.test.mjs",
+    "testName": "MC-B5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/served.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:portInUse refuse -> served.mjs:served session refuse"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/served.mjs -> packages/engine/mutations/served.mjs; test tools/mutations/engine/served.test.mjs -> packages/engine/test/mutations/served.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M16": {
+    "kind": "patch",
+    "protects": "5.1 MC-B4 a broken group build marks every entry error",
+    "file": "packages/engine/mutations/served.mjs",
+    "find": "if (build.code !== 0) return groupError(group, 'build', build);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"MC-B4 \" packages/engine/test/mutations/served.test.mjs",
+    "testFile": "packages/engine/test/mutations/served.test.mjs",
+    "testName": "MC-B4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/served.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/served.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/served.mjs -> packages/engine/mutations/served.mjs; test tools/mutations/engine/served.test.mjs -> packages/engine/test/mutations/served.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M17": {
+    "kind": "patch",
+    "protects": "5.1 MC-B6 an e2e-only patch runs on the clean server",
+    "file": "packages/engine/mutations/served.mjs",
+    "find": "const buildNeeded = (m, opts) => !m.file.startsWith(opts.skipBuild);",
+    "replace": "const buildNeeded = (m, opts) => true;",
+    "test": "node --test --test-name-pattern=\"MC-B6 \" packages/engine/test/mutations/served.test.mjs",
+    "testFile": "packages/engine/test/mutations/served.test.mjs",
+    "testName": "MC-B6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/served.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/served.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "served.mjs:file startsWith e2e literal -> opts.skipBuild"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/served.mjs -> packages/engine/mutations/served.mjs; test tools/mutations/engine/served.test.mjs -> packages/engine/test/mutations/served.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M18": {
+    "kind": "patch",
+    "protects": "5.1 MC-B3 a 0-test entry inside a group is error",
+    "file": "packages/engine/mutations/served.mjs",
+    "find": "results.push(verdict(m, t));",
+    "replace": "results.push({ id: m.id, status: t.code !== 0 ? 'killed' : 'survived', detail: '' });",
+    "test": "node --test --test-name-pattern=\"MC-B3 \" packages/engine/test/mutations/served.test.mjs",
+    "testFile": "packages/engine/test/mutations/served.test.mjs",
+    "testName": "MC-B3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/served.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/served.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/served.mjs -> packages/engine/mutations/served.mjs; test tools/mutations/engine/served.test.mjs -> packages/engine/test/mutations/served.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M19": {
+    "kind": "patch",
+    "protects": "5.1 MC-B9 an e2e patch runs on a clean build",
+    "file": "packages/engine/mutations/served.mjs",
+    "find": ".sort((a, b) => built(a) - built(b))",
+    "replace": ".sort((a, b) => 0 * built(b))",
+    "test": "node --test --test-name-pattern=\"MC-B9 \" packages/engine/test/mutations/served.test.mjs",
+    "testFile": "packages/engine/test/mutations/served.test.mjs",
+    "testName": "MC-B9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/served.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:needsWebBuild ordering -> served.mjs:served session group sort"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/served.mjs -> packages/engine/mutations/served.mjs; test tools/mutations/engine/served.test.mjs -> packages/engine/test/mutations/served.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M21": {
+    "kind": "patch",
+    "protects": "5.1 MC-Z6 a failed test followed by skipped is not zero-test",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "if (/^ {4}/.test(l)) continue; // a failed test's header sits inside the block",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"MC-Z6 \" packages/engine/test/mutations/verdict.test.mjs",
+    "testFile": "packages/engine/test/mutations/verdict.test.mjs",
+    "testName": "MC-Z6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/verdict.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/verdict.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/verdict.test.mjs -> packages/engine/test/mutations/verdict.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M1": {
+    "kind": "patch",
+    "protects": "CM-9 a vanished base key fails check:mutations",
+    "file": "packages/engine/mutations/check.mjs",
+    "find": "report( 'vanished',",
+    "replace": "void ( 'vanished',",
+    "test": "node --test --test-name-pattern='^CM-9 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M2": {
+    "kind": "patch",
+    "protects": "CM-11 a retirement without a citation fails",
+    "file": "packages/engine/mutations/check.mjs",
+    "find": "report('retired',",
+    "replace": "void ('retired',",
+    "test": "node --test --test-name-pattern='^CM-11 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-11 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M3": {
+    "kind": "patch",
+    "protects": "CM-12 a duplicate key across area files fails",
+    "file": "packages/engine/mutations/check.mjs",
+    "find": "report( 'duplicate',",
+    "replace": "void ( 'duplicate',",
+    "test": "node --test --test-name-pattern='^CM-12 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-12 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M4": {
+    "kind": "patch",
+    "protects": "CM-7 a misfiled entry names its right area",
+    "file": "packages/engine/mutations/check.mjs",
+    "find": "report('misfiled',",
+    "replace": "void ('misfiled',",
+    "test": "node --test --test-name-pattern='^CM-7 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M5": {
+    "kind": "patch",
+    "protects": "CM-8 an unsorted area file fails",
+    "file": "packages/engine/mutations/check.mjs",
+    "find": "report( 'unsorted',",
+    "replace": "void ( 'unsorted',",
+    "test": "node --test --test-name-pattern='^CM-8 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M6": {
+    "kind": "patch",
+    "protects": "CM-6 a testName absent from testFile is stale",
+    "file": "packages/engine/mutations/check.mjs",
+    "find": "if (!testText.includes(entry.testName))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^CM-6 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M7": {
+    "kind": "patch",
+    "protects": "CM-10 a key absent at base is shape-checked only",
+    "file": "packages/engine/mutations/check.mjs",
+    "within": "export function checkRegistry(",
+    "find": "if (isNew(key)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CM-10 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "check.mjs:within function checkRegistry(opts) -> export function checkRegistry(opts, setup)"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M8": {
+    "kind": "patch",
+    "protects": "CM-F10 fix never re-aims a new key",
+    "file": "packages/engine/mutations/check.mjs",
+    "within": "export function fixRegistry(",
+    "find": "if (isNew(key)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CM-F10 ' packages/engine/test/mutations/check-fix.test.mjs",
+    "testFile": "packages/engine/test/mutations/check-fix.test.mjs",
+    "testName": "CM-F10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check-fix.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "check.mjs:within function fixRegistry(opts) -> export function fixRegistry(opts, setup)"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check-fix.test.mjs -> packages/engine/test/mutations/check-fix.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M11": {
+    "kind": "patch",
+    "protects": "CM-L1 a legacy contracts mutations file fails",
+    "file": "packages/engine/mutations/check.mjs",
+    "find": "report( 'legacy',",
+    "replace": "void ( 'legacy',",
+    "test": "node --test --test-name-pattern='^CM-L1 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-L1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/check-mutations.mjs -> tools/mutations/engine/check.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M12": {
+    "kind": "patch",
+    "protects": "MC-R3 a retired entry is never run",
+    "file": "packages/engine/mutations/registry.mjs",
+    "find": ".filter(([, e]) => !e.retired && setup.kinds.get(e.kind)?.runs !== false)",
+    "replace": ".filter(([, e]) => setup.kinds.get(e.kind)?.runs !== false)",
+    "test": "node --test --test-name-pattern='^MC-R3 ' packages/engine/test/mutations/cli.test.mjs",
+    "testFile": "packages/engine/test/mutations/cli.test.mjs",
+    "testName": "MC-R3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/registry.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/cli.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "registry.mjs:unguarded kind filter -> setup.kinds runs filter"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/registry.mjs -> packages/engine/mutations/registry.mjs; test tools/mutations/engine/cli.test.mjs -> packages/engine/test/mutations/cli.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M13": {
+    "kind": "patch",
+    "protects": "CM-2 find matching is whitespace-insensitive",
+    "file": "packages/engine/mutations/locate.mjs",
+    "find": ".replace(WS_RUN, '\\\\s+')",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CM-2 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/registry.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "registry.mjs:findPattern -> locate.mjs:findPattern (unchanged text)"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/locate.mjs -> packages/engine/mutations/locate.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M14": {
+    "kind": "patch",
+    "protects": "MC-R4 the patch replaces exactly the matched bytes",
+    "file": "packages/engine/mutations/locate.mjs",
+    "find": "original.slice(0, hit.index) + m.replace + original.slice(hit.index + hit.length)",
+    "replace": "original.split(m.find).join(m.replace)",
+    "test": "node --test --test-name-pattern='^MC-R4 ' packages/engine/test/mutations/cli.test.mjs",
+    "testFile": "packages/engine/test/mutations/cli.test.mjs",
+    "testName": "MC-R4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/registry.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/cli.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "registry.mjs:patchedSource -> locate.mjs:patchedSource (unchanged text)"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/locate.mjs -> packages/engine/mutations/locate.mjs; test tools/mutations/engine/cli.test.mjs -> packages/engine/test/mutations/cli.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M15": {
+    "kind": "patch",
+    "protects": "MC-R5 ticket receipt hash excludes the registry folder",
+    "file": "packages/engine/mutations/registry.mjs",
+    "find": "treeHash({ exclude: [`${setup.dir}/`] })",
+    "replace": "treeHash()",
+    "test": "node --test --test-name-pattern='^MC-R5 ' packages/engine/test/mutations/cli.test.mjs",
+    "testFile": "packages/engine/test/mutations/cli.test.mjs",
+    "testName": "MC-R5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/registry.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/cli.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "registry.mjs:REGISTRY_DIR exclude -> setup.dir exclude"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/registry.mjs -> packages/engine/mutations/registry.mjs; test tools/mutations/engine/cli.test.mjs -> packages/engine/test/mutations/cli.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M16": {
+    "kind": "patch",
+    "protects": "MC-R2 registry modes write only the registry receipt",
+    "file": "packages/engine/mutations/cli.mjs",
+    "find": "registryMode ? setup.receipts.registry : setup.receipts.ticket",
+    "replace": "setup.receipts.ticket",
+    "test": "node --test --test-name-pattern='^MC-R2 ' packages/engine/test/mutations/cli.test.mjs",
+    "testFile": "packages/engine/test/mutations/cli.test.mjs",
+    "testName": "MC-R2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/cli.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/cli.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "cli.mjs:receiptPath -> setup.receipts registry/ticket choice"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/cli.mjs -> packages/engine/mutations/cli.mjs; test tools/mutations/engine/cli.test.mjs -> packages/engine/test/mutations/cli.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M7": {
+    "kind": "patch",
+    "protects": "5 CM-16 a protects under 4 words is rejected",
+    "file": "packages/engine/mutations/kinds.mjs",
+    "find": "if (words.length < 4)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='CM-16 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-16 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "supabase-next/sql-object.mjs:protects words check -> engine/kinds.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/kinds.mjs -> packages/engine/mutations/kinds.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M8": {
+    "kind": "patch",
+    "protects": "5 CM-16 a protects naming no contract row or spec id is rejected",
+    "file": "packages/engine/mutations/kinds.mjs",
+    "find": "if (!words.some(isRef))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='CM-16 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-16 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "supabase-next/sql-object.mjs:protects isRef check -> engine/kinds.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/kinds.mjs -> packages/engine/mutations/kinds.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M12": {
+    "kind": "patch",
+    "protects": "5 MC-R7 a run validates every sql object against the snapshot before applying",
+    "file": "packages/engine/mutations/validate.mjs",
+    "find": "errors.push(...kind.validate(m, readFile).map(",
+    "replace": "errors.push(...[].map(",
+    "test": "node --test --test-name-pattern='MC-R7 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-R7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/validate.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "validate.mjs:checkSqlEntry loop -> kind.validate dispatch"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/validate.mjs -> packages/engine/mutations/validate.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M1": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-1: a hunk three lines from the guard selects it",
+    "file": "packages/engine/mutations/select.mjs",
+    "find": "export const NEAR = 3;",
+    "replace": "export const NEAR = 0;",
+    "test": "node --test --test-name-pattern='^MS-1 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/select.mjs -> packages/engine/mutations/select.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M2": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-1: rule 3a guard-span hunks select entries",
+    "file": "packages/engine/mutations/select.mjs",
+    "find": "['guard', nearGuard],",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-1 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/select.mjs -> packages/engine/mutations/select.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M3": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-2: rule 3b testName block hunks select entries",
+    "file": "packages/engine/mutations/select.mjs",
+    "find": "['test', inTestBlock],",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-2 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/select.mjs -> packages/engine/mutations/select.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M4": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-3: rule 3c changed registry entries are selected",
+    "file": "packages/engine/mutations/select.mjs",
+    "find": "['entry', entryChanged],",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-3 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/select.mjs -> packages/engine/mutations/select.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M6": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-5: rule 3e added renamed or deleted paths select entries",
+    "file": "packages/engine/mutations/select.mjs",
+    "find": "['moved', pathMoved],",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-5 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/select.mjs -> packages/engine/mutations/select.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M7": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-6: keys absent at base are never selected",
+    "file": "packages/engine/mutations/select.mjs",
+    "find": "if (!baseEntries.has(key)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-6 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/select.mjs -> packages/engine/mutations/select.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M8": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-3 R3: retired entries are never selected",
+    "file": "packages/engine/mutations/select.mjs",
+    "find": "if (rec.entry.retired) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-3 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/select.mjs -> packages/engine/mutations/select.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M9": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-2: the testName block ends at the next sibling title",
+    "file": "packages/engine/mutations/select.mjs",
+    "find": "if (indent(lines[j]) <= own && TITLE_RE.test(lines[j])) break;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-2 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/select.mjs -> packages/engine/mutations/select.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M15": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MC-C1: --registry --changed runs exactly the selected keys",
+    "file": "packages/engine/mutations/cli.mjs",
+    "find": "ids = selectChanged({ base: changed || baseRef() }, setup).map(\n          (s) => s.key,\n        );",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-C1 ' packages/engine/test/mutations/cli.test.mjs",
+    "testFile": "packages/engine/test/mutations/cli.test.mjs",
+    "testName": "MC-C1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/cli.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/cli.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "cli.mjs:selectChanged call (gained the setup arg; prettier wraps it over three lines)"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/cli.mjs -> packages/engine/mutations/cli.mjs; test tools/mutations/engine/cli.test.mjs -> packages/engine/test/mutations/cli.test.mjs"
+      }
+    ]
+  },
+  "INFRA-30/M10": {
+    "kind": "patch",
+    "protects": "INFRA-30 s5 M-1a a patch that does not type check is error before any build",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "const compiles = (m) => tc.get(patchKey(m))?.ok !== false;",
+    "replace": "const compiles = () => true;",
+    "test": "node --test --test-name-pattern='^M-1a ' packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testName": "M-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/next-typecheck.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/supabase-next/next-typecheck.test.mjs -> packages/supabase-next/test/mutations/next-typecheck.test.mjs"
+      }
+    ]
+  },
+  "INFRA-30/M11": {
+    "kind": "patch",
+    "protects": "INFRA-30 s5 M-1a no clean build when no served group compiles",
+    "file": "packages/engine/mutations/served.mjs",
+    "find": "if (entries.length === 0)\n        return { baselines: new Map(), groups: [], builds: 0 };",
+    "replace": "if (false)\n        return { baselines: new Map(), groups: [], builds: 0 };",
+    "test": "node --test --test-name-pattern='^M-1a ' packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testName": "M-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/next-typecheck.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:if (buildable.length > 0) clean build -> served.mjs:served session open empty-entries guard"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/served.mjs -> packages/engine/mutations/served.mjs; test tools/mutations/supabase-next/next-typecheck.test.mjs -> packages/supabase-next/test/mutations/next-typecheck.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M1": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 KS-1: a kind named by two packs is a config error, never a silent override",
+    "file": "packages/engine/mutations/kinds.mjs",
+    "find": "if (kinds.has(name)) throw kindTwice(name, kinds.get(name).by, by);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^KS-1 ' packages/engine/test/mutations/kinds.test.mjs",
+    "testFile": "packages/engine/test/mutations/kinds.test.mjs",
+    "testName": "KS-1 two packs naming one kind is a config error naming both",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/kinds.mjs -> packages/engine/mutations/kinds.mjs; test tools/mutations/engine/kinds.test.mjs -> packages/engine/test/mutations/kinds.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M2": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 KS-2: a patch entry claimed by two harnesses is a config error before any run",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "if (claimants.length > 1) throw claimedTwice(entry, claimants);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^KS-2 ' packages/engine/test/mutations/kinds.test.mjs",
+    "testFile": "packages/engine/test/mutations/kinds.test.mjs",
+    "testName": "KS-2 a patch entry claimed by two harnesses is a config error naming both",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/kinds.test.mjs -> packages/engine/test/mutations/kinds.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M3": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 KS-3: a harness zeroTests parser makes a 0-tests run an error",
+    "file": "packages/engine/mutations/verdict.mjs",
+    "find": "const extraHit = extra.map((z) => z(cmd, out)).find((r) => r != null);",
+    "replace": "const extraHit = undefined;",
+    "test": "node --test --test-name-pattern='^KS-3 ' packages/engine/test/mutations/kinds.test.mjs",
+    "testFile": "packages/engine/test/mutations/kinds.test.mjs",
+    "testName": "KS-3 a harness zeroTests parser turns a 0 tests ran baseline into error",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/verdict.mjs -> packages/engine/mutations/verdict.mjs; test tools/mutations/engine/kinds.test.mjs -> packages/engine/test/mutations/kinds.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M4": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 HP-1: restorePatch restores every live patched file byte-identical",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "for (const [file, original] of state.live) {",
+    "replace": "for (const [file, original] of [...state.live].slice(0, 1)) {",
+    "test": "node --test --test-name-pattern='^HP-1 ' packages/engine/test/mutations/harness.test.mjs",
+    "testFile": "packages/engine/test/mutations/harness.test.mjs",
+    "testName": "HP-1 applyPatch and restorePatch put every live file back byte-identical",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/harness.test.mjs -> packages/engine/test/mutations/harness.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M5": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-2 proposal 4.7a rule 2: members with a shared test never share a group",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "if (shares(a.tests, b.tests)) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^OG-2 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-2 overlapping tests split a group",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M6": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-3 proposal 4.7a rule 2: a test covering another member site splits the group",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "if (shares(a.cover, b.tests) || shares(b.cover, a.tests)) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^OG-3 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-3 a test of one member covering another site splits a group",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M7": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-4 proposal 4.7a rule 3: overlapping spans in one file never share a group",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "if (a.span.file === b.span.file && overlaps(a.span, b.span)) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^OG-4 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-4 same-file patches share a group unless their spans overlap",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M8": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-5 proposal 4.7a rule 5: an entry without coverage data runs solo",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "out.push(soloGroup(entry, 'no coverage'))",
+    "replace": "void 0",
+    "test": "node --test --test-name-pattern='^OG-5 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-5 a missing coverage line goes solo",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M9": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-6 proposal 4.7a rule 6: an unmappable compile error falls back to solo runs",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "if (owners.length !== 1) return { solo: 'compile error not attributable' };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^OG-6 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-6 a compile error maps to one member or falls back to solo",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M10": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-7 proposal 4.7a rule 5: a failing row owned by no member falls back to solo",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "if (owner === undefined) return { solo: `row owned by no member: ${row.test}` };",
+    "replace": "if (owner === undefined) continue;",
+    "test": "node --test --test-name-pattern='^OG-7 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-7 a row owned by no member falls back to solo",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M11": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-8 proposal 4.7a rule 5: a cut-short run falls back to solo runs",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "if (!run.complete) return { solo: 'run cut short' };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^OG-8 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-8 a cut-short run falls back to solo",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M12": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-9 proposal 4.7a rule 4: one failing own test kills the entry",
+    "file": "packages/engine/mutations/harness.mjs",
+    "find": "own.some((r) => r.outcome === 'fail')",
+    "replace": "own.every((r) => r.outcome === 'fail')",
+    "test": "node --test --test-name-pattern='^OG-9 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-9 an entry is killed when any own test fails",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/harness.mjs -> packages/engine/mutations/harness.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-57/M13": {
+    "kind": "patch",
+    "protects": "INFRA-57 s5 OG-1 proposal 4.2: group runs after open and receives its facts",
+    "file": "packages/engine/mutations/run.mjs",
+    "find": "session.group(ready, opened)",
+    "replace": "session.group(ready, {})",
+    "test": "node --test --test-name-pattern='^OG-1 ' packages/engine/test/mutations/org.test.mjs",
+    "testFile": "packages/engine/test/mutations/org.test.mjs",
+    "testName": "OG-1 group runs after open and reads its facts",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/engine/run.mjs -> packages/engine/mutations/run.mjs; test tools/mutations/engine/org.test.mjs -> packages/engine/test/mutations/org.test.mjs"
+      }
+    ]
+  },
+  "INFRA-58a/M6": {
+    "kind": "patch",
+    "protects": "5 PH-2 setupOf includes every pack mutation kind so a duplicate kind is rejected",
+    "file": "packages/engine/mutations/gate.mjs",
+    "find": "const kinds = packHooksAll('mutationKinds', gate).map(({ by, value }) => ({ name: by, mutationKinds: value, }));",
+    "replace": "const kinds = [];",
+    "test": "node --test --test-name-pattern='^PH-2 ' packages/engine/test/mutations/pack-hooks.test.mjs",
+    "testFile": "packages/engine/test/mutations/pack-hooks.test.mjs",
+    "testName": "PH-2 "
+  },
+  "INFRA-58a/M7": {
+    "kind": "patch",
+    "protects": "5 PH-3 mutations check rejects a patch entry claimed by two harnesses at load time",
+    "file": "packages/engine/mutations/gate.mjs",
+    "find": "for (const entry of liveEntries(setup)) sessionOf(entry, setup);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PH-3 ' packages/engine/test/mutations/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/mutations/synthetic-project.test.mjs",
+    "testName": "PH-3 "
+  },
+  "INFRA-58a/M8": {
+    "kind": "patch",
+    "protects": "5 SP-1 the mutation command binds the gate setup before running",
+    "file": "packages/engine/mutations/gate.mjs",
+    "find": "bindSetup(setup);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SP-1 ' packages/engine/test/mutations/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/mutations/synthetic-project.test.mjs",
+    "testName": "SP-1 "
+  },
+  "INFRA-58a/M9": {
+    "kind": "patch",
+    "protects": "5 SP-2 --defer is translated to --defer-playwright",
+    "file": "packages/engine/mutations/gate.mjs",
+    "find": "const args = argv.map((a) => (a === '--defer' ? '--defer-playwright' : a));",
+    "replace": "const args = argv;",
+    "test": "node --test --test-name-pattern='^SP-2 ' packages/engine/test/mutations/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/mutations/synthetic-project.test.mjs",
+    "testName": "SP-2 "
+  },
+  "INFRA-58a/M10": {
+    "kind": "patch",
+    "protects": "5 SP-3 a gate without mutations exits 2 with the not-configured line",
+    "file": "packages/engine/mutations/gate.mjs",
+    "find": "if (gate.mutations === undefined) return notConfigured(cmd, err);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SP-3 ' packages/engine/test/mutations/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/mutations/synthetic-project.test.mjs",
+    "testName": "SP-3 "
+  },
+  "INFRA-58a/M11": {
+    "kind": "patch",
+    "protects": "5 GH-1 registryHooks is null for a gate without mutations",
+    "file": "packages/engine/mutations/gate.mjs",
+    "find": "if (gate.mutations === undefined) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GH-1 ' packages/engine/test/mutations/gate-hooks.test.mjs",
+    "testFile": "packages/engine/test/mutations/gate-hooks.test.mjs",
+    "testName": "GH-1 "
+  },
+  "INFRA-58a/M12": {
+    "kind": "patch",
+    "protects": "5 GH-2 a throwing selector selects the step instead of skipping it",
+    "file": "packages/engine/mutations/gate.mjs",
+    "find": "return { when: true, keys: [], error: err.message };",
+    "replace": "return { when: false, keys: [], error: err.message };",
+    "test": "node --test --test-name-pattern='^GH-2 ' packages/engine/test/mutations/gate-hooks.test.mjs",
+    "testFile": "packages/engine/test/mutations/gate-hooks.test.mjs",
+    "testName": "GH-2 "
+  },
+  "INFRA-58a/M14": {
+    "kind": "patch",
+    "protects": "5 PS-1 projectSetup throws until a setup is bound",
+    "file": "packages/engine/mutations/project.mjs",
+    "find": "if (bound === null) throw notBound();",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PS-1 ' packages/engine/test/mutations/project.test.mjs",
+    "testFile": "packages/engine/test/mutations/project.test.mjs",
+    "testName": "PS-1 "
+  },
+  "INFRA-58a/M15": {
+    "kind": "patch",
+    "protects": "5 MC-13a a restore on a patch mutation is rejected: restore is for sql only",
+    "file": "packages/engine/mutations/validate.mjs",
+    "find": "errors.push(`${at}: \"restore\" is only for sql mutations`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-13a ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-13a "
+  }
+}

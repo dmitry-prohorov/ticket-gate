@@ -1,0 +1,620 @@
+{
+  "INFRA-17/M1": {
+    "kind": "patch",
+    "protects": "3 I2 MC-2 digest proof after restore",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "proven: async () => (await io.digest()) === ctx.baseDigest,",
+    "replace": "proven: async () => true,",
+    "test": "node --test --test-name-pattern='^MC-2 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:const proven -> supabase-next/sql-kind.mjs:sqlCtx proven"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M2": {
+    "kind": "patch",
+    "protects": "3 I10 MC-1 one final lean reset",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "if (c.sqlRan) await finalReset(io, state, c);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-1 ' packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:finalReset call -> sql-kind.mjs:sql session close"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M3": {
+    "kind": "patch",
+    "protects": "3 I6 MC-8 pollution re-run detects red",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "if ((await io.run(cmd)).code !== 0) red.add(cmd);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-8 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:pollution re-run -> sql-kind.mjs:sql session settle"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M4": {
+    "kind": "patch",
+    "protects": "3 I6 MC-8 second result counts",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "results[i] = await rerunWithReset(m, io, state, c);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-8 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:rerunWithReset result -> sql-kind.mjs:sql session settle"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M5": {
+    "kind": "patch",
+    "protects": "3 I5 MC-4 explicit restore",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "const r = m.restore !== undefined ? await io.applySql(m.restore) : await autoRestore(io, ctx);",
+    "replace": "const r = await autoRestore(io, ctx);",
+    "test": "node --test --test-name-pattern='^MC-4 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/sql-kind.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M6": {
+    "kind": "patch",
+    "protects": "3 I4 MC-5 apply failure resets",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "resetReason = 'apply failed';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-5 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/sql-kind.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M7": {
+    "kind": "patch",
+    "protects": "3 I3 MC-12 uncovered apply resets",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "if (uncovered) resetReason = `uncovered: ${uncovered}`;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-12 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-12 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/sql-kind.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M8": {
+    "kind": "patch",
+    "protects": "3 I9 MC-9 lean reset only",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "export const LEAN_RESET = 'pnpm supabase db reset && pnpm supabase db query --local -f tools/local-vault.sql';",
+    "replace": "export const LEAN_RESET = 'pnpm db:reset';",
+    "test": "node --test --test-name-pattern='^MC-9 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/sql-kind.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M10": {
+    "kind": "patch",
+    "protects": "3 I4 MC-6 SIGINT resets",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "if (state.sqlApplied && (await io.resetDb()).code !== 0)\n        console.error(setup.commands.afterFatal);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-6 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:SIGINT sql reset -> sql-kind.mjs:sql session interrupt"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M11": {
+    "kind": "patch",
+    "protects": "3 I11 MS-5 drop order",
+    "file": "packages/supabase-next/mutations/snapshot.mjs",
+    "find": "export const DROP_ORDER = ['policy', 'trigger', 'constraint', 'index', 'cron', 'function'];",
+    "replace": "export const DROP_ORDER = ['function', 'cron', 'index', 'constraint', 'trigger', 'policy'];",
+    "test": "node --test --test-name-pattern='^MS-5 ' packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testName": "MS-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-snapshot.mjs -> tools/mutations/supabase-next/snapshot.mjs; test tools/mutate-snapshot.test.mjs -> tools/mutations/supabase-next/snapshot.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/snapshot.mjs -> packages/supabase-next/mutations/snapshot.mjs; test tools/mutations/supabase-next/snapshot.test.mjs -> packages/supabase-next/test/mutations/snapshot.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M12": {
+    "kind": "patch",
+    "protects": "3 I11 MS-5 create order",
+    "file": "packages/supabase-next/mutations/snapshot.mjs",
+    "find": "export const CREATE_ORDER = ['function', 'table', 'index', 'constraint', 'trigger', 'policy', 'cron'];",
+    "replace": "export const CREATE_ORDER = ['cron', 'policy', 'trigger', 'constraint', 'index', 'table', 'function'];",
+    "test": "node --test --test-name-pattern='^MS-5 ' packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testName": "MS-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-snapshot.mjs -> tools/mutations/supabase-next/snapshot.mjs; test tools/mutate-snapshot.test.mjs -> tools/mutations/supabase-next/snapshot.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/snapshot.mjs -> packages/supabase-next/mutations/snapshot.mjs; test tools/mutations/supabase-next/snapshot.test.mjs -> packages/supabase-next/test/mutations/snapshot.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M13": {
+    "kind": "patch",
+    "protects": "3 I12 MS-2 wrap once",
+    "file": "packages/supabase-next/mutations/snapshot.mjs",
+    "find": "if (stmts.length < 2) return sql;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-2 ' packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testName": "MS-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-snapshot.mjs -> tools/mutations/supabase-next/snapshot.mjs; test tools/mutate-snapshot.test.mjs -> tools/mutations/supabase-next/snapshot.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/snapshot.mjs -> packages/supabase-next/mutations/snapshot.mjs; test tools/mutations/supabase-next/snapshot.test.mjs -> packages/supabase-next/test/mutations/snapshot.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M14": {
+    "kind": "patch",
+    "protects": "3 I4 MC-6b Ctrl-C during the final reset resets (BUG-1)",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "async function finalReset(io, state, ctx) {\n  state.sqlApplied = true;",
+    "replace": "async function finalReset(io, state, ctx) {",
+    "test": "node --test --test-name-pattern='^MC-6b ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-6b ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/sql-kind.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-17/M15": {
+    "kind": "patch",
+    "protects": "3 I4 MC-6b Ctrl-C during the pollution re-run reset resets (BUG-1)",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "async function rerunWithReset(m, io, state, ctx) {\n  state.sqlApplied = true;",
+    "replace": "async function rerunWithReset(m, io, state, ctx) {",
+    "test": "node --test --test-name-pattern='^MC-6b ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-6b ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/sql-kind.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-18/M12": {
+    "kind": "patch",
+    "protects": "G12 preflight before first sql call",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "const pre = await io.preflight();",
+    "replace": "const pre = { code: 0, out: '' };",
+    "test": "node --test --test-name-pattern=\"^MC-P1 \" packages/engine/test/mutations/run.test.mjs",
+    "testFile": "packages/engine/test/mutations/run.test.mjs",
+    "testName": "MC-P1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/engine/run.mjs; test tools/mutate-check.test.mjs -> tools/mutations/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "run.mjs:preflight -> sql-kind.mjs:sql session open"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M1": {
+    "kind": "patch",
+    "protects": "5 CM-13 sql find must occur exactly once in the snapshot body",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if (n !== 1) errors.push(",
+    "replace": "if (false) errors.push(",
+    "test": "node --test --test-name-pattern='CM-13 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-13 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M2": {
+    "kind": "patch",
+    "protects": "5 CM-14 a function object without a snapshot file is unknown",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if (!exists) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='CM-14 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-14 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M3": {
+    "kind": "patch",
+    "protects": "5 CM-14 a function object whose args differ from the snapshot Name line is unknown",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if (!text.includes(header)) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='CM-14 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-14 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M4": {
+    "kind": "patch",
+    "protects": "5 CM-14 a trigger, policy or constraint name absent from the table snapshot is unknown",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if (!hasNamedObject(text, o))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='CM-14 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-14 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M5": {
+    "kind": "patch",
+    "protects": "5 CM-15 a whole-body create or replace function or pg_get_functiondef apply is rejected",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if (WHOLE_BODY.test(entry.apply ?? ''))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='CM-15 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-15 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M6": {
+    "kind": "patch",
+    "protects": "5 CM-15 an apply without object is limited to grants, revokes and cron",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if (entry.object === undefined && !PRIVILEGE_ONLY.test(entry.apply ?? ''))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='CM-15 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-15 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M9": {
+    "kind": "patch",
+    "protects": "5 CM-17 a new key skips only the snapshot rules, never the shape rules",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if (opts.shapeOnly) return errors;",
+    "replace": "if (!opts.shapeOnly) return errors;",
+    "test": "node --test --test-name-pattern='CM-17 ' packages/engine/test/mutations/check.test.mjs",
+    "testFile": "packages/engine/test/mutations/check.test.mjs",
+    "testName": "CM-17 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/check-mutations.test.mjs -> tools/mutations/engine/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M10": {
+    "kind": "patch",
+    "protects": "5 SO-3 findPattern lets any whitespace run match across the snapshot body",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "'[[:space:]]+'",
+    "replace": "' '",
+    "test": "node --test --test-name-pattern='SO-3 ' packages/supabase-next/test/mutations/sql-object.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-object.test.mjs",
+    "testName": "SO-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/mutation-sql-object.test.mjs -> tools/mutations/supabase-next/sql-object.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/supabase-next/sql-object.test.mjs -> packages/supabase-next/test/mutations/sql-object.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M11": {
+    "kind": "patch",
+    "protects": "5 MC-R6 the expansion raises when replace changes nothing in the function",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if n = b then raise exception",
+    "replace": "if false then raise exception",
+    "test": "node --test --test-name-pattern='MC-R6 ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-R6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/sql-kind.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/supabase-next/sql-kind.test.mjs -> packages/supabase-next/test/mutations/sql-kind.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26b/M13": {
+    "kind": "patch",
+    "protects": "5 SO-6 the run-time find count reads the function body only, as checkSqlEntry does",
+    "file": "packages/supabase-next/mutations/sql-object.mjs",
+    "find": "if regexp_count(b, ${p}) <> 1 then",
+    "replace": "if regexp_count(d, ${p}) <> 1 then",
+    "test": "node --test --test-name-pattern='SO-6 ' packages/supabase-next/test/mutations/sql-object.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-object.test.mjs",
+    "testName": "SO-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-sql-object.mjs -> tools/mutations/supabase-next/sql-object.mjs; test tools/mutation-sql-object.test.mjs -> tools/mutations/supabase-next/sql-object.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-object.mjs -> packages/supabase-next/mutations/sql-object.mjs; test tools/mutations/supabase-next/sql-object.test.mjs -> packages/supabase-next/test/mutations/sql-object.test.mjs"
+      }
+    ]
+  },
+  "INFRA-27/M5": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 MS-4: rule 3d changed schema snapshot selects sql entries",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "selectRules: [['schema', schemaChanged]],",
+    "replace": "selectRules: [],",
+    "test": "node --test --test-name-pattern='^MS-4 ' packages/engine/test/mutations/select.test.mjs",
+    "testFile": "packages/engine/test/mutations/select.test.mjs",
+    "testName": "MS-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutation-select.mjs -> tools/mutations/engine/select.mjs; test tools/mutation-select.test.mjs -> tools/mutations/engine/select.test.mjs"
+      },
+      {
+        "by": "INFRA-57",
+        "why": "select.mjs:schemaChanged rule -> sql-kind.mjs:sql kind selectRules"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/sql-kind.mjs -> packages/supabase-next/mutations/sql-kind.mjs; test tools/mutations/engine/select.test.mjs -> packages/engine/test/mutations/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-30/M12": {
+    "kind": "patch",
+    "protects": "INFRA-30 s5 M-1b identical patches are type checked once",
+    "file": "packages/supabase-next/mutations/next-typecheck.mjs",
+    "find": "if (seen.has(key)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^M-1b ' packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testName": "M-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/next-typecheck.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/next-typecheck.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/next-typecheck.mjs -> packages/supabase-next/mutations/next-typecheck.mjs; test tools/mutations/supabase-next/next-typecheck.test.mjs -> packages/supabase-next/test/mutations/next-typecheck.test.mjs"
+      }
+    ]
+  },
+  "INFRA-30/M13": {
+    "kind": "patch",
+    "protects": "INFRA-30 s5 M-1e only entries next build compiles are type checked (3-8)",
+    "file": "packages/supabase-next/mutations/next-typecheck.mjs",
+    "find": "export const typechecked = (m) => isServed(m) && needsWebBuild(m) && /\\.(ts|tsx)$/.test(m.file);",
+    "replace": "export const typechecked = () => true;",
+    "test": "node --test --test-name-pattern='^M-1e ' packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testName": "M-1e ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/next-typecheck.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/next-typecheck.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/next-typecheck.mjs -> packages/supabase-next/mutations/next-typecheck.mjs; test tools/mutations/supabase-next/next-typecheck.test.mjs -> packages/supabase-next/test/mutations/next-typecheck.test.mjs"
+      }
+    ]
+  },
+  "INFRA-30/M14": {
+    "kind": "patch",
+    "protects": "INFRA-30 s5 M-1f a file that already fails type checking is n/a under --typecheck, not an error",
+    "file": "packages/supabase-next/mutations/next-typecheck.mjs",
+    "find": "if (v.ok === null) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^M-1f ' packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/next-typecheck.test.mjs",
+    "testName": "M-1f ",
+    "reaimed": [
+      {
+        "by": "INFRA-56",
+        "why": "split (move-only): tools/mutate-check.mjs -> tools/mutations/supabase-next/next-typecheck.mjs; test tools/mutate-check.test.mjs -> tools/mutations/supabase-next/next-typecheck.test.mjs"
+      },
+      {
+        "by": "INFRA-58a",
+        "why": "export: tools/mutations/supabase-next/next-typecheck.mjs -> packages/supabase-next/mutations/next-typecheck.mjs; test tools/mutations/supabase-next/next-typecheck.test.mjs -> packages/supabase-next/test/mutations/next-typecheck.test.mjs"
+      }
+    ]
+  },
+  "INFRA-58a/M16": {
+    "kind": "patch",
+    "protects": "5 MS-8a uncoveredStatement flags a drop or create table, which the digest cannot restore",
+    "file": "packages/supabase-next/mutations/snapshot.mjs",
+    "find": "extension|rule|table)|comment",
+    "replace": "extension|rule)|comment",
+    "test": "node --test --test-name-pattern='^MS-8a ' packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testName": "MS-8a "
+  }
+}

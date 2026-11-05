@@ -79,7 +79,7 @@ test('ET-2 a planted line in a copy of the engine or the pack is reported', () =
       [gate, 'plan.mjs'],
       [gate, join('hooks', 'stop.mjs')],
       [gate, join('bin', 'ticket-gate.mjs')],
-      [pack, 'steps.mjs'],
+      [pack, 'index.mjs'],
     ])
       for (const text of [
         '// INFRA-99: a ticket id',

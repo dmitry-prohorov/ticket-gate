@@ -15,10 +15,14 @@ export function findRoot(start = process.cwd()) {
   }
 }
 
+// TICKET_GATE_ROOT, when set, names the project root outright (resolved against the working
+// directory) and skips the walk. A tool that runs the engine against its own tree, with no
+// gate.config.mjs there, pins it so an ancestor's config cannot become the root.
 // A hook must reach its own fail-closed branch when no config exists (exit 2 on a tick), so the
 // shared constant falls back to the working directory instead of throwing at import (exit 1,
 // which Claude Code reads as "proceed"). `findRoot` itself still throws.
 function rootOrCwd() {
+  if (process.env.TICKET_GATE_ROOT) return resolve(process.env.TICKET_GATE_ROOT);
   try {
     return findRoot();
   } catch {

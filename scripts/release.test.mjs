@@ -203,6 +203,7 @@ test('INFRA-47 5-9e happy path tags and moves CHANGELOG, never pushes', () => {
 
   const calls = r.bin.calls();
   assert.ok(calls.some((c) => /^git tag -a /.test(c)), 'the spawn recorder sees the tag');
+  assert.ok(calls.includes('npm run mutate -- --registry --all'), 'every registry guard is proven before the tag');
   assert.deepEqual(calls.filter((c) => /^git (push|remote)|^npm (publish|login)/.test(c)), []);
 });
 

@@ -33,6 +33,7 @@ import { commandsOf } from './config.mjs';
 import { GATE } from './project.mjs';
 import { planCtx, planSteps, selectUnits } from './plan.mjs';
 import { packHook, packHookAsync } from './pack-hooks.mjs';
+import { registryHooks } from './mutations/gate.mjs';
 import { runPrecheck } from './precheck.mjs';
 
 const FAILURES = join(ROOT, FAILURES_REL);
@@ -91,7 +92,7 @@ export async function main(args = process.argv.slice(2)) {
   const machine = mapArg === 'full' ? 'full' : 'count';
   // Pack hooks (pack-hooks.mjs): a missing one means no pack does that.
   const e2eHook = (await packHookAsync('e2e')) ?? {};
-  const registryHook = packHook('registry') ?? {};
+  const registryHook = registryHooks(GATE) ?? {};
   const nightlyHook = packHook('nightly');
   const e2eFlag = e2eHook.parseFlag?.(args) ?? {};
   if (e2eFlag.error) {

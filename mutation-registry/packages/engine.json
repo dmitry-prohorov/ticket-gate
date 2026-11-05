@@ -1,0 +1,276 @@
+{
+  "INFRA-45/M7": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-14 CL-5 a malformed ratchet entry fails config load",
+    "file": "packages/engine/config.mjs",
+    "find": "if (typeof entry.check !== 'function')",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^CL-5 ' packages/engine/test/cli.test.mjs",
+    "testFile": "packages/engine/test/cli.test.mjs",
+    "testName": "CL-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate/test/cli.test.mjs -> packages/engine/test/cli.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M9": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-20 EA-2 a bare string when is rejected",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!(typeof s.when === 'boolean' || typeof s.when === 'function' || isGlobList(s.when))) fail(at, 'when must be a boolean, a glob list or a function');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-2 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M10": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-21 EA-4 a glob when selects only on a matching path",
+    "file": "packages/engine/plan.mjs",
+    "find": "const globHit = (globs, paths) => paths.some((p) => globs.some((g) => globRe(g).test(p)));",
+    "replace": "const globHit = () => true;",
+    "test": "node --test --test-name-pattern='^EA-4 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M11": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-22 EA-2 a pack without name and version fails load",
+    "file": "packages/engine/config.mjs",
+    "find": "if (typeof p?.name !== 'string' || typeof p?.version !== 'string') fail(at, 'a pack needs a string name and version');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-2 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M12": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-23 EA-8 a pack version change is a digest input",
+    "file": "packages/engine/digest.mjs",
+    "find": "packs: (GATE.packs ?? []).map((p) => `${p.name}@${p.version}`),",
+    "replace": "packs: [],",
+    "test": "node --test --test-name-pattern='^EA-8 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M13": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-24 EA-2 a units slot without select and cmd fails load",
+    "file": "packages/engine/config.mjs",
+    "find": "if (s.units !== undefined && (typeof s.units?.select !== 'function' || typeof s.units?.cmd !== 'function')) fail(at, 'units needs select(ctx) and cmd(units)');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-2 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M14": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-25 EA-6 affected with zero units does not run",
+    "file": "packages/engine/plan.mjs",
+    "find": "const noUnits = (sel) => sel.mode === 'affected' && sel.units.length === 0;",
+    "replace": "const noUnits = () => false;",
+    "test": "node --test --test-name-pattern='^EA-6 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M15": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-26 EA-6 a throwing selector runs the step in full",
+    "file": "packages/engine/plan.mjs",
+    "find": "const selectorFailed = (e) => ({ mode: 'full', why: `unit selector failed: ${e.message}`, units: [], });",
+    "replace": "const selectorFailed = (e) => { throw e; };",
+    "test": "node --test --test-name-pattern='^EA-6 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M16": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-27 EA-6 a units step runs the command its cmd composes",
+    "file": "packages/engine/plan.mjs",
+    "find": "const unitsCmd = (s, sel) => s.units.cmd(sel.units, sel);",
+    "replace": "const unitsCmd = (s) => s.cmd;",
+    "test": "node --test --test-name-pattern='^EA-6 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M17": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-28 EA-9 a function health is planned before its stack",
+    "file": "packages/engine/plan.mjs",
+    "find": "const healthFn = (stack) => typeof stack.health === 'function';",
+    "replace": "const healthFn = () => false;",
+    "test": "node --test --test-name-pattern='^EA-9 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M18": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-29 EA-7 the early stop applies before every stopOnRedBefore id",
+    "file": "packages/engine/plan.mjs",
+    "find": "export const stopsOf = (config) => [].concat(config.stopOnRedBefore ?? []);",
+    "replace": "export const stopsOf = () => [];",
+    "test": "node --test --test-name-pattern='^EA-7 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M19": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-30 EA-2 a malformed humanLines entry fails load",
+    "file": "packages/engine/config.mjs",
+    "find": "if (typeof h?.line !== 'string' || h.line === '' || !(typeof h.match === 'string' || h.match instanceof RegExp)) fail(at, 'humanLines need { match, line }');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-2 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M20": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-31 EA-5 a human line prints exactly when a changed path matches",
+    "file": "packages/engine/review-map.mjs",
+    "find": ".filter((h) => paths.some((p) => hitPath(h.match, p)))",
+    "replace": ".filter(() => false)",
+    "test": "node --test --test-name-pattern='^EA-5 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/review-map.mjs -> packages/engine/review-map.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M21": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-32 EA-10 a config without pushGuard still protects main and master",
+    "file": "packages/engine/config.mjs",
+    "find": "const DEFAULT_PROTECTED = ['main', 'master'];",
+    "replace": "const DEFAULT_PROTECTED = [];",
+    "test": "node --test --test-name-pattern='^EA-10 ' packages/engine/test/engine-api.test.mjs",
+    "testFile": "packages/engine/test/engine-api.test.mjs",
+    "testName": "EA-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-58a/M1": {
+    "kind": "patch",
+    "protects": "5 MK-1 defineGate rejects an unknown mutations sub-key",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!MUTATION_KEYS.includes(k)) fail(`mutations.${k}`, 'unknown key');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MK-1 ' packages/engine/test/mutations/gate-config.test.mjs",
+    "testFile": "packages/engine/test/mutations/gate-config.test.mjs",
+    "testName": "MK-1 "
+  },
+  "INFRA-58a/M2": {
+    "kind": "patch",
+    "protects": "5 MK-2 defineGate rejects a mutations.dir that is not a relative directory path",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!isRelDir(m.dir)) fail('mutations.dir', 'must be a relative directory path');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MK-2 ' packages/engine/test/mutations/gate-config.test.mjs",
+    "testFile": "packages/engine/test/mutations/gate-config.test.mjs",
+    "testName": "MK-2 "
+  },
+  "INFRA-58a/M3": {
+    "kind": "patch",
+    "protects": "5 MK-3 defineGate rejects a mutation kind without name, runs or shape",
+    "file": "packages/engine/config.mjs",
+    "find": "if (typeof k?.name !== 'string' || typeof k.runs !== 'boolean' || typeof k.shape !== 'function') fail(`mutations.kinds.${name}`, 'needs name, runs and shape(entry)');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MK-3 ' packages/engine/test/mutations/gate-config.test.mjs",
+    "testFile": "packages/engine/test/mutations/gate-config.test.mjs",
+    "testName": "MK-3 "
+  },
+  "INFRA-58a/M4": {
+    "kind": "patch",
+    "protects": "5 MK-4 the mutation command keys are valid commands keys",
+    "file": "packages/engine/config.mjs",
+    "find": "...MUTATION_COMMAND_KEYS, ];",
+    "replace": "];",
+    "test": "node --test --test-name-pattern='^MK-4 ' packages/engine/test/mutations/gate-config.test.mjs",
+    "testFile": "packages/engine/test/mutations/gate-config.test.mjs",
+    "testName": "MK-4 "
+  },
+  "INFRA-58a/M5": {
+    "kind": "patch",
+    "protects": "5 PH-1 packHooksAll collects each pack hook in packs order",
+    "file": "packages/engine/pack-hooks.mjs",
+    "find": "out.push({ by: pack.name, value: pack[name] });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PH-1 ' packages/engine/test/mutations/pack-hooks.test.mjs",
+    "testFile": "packages/engine/test/mutations/pack-hooks.test.mjs",
+    "testName": "PH-1 "
+  }
+}

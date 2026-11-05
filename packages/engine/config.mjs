@@ -25,6 +25,7 @@ export const GATE_KEYS = Object.freeze([
   'registryFile',
   'stackHint',
   'commands',
+  'mutations',
 ]);
 
 /**
@@ -45,7 +46,20 @@ export const commandsOf = (gate) => ({
   ...(gate?.commands ?? {}),
 });
 
-const COMMAND_KEYS = [...Object.keys(DEFAULT_COMMANDS), 'nightlyStatus'];
+/** The commands the mutation engine's messages name; they join `commands` and default in the engine. */
+export const MUTATION_COMMAND_KEYS = Object.freeze([
+  'mutate',
+  'checkMutations',
+  'checkMutationsScript',
+  'afterFatal',
+  'restoreHint',
+]);
+
+const COMMAND_KEYS = [
+  ...Object.keys(DEFAULT_COMMANDS),
+  'nightlyStatus',
+  ...MUTATION_COMMAND_KEYS,
+];
 
 const DEFAULT_PROTECTED = ['main', 'master'];
 const DEFAULT_OVERSIZE_WAIVER = /^(?:- )?oversize-accepted: \S/;
@@ -249,6 +263,7 @@ export function defineGate(config) {
   validateRatchets(config.ratchets);
   validateHooks(config);
   validateCommands(config.commands);
+  if (config.mutations !== undefined) validateMutations(config.mutations);
 
   return deepFreeze({
     ...config,
@@ -295,6 +310,81 @@ function validateCommands(commands) {
       fail(`commands.${k}`, `unknown key (known: ${COMMAND_KEYS.join(', ')})`);
     if (typeof v !== 'string' || !v.trim() || /[\r\n]/.test(v))
       fail(`commands.${k}`, 'must be a non-empty single-line command string');
+  }
+}
+
+export const MUTATION_KEYS = Object.freeze([
+  'dir',
+  'receipts',
+  'area',
+  'fieldOrder',
+  'legacy',
+  'rebuild',
+  'childEnv',
+  'reuseEnv',
+  'kinds',
+]);
+
+const isStr = (v) => typeof v === 'string' && v !== '';
+// prettier-ignore
+const isRelDir = (v) => isStr(v) && !v.startsWith('/') && !/^[A-Za-z]:/.test(v) && !v.split(/[\\/]/).includes('..');
+
+// `mutations` configures the mutation engine (kinds, rebuild rules, child env, registry folder).
+// `packs` and `commands` stay top-level keys: a pack's kinds and harnesses come from the pack.
+function validateMutations(m) {
+  if (!isObject(m)) fail('mutations', 'must be an object');
+  for (const k of Object.keys(m))
+    if (!MUTATION_KEYS.includes(k)) fail(`mutations.${k}`, 'unknown key');
+  if (m.dir !== undefined) {
+    // prettier-ignore
+    if (!isRelDir(m.dir)) fail('mutations.dir', 'must be a relative directory path');
+  }
+  if (m.receipts !== undefined) {
+    if (!isObject(m.receipts) || !isStr(m.receipts.ticket) || !isStr(m.receipts.registry))
+      fail('mutations.receipts', 'must be { ticket: string, registry: string }');
+  }
+  if (m.area !== undefined && typeof m.area !== 'function')
+    fail('mutations.area', 'must be a function of an entry');
+  if (
+    m.fieldOrder !== undefined &&
+    !(Array.isArray(m.fieldOrder) && m.fieldOrder.every(isStr))
+  )
+    fail('mutations.fieldOrder', 'must be an array of field names');
+  if (m.legacy !== undefined && m.legacy !== null) {
+    if (
+      !isObject(m.legacy) ||
+      typeof m.legacy.files !== 'function' ||
+      typeof m.legacy.atRef !== 'function'
+    )
+      fail('mutations.legacy', 'must be null or { files(), atRef(ref, root) }');
+  }
+  if (m.rebuild !== undefined) {
+    if (!Array.isArray(m.rebuild)) fail('mutations.rebuild', 'must be an array');
+    m.rebuild.forEach((r, i) => {
+      const at = `mutations.rebuild[${i}]`;
+      for (const f of ['files', 'cmd', 'io', 'flag', 'drift', 'note'])
+        if (!isStr(r?.[f])) fail(`${at}.${f}`, 'must be a non-empty string');
+      if (r.unlessTest !== undefined && !(r.unlessTest instanceof RegExp))
+        fail(`${at}.unlessTest`, 'must be a RegExp');
+      if (r.limitS !== undefined && !(Number.isInteger(r.limitS) && r.limitS > 0))
+        fail(`${at}.limitS`, 'must be a positive integer');
+    });
+  }
+  if (m.childEnv !== undefined) {
+    const drop = m.childEnv?.drop;
+    if (!(Array.isArray(drop) && drop.every(isStr)))
+      fail('mutations.childEnv.drop', 'must be an array of variable names');
+  }
+  if (m.reuseEnv !== undefined) {
+    if (!isObject(m.reuseEnv) || !Object.values(m.reuseEnv).every((v) => typeof v === 'string'))
+      fail('mutations.reuseEnv', 'must be an object of string values');
+  }
+  if (m.kinds !== undefined) {
+    if (!isObject(m.kinds)) fail('mutations.kinds', 'must be an object');
+    for (const [name, k] of Object.entries(m.kinds)) {
+      // prettier-ignore
+      if (typeof k?.name !== 'string' || typeof k.runs !== 'boolean' || typeof k.shape !== 'function') fail(`mutations.kinds.${name}`, 'needs name, runs and shape(entry)');
+    }
   }
 }
 

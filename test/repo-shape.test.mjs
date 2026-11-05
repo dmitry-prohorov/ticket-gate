@@ -14,6 +14,7 @@ const ALLOWED = [
   /^(package\.json|package-lock\.json|\.gitignore|LICENSE|README\.md|CHANGELOG\.md)$/,
   /^packages\/(engine|supabase-next)\/.+/,
   /^scripts\/[^/]+\.mjs$/,
+  /^mutation-registry\/.+\.json$/,
   /^test\/[^/]+\.mjs$/,
   /^\.github\/workflows\/publish\.yml$/,
 ];
