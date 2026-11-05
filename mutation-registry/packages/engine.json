@@ -111,6 +111,22 @@
       }
     ]
   },
+  "INFRA-11/M6": {
+    "kind": "patch",
+    "protects": "5 MS-R1 the new-file floor is 80",
+    "file": "packages/engine/score-config.mjs",
+    "find": "export const NEW_FILE_MIN = 80;",
+    "replace": "export const NEW_FILE_MIN = 79;",
+    "test": "node --test --test-name-pattern='^MS-R1 ' packages/engine/test/score/judge.test.mjs",
+    "testFile": "packages/engine/test/score/judge.test.mjs",
+    "testName": "MS-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/config.mjs NEW_FILE_MIN_SCORE -> packages/engine/score-config.mjs NEW_FILE_MIN (the demo config omits newFileMin, so MS-R1 bites through the default); test tools/score/engine/judge.test.mjs -> packages/engine/test/score/judge.test.mjs"
+      }
+    ]
+  },
   "INFRA-16/M3": {
     "kind": "patch",
     "protects": "I1 TH-5 zero sha is uncommitted",
@@ -1792,5 +1808,45 @@
     "test": "node --test --test-name-pattern='^PH-1 ' packages/engine/test/mutations/pack-hooks.test.mjs",
     "testFile": "packages/engine/test/mutations/pack-hooks.test.mjs",
     "testName": "PH-1 "
+  },
+  "INFRA-62b/M6": {
+    "kind": "patch",
+    "protects": "5 GS-1 defineGate validates the score key",
+    "file": "packages/engine/config.mjs",
+    "find": "if (config.score !== undefined) validateScore(config.score, fail);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GS-1 ' packages/engine/test/score-config.test.mjs",
+    "testFile": "packages/engine/test/score-config.test.mjs",
+    "testName": "GS-1 "
+  },
+  "INFRA-62b/M7": {
+    "kind": "patch",
+    "protects": "5 GS-2 an unknown score key throws naming it",
+    "file": "packages/engine/score-config.mjs",
+    "find": "if (!SCORE_KEYS.includes(k))\n      fail(`score.${k}`, `unknown key (known: ${SCORE_KEYS.join(', ')})`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GS-2 ' packages/engine/test/score-config.test.mjs",
+    "testFile": "packages/engine/test/score-config.test.mjs",
+    "testName": "GS-2 "
+  },
+  "INFRA-62b/M8": {
+    "kind": "patch",
+    "protects": "5 GS-3 an adapter missing a required function throws",
+    "file": "packages/engine/score-config.mjs",
+    "find": "!isObject(a) ||\n    !isStr(a.name) ||\n    !isStr(a.reportPath) ||\n    !['runBranch', 'runBase', 'disablesWithoutReason', 'addedDisables'].every(\n      (f) => typeof a[f] === 'function',\n    )",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GS-3 ' packages/engine/test/score-config.test.mjs",
+    "testFile": "packages/engine/test/score-config.test.mjs",
+    "testName": "GS-3 "
+  },
+  "INFRA-62b/M9": {
+    "kind": "patch",
+    "protects": "5 GS-4 a global or sticky score regex throws",
+    "file": "packages/engine/score-config.mjs",
+    "find": "re.global || re.sticky",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GS-4 ' packages/engine/test/score-config.test.mjs",
+    "testFile": "packages/engine/test/score-config.test.mjs",
+    "testName": "GS-4 "
   }
 }

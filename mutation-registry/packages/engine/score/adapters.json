@@ -1,0 +1,18 @@
+{
+  "INFRA-11/M9": {
+    "kind": "patch",
+    "protects": "5 MS-D1 a Stryker disable without a reason fails",
+    "file": "packages/engine/score/adapters/stryker.mjs",
+    "find": "if (!DISABLE_WITH_REASON.test(line))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^MS-D1 ' packages/engine/test/score/adapters/stryker.test.mjs",
+    "testFile": "packages/engine/test/score/adapters/stryker.test.mjs",
+    "testName": "MS-D1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/adapters/stryker.mjs -> packages/engine/score/adapters/stryker.mjs; test tools/score/engine/adapters/stryker.test.mjs -> packages/engine/test/score/adapters/stryker.test.mjs"
+      }
+    ]
+  }
+}

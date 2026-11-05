@@ -14,5 +14,25 @@
         "why": "re-registered in the public repo (D6): tools/gate/bin/ticket-gate.mjs -> packages/engine/bin/ticket-gate.mjs; test tools/gate/test/cli.test.mjs -> packages/engine/test/cli.test.mjs"
       }
     ]
+  },
+  "INFRA-62b/M10": {
+    "kind": "patch",
+    "protects": "5 SC-1 ticket-gate score is a command of the bin",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "if (cmd === 'score') return score(rest);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SC-1 ' packages/engine/test/score/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/score/synthetic-project.test.mjs",
+    "testName": "SC-1 "
+  },
+  "INFRA-62b/M11": {
+    "kind": "patch",
+    "protects": "5 SC-8 a gate without score exits 2 with the not-configured line",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "if (!GATE.score) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^SC-8 ' packages/engine/test/score/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/score/synthetic-project.test.mjs",
+    "testName": "SC-8 "
   }
 }

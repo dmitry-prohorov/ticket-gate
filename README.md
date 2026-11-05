@@ -42,6 +42,7 @@ unreviewed. Update by editing the version yourself.
 | `mutate <ID>` / `mutate --registry (--ids=\|--all\|--changed)` | Prove each registered guard bites: apply its patch, run its test, expect a failure, restore the file. Needs `mutations` in the config. |
 | `mutate --rotate --ledger=<dir> [--budget-min=<n>] [--batch=<n>] [--deadline=<ISO>] [--sha=<sha>]` | One budgeted rotation over the live registry: batches of `mutate --registry --ids=`, never-run keys first then the oldest proof, results appended to `<dir>/mutations.jsonl`. Without `--deadline` the budget is soft: the batch in flight at its end finishes. Takes the stack lock; exit 1 when a guard survived. Needs `mutations` in the config. |
 | `mutations check [--fix]` / `mutations select [--affected --paths=]` | Validate (and repair) the mutation registry; list the entries a diff selects. |
+| `score --base=REF [--files= --report= --base-report=]` | Judge a mutation-testing report against the base: no open mutant on a changed line, a new file at the floor, no regression. Exit 0 pass, 1 a file failed, 2 the tool, report or install failed. Needs `score` in the config. |
 
 ## A minimal `gate.config.mjs`
 
@@ -79,6 +80,34 @@ This repository registers its own engine and pack guards the same way (`scripts/
 npm run mutations:check            # validate the registry (part of npm run check)
 npm run mutate -- --registry --all # apply every guard, expect its test to fail (run by the release script)
 ```
+
+## The score gate
+
+`ticket-gate score` judges a mutation-testing report of the branch against the same report on a base worktree. The `score` key
+of `defineGate` turns it on; the rest of the shape is validated on load and a bad value names the key to fix. It sits beside the
+registry above: the registry proves your guards bite, the score gate proves your changed lines are covered by tests that bite.
+
+```js
+import { stryker } from '@ticket-gate/engine/score/adapters/stryker.mjs';
+import { pnpmFilterInstall } from '@ticket-gate/supabase-next/score.mjs';
+
+score: {
+  scope: /^src\/.*\.ts$/,            // files that can be mutated
+  packageDir: 'packages/app',        // where the tool runs; '.' for a package at the repo root
+  adapter: stryker({                 // or your own { name, reportPath, runBranch, runBase, disablesWithoutReason, addedDisables }
+    branchCmd: ['npx', 'stryker', 'run'],
+    packageDir: 'packages/app',
+    config: 'stryker.config.json',
+    reportPath: 'packages/app/.turbo/mutation/report.json',
+  }),
+  baseInstall: pnpmFilterInstall('@scope/app'), // how the base worktree gets its dependencies
+  newFileMin: 80,                    // optional: floor for a new file (default 80)
+}
+```
+
+Optional keys: `extra`, `excluded`, `survivors`, `worktreeDir`, `handoff`, `commands.score` and `noTargets` (the line printed when
+no file in the scope changed). The gate reads only the fields of the mutation-testing-report-schema it needs; a report that
+cannot be read, or whose `schemaVersion` is not a 1.x or 2.x version, exits 2 with a `mutation: FAIL` line.
 
 ## What the hooks do and do not do
 
