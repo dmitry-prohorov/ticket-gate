@@ -1,4 +1,36 @@
 {
+  "INFRA-16/M7": {
+    "kind": "patch",
+    "protects": "3 I9 GS-9 corrupt history line skipped",
+    "file": "packages/engine/tree.mjs",
+    "find": "continue; // a corrupt line is skipped, never fatal",
+    "replace": "throw new Error(\"corrupt history line\");",
+    "test": "node --test --test-name-pattern='^GS-9 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/ticket-gate.test.mjs GS-9 -> packages/engine/test/stop-hook.test.mjs GS-9"
+      }
+    ]
+  },
+  "INFRA-16/M14": {
+    "kind": "patch",
+    "protects": "3 I1/I10 GS-10 blame failure is unsettled",
+    "file": "packages/engine/tree.mjs",
+    "find": "return null; // untracked file, or no git: never settled",
+    "replace": "return 'HEAD';",
+    "test": "node --test --test-name-pattern='^GS-10 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/ticket-gate.test.mjs GS-10 -> packages/engine/test/stop-hook.test.mjs GS-10"
+      }
+    ]
+  },
   "INFRA-45/M7": {
     "kind": "patch",
     "protects": "INFRA-45 3-14 CL-5 a malformed ratchet entry fails config load",

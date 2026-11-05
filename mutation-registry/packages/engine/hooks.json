@@ -1,0 +1,162 @@
+{
+  "INFRA-10/M11": {
+    "kind": "patch",
+    "protects": "5 GT-1 oversize receipt blocks a DoD tick",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (receipt.oversize === true) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^GT-1 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GT-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GT-1 -> packages/engine/test/stop-hook.test.mjs GT-1"
+      }
+    ]
+  },
+  "INFRA-16/M1": {
+    "kind": "patch",
+    "protects": "3 I2/I3 GS-1 all-settled ticks approve",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (unsettled.length === 0) approve();",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GS-1 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-1 -> packages/engine/test/stop-hook.test.mjs GS-1"
+      }
+    ]
+  },
+  "INFRA-16/M2": {
+    "kind": "patch",
+    "protects": "3 I2 GS-3 settled only on history membership",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "return !hashes.has(hashAt.get(commit));",
+    "replace": "return false;",
+    "test": "node --test --test-name-pattern='^GS-3 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-3 -> packages/engine/test/stop-hook.test.mjs GS-3"
+      }
+    ]
+  },
+  "INFRA-16/M4": {
+    "kind": "patch",
+    "protects": "3 I4 GS-8 human check over every tick",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const humanOnly = ticks.filter((t) => HUMAN.test(t.text));",
+    "replace": "const humanOnly = [];",
+    "test": "node --test --test-name-pattern='^GS-8 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-8 -> packages/engine/test/stop-hook.test.mjs GS-8"
+      }
+    ]
+  },
+  "INFRA-16/M5": {
+    "kind": "patch",
+    "protects": "3 I5 GS-6 FU check sees only unsettled ids",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const tickedTickets = new Set(unsettled.filter((t) => t.id).map((t) => t.id));",
+    "replace": "const tickedTickets = new Set(ticks.filter((t) => t.id).map((t) => t.id));",
+    "test": "node --test --test-name-pattern='^GS-6 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-6 -> packages/engine/test/stop-hook.test.mjs GS-6"
+      }
+    ]
+  },
+  "INFRA-16/M6": {
+    "kind": "patch",
+    "protects": "3 I5 GS-7 headless state from unsettled only",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const headlessTick = unsettled.some((t) => !t.id);",
+    "replace": "const headlessTick = ticks.some((t) => !t.id);",
+    "test": "node --test --test-name-pattern='^GS-7 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-7 -> packages/engine/test/stop-hook.test.mjs GS-7"
+      }
+    ]
+  },
+  "INFRA-19/M1": {
+    "kind": "patch",
+    "protects": "G4 allow-list in ticket-gate",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "!VERIFIED_STATUSES.includes(r.status)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GR-3 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GR-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GR-3 -> packages/engine/test/stop-hook.test.mjs GR-3"
+      }
+    ]
+  },
+  "INFRA-19/M2": {
+    "kind": "patch",
+    "protects": "G5 reused digest re-check",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "stepDigest(r.id, r.cmd, { base: receipt.base }) === r.digest",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^GR-2 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GR-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GR-2 -> packages/engine/test/stop-hook.test.mjs GR-2"
+      }
+    ]
+  },
+  "INFRA-41/M1": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 GT-M2 a move-only waiver needs zero unmatched lines",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "return receipt.moveProof?.unmatched === 0;",
+    "replace": "return true;",
+    "test": "node --test --test-name-pattern='^GT-M2 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GT-M2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GT-M2 -> packages/engine/test/stop-hook.test.mjs GT-M2"
+      }
+    ]
+  },
+  "INFRA-41/M2": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 GT-M3 a move-only reason is recognised by its prefix",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const MOVE_ONLY = /^move-only/;",
+    "replace": "const MOVE_ONLY = /^$/;",
+    "test": "node --test --test-name-pattern='^GT-M3 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GT-M3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GT-M3 -> packages/engine/test/stop-hook.test.mjs GT-M3"
+      }
+    ]
+  }
+}
