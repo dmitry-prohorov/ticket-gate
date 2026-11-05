@@ -1295,6 +1295,150 @@
       }
     ]
   },
+  "INFRA-42/M1": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I3 GC-1: an unknown gate.config key throws; without it a typo silently drops a rule",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!GATE_KEYS.includes(key)) fail(key, 'unknown key');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-1 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-1 -> packages/engine/test/config-validation.test.mjs GC-1"
+      }
+    ]
+  },
+  "INFRA-42/M2": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I4 GC-2: duplicate step ids throw; without it a later step shadows an earlier one",
+    "file": "packages/engine/config.mjs",
+    "find": "if (seen.has(s.id)) fail(at, `duplicate step id \"${s.id}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-2 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-2 -> packages/engine/test/config-validation.test.mjs GC-2"
+      }
+    ]
+  },
+  "INFRA-42/M3": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I5 GC-3: every non-human step needs a positive limitS; without it a step runs unbounded",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!s.human && !(Number.isInteger(s.limitS) && s.limitS > 0)) fail(at, 'limitS must be a positive integer');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-3 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-3 -> packages/engine/test/config-validation.test.mjs GC-3"
+      }
+    ]
+  },
+  "INFRA-42/M4": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I6 GC-4: reuse must be explicit per step; without it reuse follows from omission",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!s.human && s.reuse !== false && !Array.isArray(s.reuse?.deny)) fail(at, 'reuse must be false or { deny: [...] }');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-4 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-4 -> packages/engine/test/config-validation.test.mjs GC-4"
+      }
+    ]
+  },
+  "INFRA-42/M5": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I7 GC-5: an unknown step id reference throws; without it stopOnRedBefore typo disables the early stop",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!seen.has(id)) fail(where, `unknown step id \"${id}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-5 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-5 -> packages/engine/test/config-validation.test.mjs GC-5"
+      }
+    ]
+  },
+  "INFRA-42/M6": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I8 GC-6: a human step has no reuse or limitS; without it maestro could be reused",
+    "file": "packages/engine/config.mjs",
+    "find": "if (s.human && (s.reuse !== undefined || s.limitS !== undefined)) fail(at, 'a human step has no reuse or limitS');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-6 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-6 -> packages/engine/test/config-validation.test.mjs GC-6"
+      }
+    ]
+  },
+  "INFRA-42/M7": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I9 GC-7: a step stack must exist; without it preflight never checks that step",
+    "file": "packages/engine/config.mjs",
+    "find": "if (s.stack !== undefined && !Object.hasOwn(stacks, s.stack)) fail(at, `unknown stack \"${s.stack}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-7 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-7 -> packages/engine/test/config-validation.test.mjs GC-7"
+      }
+    ]
+  },
+  "INFRA-43/M5": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-5 GC-3: an empty pushGuard.protected is rejected; an empty list would allow a push to main",
+    "file": "packages/engine/config.mjs",
+    "find": "protected.length === 0",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GC-8 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs INFRA-43 GC-3 -> packages/engine/test/config-validation.test.mjs GC-8"
+      }
+    ]
+  },
+  "INFRA-43/M8": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-10 GC-2: an empty dod.files is rejected; no DoD file read means a silent open",
+    "file": "packages/engine/config.mjs",
+    "find": "files.length === 0",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GC-9 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs INFRA-43 GC-2 -> packages/engine/test/config-validation.test.mjs GC-9"
+      }
+    ]
+  },
   "INFRA-44a/M1": {
     "kind": "patch",
     "protects": "INFRA-44a 5 EI-1 a path no deny-list names is an input of every step",
@@ -1564,6 +1708,38 @@
       {
         "by": "INFRA-58a",
         "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M22": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-33 DR-1 the root is the nearest dir holding gate.config.mjs",
+    "file": "packages/engine/root.mjs",
+    "find": "if (existsSync(join(dir, 'gate.config.mjs'))) return dir;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DR-1 ' packages/engine/test/root-and-tree.test.mjs",
+    "testFile": "packages/engine/test/root-and-tree.test.mjs",
+    "testName": "DR-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/root.mjs -> packages/engine/root.mjs; test tools/gate-wiring.test.mjs DR-1 -> packages/engine/test/root-and-tree.test.mjs DR-1"
+      }
+    ]
+  },
+  "INFRA-45/M23": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-34 DR-4 the tree hash excludes exactly tree.json exclude",
+    "file": "packages/engine/tree.mjs",
+    "find": "const excluded = (p) => treeExclude().some((d) => p === d || p.startsWith(`${d}/`));",
+    "replace": "const excluded = () => false;",
+    "test": "node --test --test-name-pattern='^DR-4 ' packages/engine/test/root-and-tree.test.mjs",
+    "testFile": "packages/engine/test/root-and-tree.test.mjs",
+    "testName": "DR-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/gate-wiring.test.mjs DR-4 -> packages/engine/test/root-and-tree.test.mjs DR-4"
       }
     ]
   },
