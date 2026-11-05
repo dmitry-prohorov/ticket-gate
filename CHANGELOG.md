@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `@ticket-gate/engine`: the mutation score gate (`ticket-gate score`, the `score` key of `defineGate`, the Stryker adapter at `score/adapters/stryker.mjs`); a report that cannot be read or whose `schemaVersion` is not 1.x or 2.x exits 2; the score guards are registered in `mutation-registry/`.
+- `@ticket-gate/supabase-next`: `pnpmFilterInstall(filter)` builds the `score.baseInstall` of a pnpm workspace package.
 - `@ticket-gate/engine`: the mutation engine (`ticket-gate mutate`, `ticket-gate mutations check|select`), the `mutations` key of `defineGate`, `packHooksAll` for hooks every pack contributes to, and the `mutation-registry/` of this repository's own guards.
 - `@ticket-gate/engine`: `ticket-gate mutate --rotate --ledger=<dir>` runs one budgeted rotation over the live registry from the exported rotation core (`mutations/rotate.mjs`: ledger read and compaction, rotation order, budget and deadline); the rotation guards are registered in `mutation-registry/`.
 - `@ticket-gate/supabase-next`: `supabaseNext({ tools, mutations })` contributes the SQL mutation kind and the served-test harness through `mutationKinds` and `mutationHarnesses`; the `registry` hook is removed.
