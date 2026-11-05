@@ -14,7 +14,11 @@
 //   sqlRanges  { H1_REASON, migrationFacts, migrationReadRanges }   migration read ranges
 // It also carries `e2eWhen` and `e2eUnits` for gate.config.mjs's e2e step.
 import { bindTools, tools } from './tools.mjs';
-import { mutationHarnesses, mutationKinds } from './mutations/pack.mjs';
+import {
+  mutationHarnesses,
+  mutationKinds,
+  mutationKindsWith,
+} from './mutations/pack.mjs';
 import {
   H1_REASON,
   migrationFacts,
@@ -23,12 +27,12 @@ import {
 import { e2eWhen } from './step-defaults.mjs';
 import { e2eUnits } from './units.mjs';
 
-export function supabaseNext({ tools: project, mutations } = {}) {
+export function supabaseNext({ tools: project, mutations, sql } = {}) {
   bindTools(project);
   return {
     name: 'supabase-next',
     version: '0.0.0-local',
-    mutationKinds,
+    mutationKinds: sql ? mutationKindsWith(sql) : mutationKinds,
     mutationHarnesses: mutations ? mutationHarnesses(mutations) : [],
     nightly: {
       line(nowMs) {

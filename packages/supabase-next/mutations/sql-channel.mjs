@@ -19,8 +19,18 @@ import {
 
 const PSQL = ['psql', '-U', 'postgres', '-d', 'postgres', '-X', '-q', '-At'];
 
-/** @param {{ exec: Function, sh: Function }} h the engine's child runners */
-export function sqlIo({ exec, sh }) {
+/** The stack preflight the sql session runs before it opens. */
+export const PREFLIGHT = Object.freeze({
+  cmd: 'node',
+  args: ['tools/stack-preflight.mjs', '--steps=db', '--wait=20'],
+  limitS: 30,
+});
+
+/**
+ * @param {{ exec: Function, sh: Function }} h the engine's child runners
+ * @param {{ preflight?: { cmd: string, args: string[], limitS?: number } }} [opts]
+ */
+export function sqlIo({ exec, sh }, { preflight = PREFLIGHT } = {}) {
   // Resolved on the first SQL call: psql in the db container, else the CLI.
   let channel = null;
   const resolveChannel = async () => {
@@ -82,9 +92,7 @@ export function sqlIo({ exec, sh }) {
   };
   return {
     preflight: () =>
-      exec('node', ['tools/stack-preflight.mjs', '--steps=db', '--wait=20'], {
-        limitS: 30,
-      }),
+      exec(preflight.cmd, preflight.args, { limitS: preflight.limitS ?? 30 }),
     applySql: sqlRun,
     digest: () => query(DIGEST_SQL, parseDigest),
     snapshot: () => query(SNAPSHOT_SQL, parseSnapshot),
