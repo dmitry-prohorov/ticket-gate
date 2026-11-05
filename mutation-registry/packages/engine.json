@@ -47,6 +47,86 @@
       }
     ]
   },
+  "FU154/M4": {
+    "kind": "patch",
+    "protects": "VT-F1 buildResults collects the output of failed steps",
+    "file": "packages/engine/run.mjs",
+    "find": "failures.push({ id: step.id, cmd: step.cmd, why: step.why, out: timedOut",
+    "replace": "void ({ id: step.id, cmd: step.cmd, why: step.why, out: timedOut",
+    "test": "node --test --test-name-pattern='^VT-F1 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VT-F1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket.test.mjs VT-F1 -> packages/engine/test/verify-run.test.mjs VT-F1"
+      }
+    ]
+  },
+  "FU154/M5": {
+    "kind": "patch",
+    "protects": "VT-F2 the paste block names the failures file",
+    "file": "packages/engine/summary.mjs",
+    "find": "if (failures) lines.push(`Failures: ${failures}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-F2 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VT-F2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/summary.mjs -> packages/engine/summary.mjs; test tools/verify-ticket.test.mjs VT-F2 -> packages/engine/test/verify-run.test.mjs VT-F2"
+      }
+    ]
+  },
+  "FU154/M6": {
+    "kind": "patch",
+    "protects": "VT-F4 main() writes the failures file on a red run",
+    "file": "packages/engine/cli.mjs",
+    "find": "failuresPath = writeFailures(FAILURES, { treeHash: hash, ranAt, failures, stoppedBy });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-F4 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VT-F4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/cli.mjs -> packages/engine/cli.mjs; test tools/verify-ticket.test.mjs VT-F4 -> packages/engine/test/verify-run.test.mjs VT-F4"
+      }
+    ]
+  },
+  "INFRA-10/M10": {
+    "kind": "patch",
+    "protects": "VT-1 the receipt records oversize",
+    "file": "packages/engine/receipt.mjs",
+    "find": "oversize: size.level === 'oversize',",
+    "replace": "oversize: false,",
+    "test": "node --test --test-name-pattern='^VT-1 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VT-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/receipt.mjs -> packages/engine/receipt.mjs; test tools/verify-ticket.test.mjs VT-1 -> packages/engine/test/verify-run.test.mjs VT-1"
+      }
+    ]
+  },
+  "INFRA-16/M3": {
+    "kind": "patch",
+    "protects": "I1 TH-5 zero sha is uncommitted",
+    "file": "packages/engine/tree.mjs",
+    "find": "if (/^0{40}$/.test(sha)) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^TH-5 ' packages/engine/test/tree-hash.test.mjs",
+    "testFile": "packages/engine/test/tree-hash.test.mjs",
+    "testName": "TH-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/tree-hash.test.mjs TH-5 -> packages/engine/test/tree-hash.test.mjs TH-5"
+      }
+    ]
+  },
   "INFRA-16/M7": {
     "kind": "patch",
     "protects": "3 I9 GS-9 corrupt history line skipped",
@@ -60,6 +140,102 @@
       {
         "by": "INFRA-58b",
         "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/ticket-gate.test.mjs GS-9 -> packages/engine/test/stop-hook.test.mjs GS-9"
+      }
+    ]
+  },
+  "INFRA-16/M8": {
+    "kind": "patch",
+    "protects": "I11 TH-3 an excluded directory is left out of treeHashAt",
+    "file": "packages/engine/tree.mjs",
+    "find": "'--no-renames', base, commit]).filter((p) => !excluded(p));",
+    "replace": "'--no-renames', base, commit]);",
+    "test": "node --test --test-name-pattern='^TH-3 ' packages/engine/test/tree-hash.test.mjs",
+    "testFile": "packages/engine/test/tree-hash.test.mjs",
+    "testName": "TH-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/tree-hash.test.mjs TH-3 -> packages/engine/test/tree-hash.test.mjs TH-3"
+      }
+    ]
+  },
+  "INFRA-16/M9": {
+    "kind": "patch",
+    "protects": "I6 VH-2 ok false is not green",
+    "file": "packages/engine/ledger.mjs",
+    "find": "if (receipt?.ok !== true) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VH-2 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket.test.mjs VH-2 -> packages/engine/test/verify-run.test.mjs VH-2"
+      }
+    ]
+  },
+  "INFRA-16/M10": {
+    "kind": "patch",
+    "protects": "I6 VH-6 skipped result is not green",
+    "file": "packages/engine/ledger.mjs",
+    "find": "if (!(receipt.results ?? []).every((r) => VERIFIED_STATUSES.includes(r.status))) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VH-6 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket.test.mjs VH-6 -> packages/engine/test/verify-run.test.mjs VH-6"
+      }
+    ]
+  },
+  "INFRA-16/M11": {
+    "kind": "patch",
+    "protects": "I6 VH-3 oversize run is not recorded (R3)",
+    "file": "packages/engine/ledger.mjs",
+    "find": "if (receipt.oversize === true) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VH-3 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket.test.mjs VH-3 -> packages/engine/test/verify-run.test.mjs VH-3"
+      }
+    ]
+  },
+  "INFRA-16/M12": {
+    "kind": "patch",
+    "protects": "I7 VH-4 newest 50 kept",
+    "file": "packages/engine/ledger.mjs",
+    "find": "const kept = [...readHistory(historyPath), entry].slice(-HISTORY_MAX);",
+    "replace": "const kept = [...readHistory(historyPath), entry];",
+    "test": "node --test --test-name-pattern='^VH-4 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket.test.mjs VH-4 -> packages/engine/test/verify-run.test.mjs VH-4"
+      }
+    ]
+  },
+  "INFRA-16/M13": {
+    "kind": "patch",
+    "protects": "I8 VH-7 seed before the receipt overwrite",
+    "file": "packages/engine/cli.mjs",
+    "find": "seedHistory(HISTORY, RECEIPT);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VH-7 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/cli.mjs -> packages/engine/cli.mjs; test tools/verify-ticket.test.mjs VH-7 -> packages/engine/test/verify-run.test.mjs VH-7"
       }
     ]
   },
@@ -172,6 +348,22 @@
       {
         "by": "INFRA-58b",
         "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-e2e.test.mjs VE-10 -> packages/engine/test/e2e-ledger.test.mjs VE-10b"
+      }
+    ]
+  },
+  "INFRA-26a/M18": {
+    "kind": "patch",
+    "protects": "TH-R1 treeHash exclude option drops the prefix",
+    "file": "packages/engine/tree.mjs",
+    "find": "!exclude.some((x) => p.startsWith(x))",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^TH-R1 ' packages/engine/test/tree-hash.test.mjs",
+    "testFile": "packages/engine/test/tree-hash.test.mjs",
+    "testName": "TH-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/tree-hash.test.mjs TH-R1 -> packages/engine/test/tree-hash.test.mjs TH-R1"
       }
     ]
   },
