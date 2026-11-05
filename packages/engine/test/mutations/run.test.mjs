@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { after, test } from 'node:test';
 
 import { DEMO, demoSetup } from './__tests__/demo.fixture.mjs';
-import { exec } from '../../mutations/exec.mjs';
+import { exec, realIo } from '../../mutations/exec.mjs';
 import {
   exitCodeFor,
   interruptHandler,
@@ -253,13 +253,18 @@ test('SIGINT during a patched test restores the file', async () => {
 
 // The signal goes to the tool's pid only (no group): the child sits in its own
 // group and must be stopped by the tool, not by the terminal.
-async function pidAloneSignal(sig, expectedCode) {
+async function pidAloneSignal(
+  sig,
+  expectedCode,
+  body = 'trap "touch got-signal" TERM INT; touch started; sleep 30',
+  expectForwarded = body.includes('got-signal'),
+) {
   const dir = repo();
   writeFileSync(
     join(dir, 'm.json'),
     scratch([
       patch('M1', {
-        test: `if ! grep -qF "${FIND}" ${SRC}; then touch started; sleep 30; fi`,
+        test: `if ! grep -qF "${FIND}" ${SRC}; then ${body}; fi`,
       }),
     ]),
   );
@@ -298,6 +303,13 @@ async function pidAloneSignal(sig, expectedCode) {
   assert.ok(Date.now() - t0 < 10000);
   assert.equal(readFileSync(join(dir, SRC), 'utf8'), ORIGINAL);
   assert.ok(!existsSync(join(dir, '.turbo', 'mutation-check.json')));
+  // The grace KILL also ends a child that never saw the signal, so the exit
+  // time proves nothing: the child must have recorded the forwarded signal.
+  if (expectForwarded)
+    assert.ok(
+      existsSync(join(dir, 'got-signal')),
+      'the in-flight child never received the forwarded signal',
+    );
 }
 
 test('SIGTERM to the tool pid alone restores and exits 143', async () => {
@@ -306,6 +318,35 @@ test('SIGTERM to the tool pid alone restores and exits 143', async () => {
 
 test('SIGINT to the tool pid alone restores and exits 130', async () => {
   await pidAloneSignal('SIGINT', 130);
+});
+
+// A group member that lost the forwarded signal (forked, not yet exec'd) outlives
+// its leader and holds the pipes open; exec must settle on the leader's exit once
+// the run is interrupted, and sweep the survivor.
+test('exec settles when an interrupted leader exits leaving a pipe holder', async () => {
+  const state = {};
+  const seen = [];
+  realIo(undefined, state, async (sig) => seen.push(sig));
+  const marker = join(mkdtempSync(join(tmpdir(), 'exec-sweep-')), 'pid');
+  dirs.push(join(marker, '..'));
+  setTimeout(() => (state.interrupted = 'SIGINT'), 200);
+  const t0 = Date.now();
+  const r = await exec('bash', [
+    '-c',
+    `sleep 30 & echo $! > ${marker}; sleep 0.5`,
+  ]);
+  assert.ok(Date.now() - t0 < 5000, 'exec waited for the pipe holder');
+  assert.equal(r.code, 0);
+  assert.deepEqual(seen, ['SIGINT']);
+  const pid = Number(readFileSync(marker, 'utf8'));
+  await new Promise((res) => setTimeout(res, 200));
+  assert.throws(() => process.kill(pid, 0), 'the pipe holder survived');
+});
+
+// A child that swallows the forwarded signal is KILLed after the grace; the run
+// still restores and exits 130.
+test('a test command that ignores SIGINT is KILLed after the grace, exit 130', async () => {
+  await pidAloneSignal('SIGINT', 130, 'trap "" INT; touch started; sleep 30');
 });
 
 test('MC-18 interruptHandler maps SIGTERM to 143', async () => {

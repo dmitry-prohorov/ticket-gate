@@ -17,6 +17,7 @@ const USAGE = `usage: ticket-gate <command> [args]
   fu list|show|next|close|check [args]
   ratchet <name> [args]       run a configured ratchet (--update where it has one)
   mutate <ID> | --registry (--ids=|--all|--changed) [--dry-run --typecheck --digest --only --file --defer]
+                              | --rotate --ledger=<dir> [--budget-min= --batch= --deadline= --sha=]
                               prove a ticket's registry guards bite (needs mutations in gate.config.mjs)
   mutations check [--fix]     validate (and repair) the mutation registry
   mutations select [--affected --paths=]   list the registry entries a diff selects`;

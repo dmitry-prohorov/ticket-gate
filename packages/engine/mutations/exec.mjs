@@ -70,6 +70,16 @@ export function exec(file, args, { input, limitS, env } = {}) {
     c.stdout.on('data', (d) => (out += d));
     c.stderr.on('data', (d) => (out += d));
     c.on('error', (err) => done({ code: 1, out: String(err), signal: null }));
+    // The forwarded signal can be lost by a group member still starting up
+    // (forked, not yet exec'd), which then outlives its leader and holds the
+    // pipes open, so 'close' never fires. When the leader exits on an
+    // interrupt, KILL what is left of its group (orphans; the run exits right
+    // after, so a delayed KILL would never fire) and settle at once.
+    c.on('exit', (code, signal) => {
+      if (!signalCtx.state.interrupted) return;
+      safeKillGroup(c.pid, 'SIGKILL');
+      done({ code: code ?? 1, out, signal });
+    });
     c.on('close', (code, signal) => done({ code: code ?? 1, out, signal }));
     if (input !== undefined) {
       c.stdin.on('error', () => {});

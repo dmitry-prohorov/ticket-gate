@@ -1,11 +1,13 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 
+import { safeKillGroup } from '../kill-group.mjs';
 import { takeOrExit } from '../lock.mjs';
 import { ROOT } from '../root.mjs';
 import { baseRef, treeEntries, treeHash } from '../tree.mjs';
 import { inFlight, realIo } from './exec.mjs';
 import { projectSetup } from './project.mjs';
+import { rotateMain } from './rotate.mjs';
 import {
   addArea,
   compareKeys,
@@ -26,10 +28,13 @@ import {
 import { selectChanged, splitServed } from './select.mjs';
 import { validateSpec } from './validate.mjs';
 
+// How long a child gets to act on a forwarded signal before its group is KILLed.
+const SIGNAL_GRACE_MS = 5000;
+
 function usage(msg, setup = projectSetup()) {
   const cmd = setup.commands.mutate;
   console.error(
-    `${msg}\nusage: ${cmd} <ID> [--only=M1,M2] [--dry-run] [--file=PATH] [--digest] [--typecheck]\n       ${cmd} --registry (--ids=<ID>/<Mn>,... | --all | --changed[=<base>]) [--dry-run] [--typecheck]`,
+    `${msg}\nusage: ${cmd} <ID> [--only=M1,M2] [--dry-run] [--file=PATH] [--digest] [--typecheck]\n       ${cmd} --registry (--ids=<ID>/<Mn>,... | --all | --changed[=<base>]) [--dry-run] [--typecheck]\n       ${cmd} --rotate --ledger=<dir> [--budget-min=<n>] [--batch=<n>] [--deadline=<ISO>] [--sha=<sha>]`,
   );
   process.exit(2);
 }
@@ -148,6 +153,7 @@ function selectEntries(args, flag, setup) {
 async function main() {
   const setup = projectSetup();
   const args = process.argv.slice(2);
+  if (args.includes('--rotate')) return rotateMain(args, setup);
   const flag = (name) =>
     args.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
   const dry = args.includes('--dry-run');
@@ -258,6 +264,13 @@ async function main() {
       }
     }
     if (inFlight.size === 0) void onInterrupt(sig);
+    // A child can swallow the forwarded signal (a shell takes a SIGINT that lands
+    // while it forks and then waits on nothing). Give it the grace the time-limit
+    // path gives, then KILL its group; the child's exit settles the run.
+    else
+      setTimeout(() => {
+        for (const c of inFlight) safeKillGroup(c.pid, 'SIGKILL');
+      }, SIGNAL_GRACE_MS).unref();
   };
   process.on('SIGTERM', onSignal);
   process.on('SIGINT', onSignal);

@@ -7,7 +7,9 @@ import {
   schemaChanged,
 } from './sql-check.mjs';
 import { LIMITS, tail, verdict } from '#engine/mutations/verdict.mjs';
-import { sqlIo } from './sql-channel.mjs';
+import { PREFLIGHT, sqlIo } from './sql-channel.mjs';
+
+export { PREFLIGHT };
 
 /**
  * Parses an entry's `object`: `function <s>.<n>(<args>)`, `table <s>.<n>`,
@@ -402,3 +404,30 @@ export const sqlKind = {
 };
 
 export { finalReset, rerunWithReset, runOne };
+
+const SQL_OPTIONS = ['reset', 'preflight'];
+
+/**
+ * The sql kind with a project's own lean reset command and stack preflight; both default to
+ * the literals above. Only the session's io methods differ from `sqlKind`.
+ */
+export function sqlKindWith({ reset = LEAN_RESET, preflight = PREFLIGHT } = {}) {
+  return {
+    ...sqlKind,
+    session: {
+      ...sqlKind.session,
+      ioMethods: (h) => ({
+        resetDb: () => h.sh(reset, LIMITS.reset),
+        ...sqlIo(h, { preflight }),
+      }),
+    },
+  };
+}
+
+/** Validates `supabaseNext({ sql })` and returns the kind it selects. */
+export function sqlKindFrom(sql = {}) {
+  for (const k of Object.keys(sql))
+    if (!SQL_OPTIONS.includes(k))
+      throw new Error(`supabase-next: unknown sql option ${k}`);
+  return sqlKindWith(sql);
+}

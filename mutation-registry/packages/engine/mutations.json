@@ -1430,6 +1430,114 @@
       }
     ]
   },
+  "INFRA-28/M1": {
+    "kind": "patch",
+    "protects": "NM-4 a retired entry never runs and is not counted live",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "const live = entries.filter((e) => !e.retired);",
+    "replace": "const live = entries;",
+    "test": "node --test --test-name-pattern='^NM-4 ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "NM-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs"
+      }
+    ]
+  },
+  "INFRA-28/M2": {
+    "kind": "patch",
+    "protects": "NM-1 rotation order: never-run first, then oldest last attempt",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "const last = (k) => newest.get(k) ?? -Infinity;",
+    "replace": "const last = () => 0;",
+    "test": "node --test --test-name-pattern='^NM-1 ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "NM-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs"
+      }
+    ]
+  },
+  "INFRA-28/M3": {
+    "kind": "patch",
+    "protects": "NM-2a no batch starts once the budget is spent",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "const stopAt = hard ? Math.min(budgetEnd, deadlineMs) : budgetEnd;",
+    "replace": "const stopAt = deadlineMs;",
+    "test": "node --test --test-name-pattern='^NM-2a ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "NM-2a ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs"
+      },
+      {
+        "by": "INFRA-60",
+        "why": "quote style to the house style"
+      }
+    ]
+  },
+  "INFRA-28/M4": {
+    "kind": "patch",
+    "protects": "NM-2b the deadline stops the phase before the budget",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "const stopAt = hard ? Math.min(budgetEnd, deadlineMs) : budgetEnd;",
+    "replace": "const stopAt = budgetEnd;",
+    "test": "node --test --test-name-pattern='^NM-2b ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "NM-2b ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs"
+      },
+      {
+        "by": "INFRA-60",
+        "why": "quote style to the house style"
+      }
+    ]
+  },
+  "INFRA-28/M5": {
+    "kind": "patch",
+    "protects": "NM-3 a survivor is recorded with file, testFile and last kill",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "if (x.status === 'survived')\n        survivors.push(survivorOf(x.id, byKey, ledger));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^NM-3 ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "NM-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs; find widened to the two-line if statement (the formatter splits it)"
+      },
+      {
+        "by": "INFRA-60",
+        "why": "quote style to the house style"
+      }
+    ]
+  },
+  "INFRA-28/M6": {
+    "kind": "patch",
+    "protects": "NM-5 a malformed ledger line is skipped on read",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": ".flatMap(parseLedgerLine)",
+    "replace": ".map((l) => JSON.parse(l))",
+    "test": "node --test --test-name-pattern='^NM-5 ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "NM-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs"
+      }
+    ]
+  },
   "INFRA-30/M10": {
     "kind": "patch",
     "protects": "INFRA-30 s5 M-1a a patch that does not type check is error before any build",
@@ -1771,5 +1879,51 @@
     "test": "node --test --test-name-pattern='^MC-13a ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
     "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
     "testName": "MC-13a "
+  },
+  "INFRA-60/M1": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#RT-1 mutate --rotate is dispatched, runs the batches, appends the ledger and exits 1 on a survivor",
+    "file": "packages/engine/mutations/cli.mjs",
+    "find": "if (args.includes('--rotate')) return rotateMain(args, setup);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^RT-1 ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "RT-1 "
+  },
+  "INFRA-60/M2": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#RT-2 a rotation refuses while another owner holds the stack lock",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "takeOrExit('mutate:check');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^RT-2 ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "RT-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "quote style to the house style"
+      }
+    ]
+  },
+  "INFRA-60/M5": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#RT-4 a rotation with no hard deadline lets the batch in flight at the budget end finish",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "const hard = Number.isFinite(deadlineMs);",
+    "replace": "const hard = true;",
+    "test": "node --test --test-name-pattern='^RT-4 ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "RT-4 "
+  },
+  "INFRA-60/M6": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#RT-4b rotate flags give no deadline without --deadline and Date.parse of --deadline when given",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "    : undefined;\n  if (flags.has('deadline')",
+    "replace": "    : now + budgetMin * 60_000;\n  if (flags.has('deadline')",
+    "test": "node --test --test-name-pattern='^RT-4b ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "RT-4b "
   }
 }

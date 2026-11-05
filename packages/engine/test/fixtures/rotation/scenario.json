@@ -1,0 +1,209 @@
+{
+  "sha": "ffffffffffffffffffffffffffffffffffffffff",
+  "startMs": 1773104400000,
+  "deadlineMs": 1773122400000,
+  "budgetMs": 1200000,
+  "batch": 4,
+  "stepMs": 420000,
+  "entries": [
+    {
+      "key": "Alpha/M1",
+      "kind": "patch",
+      "file": "src/m1.mjs",
+      "testFile": "src/m1.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M2",
+      "kind": "patch",
+      "file": "src/m2.mjs",
+      "testFile": "src/m2.test.mjs"
+    },
+    {
+      "key": "Alpha/M3",
+      "kind": "patch",
+      "file": "src/m3.mjs",
+      "testFile": "src/m3.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M4",
+      "kind": "patch",
+      "file": "src/m4.mjs",
+      "testFile": "src/m4.test.mjs"
+    },
+    {
+      "key": "Alpha/M5",
+      "kind": "patch",
+      "file": "src/m5.mjs",
+      "testFile": "src/m5.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M6",
+      "kind": "patch",
+      "file": "src/m6.mjs",
+      "testFile": "src/m6.test.mjs"
+    },
+    {
+      "key": "Alpha/M7",
+      "kind": "patch",
+      "file": "src/m7.mjs",
+      "testFile": "src/m7.test.mjs",
+      "retired": true
+    },
+    {
+      "key": "Alpha-b/M8",
+      "kind": "patch",
+      "file": "src/m8.mjs",
+      "testFile": "src/m8.test.mjs"
+    },
+    {
+      "key": "Alpha/M9",
+      "kind": "patch",
+      "file": "src/m9.mjs",
+      "testFile": "src/m9.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M10",
+      "kind": "patch",
+      "file": "src/m10.mjs",
+      "testFile": "src/m10.test.mjs"
+    },
+    {
+      "key": "Alpha/M11",
+      "kind": "patch",
+      "file": "src/m11.mjs",
+      "testFile": "src/m11.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M12",
+      "kind": "unguarded"
+    },
+    {
+      "key": "Alpha/M13",
+      "kind": "patch",
+      "file": "src/m13.mjs",
+      "testFile": "src/m13.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M14",
+      "kind": "patch",
+      "file": "src/m14.mjs",
+      "testFile": "src/m14.test.mjs"
+    },
+    {
+      "key": "Alpha/M15",
+      "kind": "patch",
+      "file": "src/m15.mjs",
+      "testFile": "src/m15.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M16",
+      "kind": "patch",
+      "file": "src/m16.mjs",
+      "testFile": "src/m16.test.mjs"
+    },
+    {
+      "key": "Alpha/M17",
+      "kind": "patch",
+      "file": "src/m17.mjs",
+      "testFile": "src/m17.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M18",
+      "kind": "patch",
+      "file": "src/m18.mjs",
+      "testFile": "src/m18.test.mjs"
+    },
+    {
+      "key": "Alpha/M19",
+      "kind": "patch",
+      "file": "src/m19.mjs",
+      "testFile": "src/m19.test.mjs",
+      "retired": true
+    },
+    {
+      "key": "Alpha-b/M20",
+      "kind": "patch",
+      "file": "src/m20.mjs",
+      "testFile": "src/m20.test.mjs"
+    },
+    {
+      "key": "Alpha/M21",
+      "kind": "patch",
+      "file": "src/m21.mjs",
+      "testFile": "src/m21.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M22",
+      "kind": "patch",
+      "file": "src/m22.mjs",
+      "testFile": "src/m22.test.mjs"
+    },
+    {
+      "key": "Alpha/M23",
+      "kind": "patch",
+      "file": "src/m23.mjs",
+      "testFile": "src/m23.test.mjs"
+    },
+    {
+      "key": "Alpha-b/M24",
+      "kind": "patch",
+      "file": "src/m24.mjs",
+      "testFile": "src/m24.test.mjs"
+    },
+    {
+      "key": "Alpha/M25",
+      "kind": "patch",
+      "file": "src/m25.mjs",
+      "testFile": "src/m25.test.mjs"
+    }
+  ],
+  "seedLedger": [
+    "{\"key\":\"Alpha/M1\",\"sha\":\"1111111111111111111111111111111111111111\",\"status\":\"killed\",\"ranAt\":\"2026-03-01T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M1\",\"sha\":\"2222222222222222222222222222222222222222\",\"status\":\"killed\",\"ranAt\":\"2026-03-07T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M1\",\"sha\":\"3333333333333333333333333333333333333333\",\"status\":\"survived\",\"ranAt\":\"2026-03-09T01:00:00.000Z\"}",
+    "{not json",
+    "{\"key\":\"Alpha-b/M2\",\"sha\":\"x\",\"status\":\"killed\"}",
+    "{\"key\":\"Alpha/M3\",\"sha\":\"x\",\"status\":\"weird\",\"ranAt\":\"2026-03-09T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M3\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"error\",\"ranAt\":\"2026-03-08T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M3\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"error\",\"ranAt\":\"2026-03-05T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M5\",\"sha\":\"5555555555555555555555555555555555555555\",\"status\":\"killed\",\"ranAt\":\"2026-02-18T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M5\",\"sha\":\"6666666666666666666666666666666666666666\",\"status\":\"killed\",\"ranAt\":\"2026-02-18T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha-b/M4\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"survived\",\"ranAt\":\"2026-03-04T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha-b/M4\",\"sha\":\"4444444444444444444444444444444444444444\",\"status\":\"killed\",\"ranAt\":\"2026-03-02T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M13\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"killed\",\"ranAt\":\"2026-03-09T13:00:00.000Z\"}",
+    "{\"key\":\"Gone/M1\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"killed\",\"ranAt\":\"2026-02-08T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M9\",\"sha\":\"9999999999999999999999999999999999999999\",\"status\":\"killed\",\"ranAt\":\"2026-02-27T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M11\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"error\",\"ranAt\":\"2026-02-26T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha-b/M16\",\"sha\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"status\":\"killed\",\"ranAt\":\"2026-02-25T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha-b/M18\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"survived\",\"ranAt\":\"2026-02-24T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M15\",\"sha\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"killed\",\"ranAt\":\"2026-02-23T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M17\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"killed\",\"ranAt\":\"2026-02-22T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M21\",\"sha\":\"dddddddddddddddddddddddddddddddddddddddd\",\"status\":\"killed\",\"ranAt\":\"2026-02-21T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M23\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"killed\",\"ranAt\":\"2026-02-20T01:00:00.000Z\"}",
+    "{\"key\":\"Alpha/M25\",\"sha\":\"cccccccccccccccccccccccccccccccccccccccc\",\"status\":\"killed\",\"ranAt\":\"2026-02-19T01:00:00.000Z\"}",
+    ""
+  ],
+  "outcomes": {
+    "Alpha-b/M6": "survived",
+    "Alpha-b/M10": "error",
+    "Alpha-b/M14": "weird",
+    "Alpha/M21": "survived",
+    "Alpha/M5": "survived",
+    "Alpha/M25": "error"
+  },
+  "extras": [
+    [
+      {
+        "id": "Elsewhere/M1",
+        "status": "killed"
+      }
+    ],
+    [],
+    [
+      {
+        "id": "Alpha/M2",
+        "status": "killed"
+      }
+    ]
+  ]
+}
