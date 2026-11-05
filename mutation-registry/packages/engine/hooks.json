@@ -286,5 +286,117 @@
         "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GT-M3 -> packages/engine/test/stop-hook.test.mjs GT-M3"
       }
     ]
+  },
+  "INFRA-43/M1": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-2: a broken gate.config.mjs must deny pushes; without the guard.error branch pushDenial throws and the hook exits 1 (open)",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "if (guard.error) return failClosedDenial(command, guard.error);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^BG-FC-1a ' packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testName": "BG-FC-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/pre-tool-use.mjs -> packages/engine/hooks/pre-tool-use.mjs; test tools/block-git-push.fail-closed.test.mjs INFRA-43 BG-FC-1 -> packages/engine/test/push-guard-fail-closed.test.mjs BG-FC-1a"
+      }
+    ]
+  },
+  "INFRA-43/M2": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-2: a broken config denies gh pr, repo and api calls too",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "(?:pr|repo|api)",
+    "replace": "(?:never)",
+    "test": "node --test --test-name-pattern='^BG-FC-1b ' packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testName": "BG-FC-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/pre-tool-use.mjs -> packages/engine/hooks/pre-tool-use.mjs; test tools/block-git-push.fail-closed.test.mjs INFRA-43 BG-FC-1 -> packages/engine/test/push-guard-fail-closed.test.mjs BG-FC-1b"
+      }
+    ]
+  },
+  "INFRA-43/M3": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-2: the loader must not fall back to built-in main|master names under a broken config",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "return { error: String(err?.message ?? err) };",
+    "replace": "return { protected: /^(?:refs\\/heads\\/)?(?:main|master)$/ };",
+    "test": "node --test --test-name-pattern='^BG-FC-2 ' packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testName": "BG-FC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/pre-tool-use.mjs -> packages/engine/hooks/pre-tool-use.mjs; test tools/block-git-push.fail-closed.test.mjs INFRA-43 BG-FC-2 -> packages/engine/test/push-guard-fail-closed.test.mjs BG-FC-2"
+      }
+    ]
+  },
+  "INFRA-43/M4": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-4: protected names from the config are matched literally, not as regex",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "names.map(escapeRegExp)",
+    "replace": "names",
+    "test": "node --test --test-name-pattern='^BG-FC-3 ' packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testName": "BG-FC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/pre-tool-use.mjs -> packages/engine/hooks/pre-tool-use.mjs; test tools/block-git-push.fail-closed.test.mjs INFRA-43 BG-FC-3 -> packages/engine/test/push-guard-fail-closed.test.mjs BG-FC-3"
+      }
+    ]
+  },
+  "INFRA-43/M6": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-7: a broken config blocks a newly ticked box",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "failClosed(err);",
+    "replace": "approve();",
+    "test": "node --test --test-name-pattern='^TG-FC-1a ' packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testName": "TG-FC-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.fail-closed.test.mjs INFRA-43 TG-FC-1 -> packages/engine/test/stop-hook-fail-closed.test.mjs TG-FC-1a"
+      }
+    ]
+  },
+  "INFRA-43/M7": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-7: a broken config exits 2, not a silent pass",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "process.exit(2);",
+    "replace": "process.exit(0);",
+    "test": "node --test --test-name-pattern='^TG-FC-1b ' packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testName": "TG-FC-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.fail-closed.test.mjs INFRA-43 TG-FC-1 -> packages/engine/test/stop-hook-fail-closed.test.mjs TG-FC-1b"
+      }
+    ]
+  },
+  "INFRA-43/M9": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-10: a dod.files glob matching nothing fails closed",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (dodFiles.length === 0)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^TG-FC-3 ' packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testName": "TG-FC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.fail-closed.test.mjs INFRA-43 TG-FC-3 -> packages/engine/test/stop-hook-fail-closed.test.mjs TG-FC-3"
+      }
+    ]
   }
 }
