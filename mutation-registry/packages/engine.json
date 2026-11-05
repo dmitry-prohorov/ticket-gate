@@ -1848,5 +1848,15 @@
     "test": "node --test --test-name-pattern='^GS-4 ' packages/engine/test/score-config.test.mjs",
     "testFile": "packages/engine/test/score-config.test.mjs",
     "testName": "GS-4 "
+  },
+  "INFRA-62b/M14": {
+    "kind": "patch",
+    "protects": "5 GS-6 a packageDir with an empty segment ('lib/', 'a//b') throws",
+    "file": "packages/engine/score-config.mjs",
+    "find": "s === '' || s === '.'",
+    "replace": "s === '.'",
+    "test": "node --test --test-name-pattern='^GS-6 ' packages/engine/test/score-config.test.mjs",
+    "testFile": "packages/engine/test/score-config.test.mjs",
+    "testName": "GS-6 "
   }
 }

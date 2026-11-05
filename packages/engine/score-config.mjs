@@ -40,7 +40,8 @@ const isRel = (p) =>
   !p.startsWith('/') &&
   !/^[A-Za-z]:/.test(p) &&
   !segments(p).includes('..');
-const isSubDir = (p) => isRel(p) && p !== '.' && !segments(p).includes('.');
+const isSubDir = (p) =>
+  isRel(p) && p !== '.' && !segments(p).some((s) => s === '' || s === '.');
 const isOneSegment = (p) => isStr(p) && p !== '.' && p !== '..' && !/[\\/]/.test(p);
 
 /** Validates `score`; `fail(where, what)` throws. A key left out keeps its default (see `scoreOf`). */

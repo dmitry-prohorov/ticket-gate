@@ -78,7 +78,7 @@ test('GS-5 defaults are filled and given values kept; the gate\'s score is froze
 });
 
 test('GS-6 packageDir "", "/abs" and "../x"; a baseInstall without marker; a two-segment worktreeDir each throw', () => {
-  for (const packageDir of ['', '/abs', '../x', 'a/../b', undefined])
+  for (const packageDir of ['', '/abs', '../x', 'a/../b', 'lib/', 'a//b', undefined])
     throws(good({ packageDir }), /gate\.config: score\.packageDir/);
   const { marker: _drop, ...noMarker } = good().baseInstall;
   throws(good({ baseInstall: noMarker }), /gate\.config: score\.baseInstall/);

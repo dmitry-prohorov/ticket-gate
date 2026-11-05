@@ -68,7 +68,8 @@ function addedDisables(root, base, path, isNew) {
  * relative to the repo root (and to a base worktree).
  */
 export function stryker({ branchCmd, packageDir, config, reportPath }) {
-  const rel = (t) => t.slice(`${packageDir}/`.length);
+  const rel = (t) =>
+    packageDir === '.' ? t : t.slice(`${packageDir}/`.length);
   const forceArg = (force) => (force ? ['--force'] : []);
   return {
     name: 'stryker',
