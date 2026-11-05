@@ -1071,6 +1071,230 @@
       }
     ]
   },
+  "INFRA-40/M1": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-1a an unlisted module over 600 lines fails",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (!was && n > limitOf(path)) fresh.push(",
+    "replace": "if (false) fresh.push(",
+    "test": "node --test --test-name-pattern='^MZ-1a ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-1 -> packages/engine/test/module-size.test.mjs MZ-1a"
+      }
+    ]
+  },
+  "INFRA-40/M2": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-2 a baselined file that grew fails",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (was && n > was) grown.push(",
+    "replace": "if (false) grown.push(",
+    "test": "node --test --test-name-pattern='^MZ-2 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-2 -> packages/engine/test/module-size.test.mjs MZ-2"
+      }
+    ]
+  },
+  "INFRA-40/M3": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-3 a shrunk or untracked baseline entry prints a SHRUNK note",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (now === undefined || now < e.lines) shrunk.push(",
+    "replace": "if (false) shrunk.push(",
+    "test": "node --test --test-name-pattern='^MZ-3 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-3 -> packages/engine/test/module-size.test.mjs MZ-3"
+      }
+    ]
+  },
+  "INFRA-40/M5": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-1b physical line count, a 600-line module passes",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "- (text.endsWith('\\n') ? 1 : 0)",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MZ-1b ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-1 -> packages/engine/test/module-size.test.mjs MZ-1b"
+      }
+    ]
+  },
+  "INFRA-40/M6": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-6 only git-tracked files are measured (D11)",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "['ls-files', '-z', '--', ...roots]",
+    "replace": "['ls-files', '-z', '--cached', '--others', '--', ...roots]",
+    "test": "node --test --test-name-pattern='^MZ-6 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-6 -> packages/engine/test/module-size.test.mjs MZ-6"
+      }
+    ]
+  },
+  "INFRA-40/M7": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-7 --update refuses to raise a grown entry without allow",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (prev && n > prev.lines && !allow[path]) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^MZ-7 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-7 -> packages/engine/test/module-size.test.mjs MZ-7"
+      }
+    ]
+  },
+  "INFRA-40/M8": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-8 --update refuses a new entry without allow reason",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (!prev && !seed && !allow[path]) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^MZ-8 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-8 -> packages/engine/test/module-size.test.mjs MZ-8"
+      }
+    ]
+  },
+  "INFRA-40/M9": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 SR-3 a superpowers: or sf-skills: name fails closed until INFRA-49",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (ref.prefix) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SR-3 ' packages/engine/test/skill-refs.test.mjs",
+    "testFile": "packages/engine/test/skill-refs.test.mjs",
+    "testName": "SR-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-skill-refs.test.mjs SR-3 -> packages/engine/test/skill-refs.test.mjs SR-3"
+      }
+    ]
+  },
+  "INFRA-40/M10": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 SR-1 a .agents/skills/<name> path with no directory fails",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (ref.form === 'path') return isDir(join(root, ref.root, ref.name));",
+    "replace": "if (ref.form === 'path') return true;",
+    "test": "node --test --test-name-pattern='^SR-1 ' packages/engine/test/skill-refs.test.mjs",
+    "testFile": "packages/engine/test/skill-refs.test.mjs",
+    "testName": "SR-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-skill-refs.test.mjs SR-1 -> packages/engine/test/skill-refs.test.mjs SR-1"
+      }
+    ]
+  },
+  "INFRA-40/M11": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 SR-2 a skills: frontmatter name with no installed skill fails",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "return installed.has(ref.name);",
+    "replace": "return true;",
+    "test": "node --test --test-name-pattern='^SR-2 ' packages/engine/test/skill-refs.test.mjs",
+    "testFile": "packages/engine/test/skill-refs.test.mjs",
+    "testName": "SR-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-skill-refs.test.mjs SR-2 -> packages/engine/test/skill-refs.test.mjs SR-2"
+      }
+    ]
+  },
+  "INFRA-41/M3": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 MP-1 an added line with no removed twin is listed",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "if (left === 0) unmatched.push(a);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MP-1 ' packages/engine/test/move-proof.test.mjs",
+    "testFile": "packages/engine/test/move-proof.test.mjs",
+    "testName": "MP-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/move-proof.mjs -> packages/engine/move-proof.mjs; test tools/move-check.test.mjs MC-1 -> packages/engine/test/move-proof.test.mjs MP-1"
+      }
+    ]
+  },
+  "INFRA-41/M4": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 MP-4 each removed line matches one added line only",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "else pool.set(key, left - 1);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MP-4 ' packages/engine/test/move-proof.test.mjs",
+    "testFile": "packages/engine/test/move-proof.test.mjs",
+    "testName": "MP-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/move-proof.mjs -> packages/engine/move-proof.mjs; test tools/move-check.test.mjs MC-4 -> packages/engine/test/move-proof.test.mjs MP-4"
+      }
+    ]
+  },
+  "INFRA-41/M5": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 MP-3 only an import or re-export statement is exempt",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "const IMPORT_START = /^(?:import(?:\\s+|\\s*[{'\"*])|export\\s*(?:type\\s+)?[{*])/;",
+    "replace": "const IMPORT_START = /^(?:import|export)/;",
+    "test": "node --test --test-name-pattern='^MP-3 ' packages/engine/test/move-proof.test.mjs",
+    "testFile": "packages/engine/test/move-proof.test.mjs",
+    "testName": "MP-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/move-proof.mjs -> packages/engine/move-proof.mjs; test tools/move-check.test.mjs MC-3 -> packages/engine/test/move-proof.test.mjs MP-3"
+      }
+    ]
+  },
+  "INFRA-41/M6": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 MP-R1 the receipt carries moveProof for the stop hook",
+    "file": "packages/engine/receipt.mjs",
+    "find": "shadow,\n    moveProof,",
+    "replace": "shadow,",
+    "test": "node --test --test-name-pattern='^MP-R1 ' packages/engine/test/move-proof.test.mjs",
+    "testFile": "packages/engine/test/move-proof.test.mjs",
+    "testName": "MP-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/receipt.mjs -> packages/engine/receipt.mjs; test tools/move-check.test.mjs MC-R1 -> packages/engine/test/move-proof.test.mjs MP-R1"
+      }
+    ]
+  },
   "INFRA-44a/M1": {
     "kind": "patch",
     "protects": "INFRA-44a 5 EI-1 a path no deny-list names is an input of every step",
