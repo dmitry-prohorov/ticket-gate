@@ -687,6 +687,134 @@
       }
     ]
   },
+  "INFRA-22/M1": {
+    "kind": "patch",
+    "protects": "5 S-3 dead pid takeover",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (holder === null || alive(holder.pid)) return false;",
+    "replace": "return false;",
+    "test": "node --test --test-name-pattern='^S-3 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-3 -> packages/engine/test/stack-lock.test.mjs S-3"
+      }
+    ]
+  },
+  "INFRA-22/M2": {
+    "kind": "patch",
+    "protects": "5 S-2 atomic take",
+    "file": "packages/engine/lock.mjs",
+    "find": "mkdirSync(path);",
+    "replace": "mkdirSync(path, { recursive: true });",
+    "test": "node --test --test-name-pattern='^S-2 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-2 -> packages/engine/test/stack-lock.test.mjs S-2"
+      }
+    ]
+  },
+  "INFRA-22/M3": {
+    "kind": "patch",
+    "protects": "5 S-6 release only by the holder",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (onDisk?.id !== holder.id) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^S-6 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-6 -> packages/engine/test/stack-lock.test.mjs S-6"
+      }
+    ]
+  },
+  "INFRA-22/M4": {
+    "kind": "patch",
+    "protects": "5 S-4 release writes lastReleasedAt",
+    "file": "packages/engine/lock.mjs",
+    "find": "writeReleased(path, { owner: holder.owner, pid: holder.pid, stale: false, now });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^S-4 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-4 -> packages/engine/test/stack-lock.test.mjs S-4"
+      }
+    ]
+  },
+  "INFRA-22/M5": {
+    "kind": "patch",
+    "protects": "5 S-8 a holder's own runs pass the lock check",
+    "file": "packages/engine/lock.mjs",
+    "find": "=== holder.id) return null;",
+    "replace": "=== holder.id && false) return null;",
+    "test": "node --test --test-name-pattern='^S-8 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-8 -> packages/engine/test/stack-lock.test.mjs S-8; find shortened to keep the consumer variable name out of the public registry (NS-1)"
+      }
+    ]
+  },
+  "INFRA-22/M7": {
+    "kind": "patch",
+    "protects": "5 VK-1 refused acquire fails preflight",
+    "file": "packages/engine/run.mjs",
+    "find": "if (!got.ok) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^VK-1 ' packages/engine/test/verify-lock.test.mjs",
+    "testFile": "packages/engine/test/verify-lock.test.mjs",
+    "testName": "VK-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-lock.test.mjs VL-1 -> packages/engine/test/verify-lock.test.mjs VK-1"
+      }
+    ]
+  },
+  "INFRA-22/M8": {
+    "kind": "patch",
+    "protects": "5 VK-3 release on every path",
+    "file": "packages/engine/run.mjs",
+    "find": "lock?.release();",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VK-3 ' packages/engine/test/verify-lock.test.mjs",
+    "testFile": "packages/engine/test/verify-lock.test.mjs",
+    "testName": "VK-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-lock.test.mjs VL-3 -> packages/engine/test/verify-lock.test.mjs VK-3"
+      }
+    ]
+  },
+  "INFRA-22/M9": {
+    "kind": "patch",
+    "protects": "5 VK-4 the gate waits, not fails at once",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (now() - started >= waitS * 1000) return fail(holder);",
+    "replace": "return fail(holder);",
+    "test": "node --test --test-name-pattern='^VK-4 ' packages/engine/test/verify-lock.test.mjs",
+    "testFile": "packages/engine/test/verify-lock.test.mjs",
+    "testName": "VK-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/verify-ticket-lock.test.mjs VL-4 -> packages/engine/test/verify-lock.test.mjs VK-4"
+      }
+    ]
+  },
   "INFRA-23b/M9": {
     "kind": "patch",
     "protects": "VE-7a a unit digest covers its inputs and tooling paths",
