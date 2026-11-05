@@ -111,6 +111,70 @@
       }
     ]
   },
+  "INFRA-23b/M9": {
+    "kind": "patch",
+    "protects": "VE-7a a unit digest covers its inputs and tooling paths",
+    "file": "packages/engine/digest.mjs",
+    "find": "([p]) => inputs.includes(p) || (isToolPath(p) && !isDenied('e2e', p))",
+    "replace": "() => false",
+    "test": "node --test --test-name-pattern='^VE-7a ' packages/engine/test/e2e-ledger.test.mjs",
+    "testFile": "packages/engine/test/e2e-ledger.test.mjs",
+    "testName": "VE-7a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/verify-ticket-e2e.test.mjs VE-7 -> packages/engine/test/e2e-ledger.test.mjs VE-7a"
+      }
+    ]
+  },
+  "INFRA-23b/M11": {
+    "kind": "patch",
+    "protects": "VE-9 a full-only step is not reused from an affected or known-red e2e run",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (c.reuse.fullOnly && (o?.mode === 'affected' || (last?.mode ?? 'full') !== 'full' || (o?.knownRedCount ?? 0) > 0)) return 'run';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-9 ' packages/engine/test/e2e-ledger.test.mjs",
+    "testFile": "packages/engine/test/e2e-ledger.test.mjs",
+    "testName": "VE-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/verify-ticket-e2e.test.mjs VE-9 -> packages/engine/test/e2e-ledger.test.mjs VE-9"
+      }
+    ]
+  },
+  "INFRA-23b/M12": {
+    "kind": "patch",
+    "protects": "VE-10a the full-run median warns above the 20 min budget",
+    "file": "packages/engine/ledger.mjs",
+    "find": "const warn = median > FULL_MEDIAN_WARN_MS;",
+    "replace": "const warn = false;",
+    "test": "node --test --test-name-pattern='^VE-10a ' packages/engine/test/e2e-ledger.test.mjs",
+    "testFile": "packages/engine/test/e2e-ledger.test.mjs",
+    "testName": "VE-10a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-e2e.test.mjs VE-10 -> packages/engine/test/e2e-ledger.test.mjs VE-10a"
+      }
+    ]
+  },
+  "INFRA-23b/M18": {
+    "kind": "patch",
+    "protects": "VE-10b the median counts full runs only, a mode-less line as full",
+    "file": "packages/engine/ledger.mjs",
+    "find": "(l.mode ?? 'full') === 'full'",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^VE-10b ' packages/engine/test/e2e-ledger.test.mjs",
+    "testFile": "packages/engine/test/e2e-ledger.test.mjs",
+    "testName": "VE-10b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-e2e.test.mjs VE-10 -> packages/engine/test/e2e-ledger.test.mjs VE-10b"
+      }
+    ]
+  },
   "INFRA-27/M10": {
     "kind": "patch",
     "protects": "INFRA-27 s5 VT-MR1: a non-empty selection plans the mutation-registry step",
