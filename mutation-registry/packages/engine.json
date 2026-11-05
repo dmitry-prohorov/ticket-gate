@@ -255,6 +255,22 @@
       }
     ]
   },
+  "INFRA-18/M1": {
+    "kind": "patch",
+    "protects": "VT-P2 a red preflight stops the gate",
+    "file": "packages/engine/run.mjs",
+    "find": "if (step.id === 'preflight' && !ok) break;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-P2 ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-P2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs VT-P2 -> packages/engine/test/verify-stack.test.mjs VT-P2"
+      }
+    ]
+  },
   "INFRA-18/M2": {
     "kind": "patch",
     "protects": "G3 seed step before e2e",
@@ -271,6 +287,22 @@
       }
     ]
   },
+  "INFRA-18/M3": {
+    "kind": "patch",
+    "protects": "VT-T1a the watchdog enforces the wall-clock limit",
+    "file": "packages/engine/run.mjs",
+    "find": "( sleep \"$2\"; echo timeout",
+    "replace": "( sleep 600; echo timeout",
+    "test": "node --test --test-name-pattern='^VT-T1a ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-T1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs VT-T1 -> packages/engine/test/verify-stack.test.mjs VT-T1a"
+      }
+    ]
+  },
   "INFRA-18/M4": {
     "kind": "patch",
     "protects": "INFRA-18 G2 test VT-P1: the stack preflight runs when any selected step needs the local stack; without it a down stack fails mid-run",
@@ -284,6 +316,54 @@
       {
         "by": "INFRA-58b",
         "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-P1 -> packages/engine/test/plan-steps.test.mjs VT-P1"
+      }
+    ]
+  },
+  "INFRA-18/M6": {
+    "kind": "patch",
+    "protects": "VT-T4 --timeout accepts only a positive whole number of seconds",
+    "file": "packages/engine/cli.mjs",
+    "find": "if (!/^[1-9]\\d*$/.test(sec))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^VT-T4 ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-T4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/cli.mjs -> packages/engine/cli.mjs; test tools/verify-ticket-stack.test.mjs VT-T4 -> packages/engine/test/verify-stack.test.mjs VT-T4"
+      }
+    ]
+  },
+  "INFRA-18/M19": {
+    "kind": "patch",
+    "protects": "VT-R1 readiness runs after the db or seed step",
+    "file": "packages/engine/run.mjs",
+    "find": "if (ok && step.ready) {",
+    "replace": "if (false && step.ready) {",
+    "test": "node --test --test-name-pattern='^VT-R1 ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs VT-R1 -> packages/engine/test/verify-stack.test.mjs VT-R1"
+      }
+    ]
+  },
+  "INFRA-18/M20": {
+    "kind": "patch",
+    "protects": "VT-T1b the watchdog kills the whole process group",
+    "file": "packages/engine/run.mjs",
+    "find": "echo timeout > \"$4\"; kill -TERM -\"$child\" 2>/dev/null; sleep 5; kill -KILL -\"$child\"",
+    "replace": "echo timeout > \"$4\"; kill -TERM \"$child\" 2>/dev/null; sleep 5; kill -KILL \"$child\"",
+    "test": "node --test --test-name-pattern='^VT-T1b ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-T1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs VT-T1 -> packages/engine/test/verify-stack.test.mjs VT-T1b"
       }
     ]
   },
@@ -396,6 +476,118 @@
       {
         "by": "INFRA-58b",
         "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-MR5 -> packages/engine/test/plan-steps.test.mjs VT-MR5"
+      }
+    ]
+  },
+  "INFRA-30/M1": {
+    "kind": "patch",
+    "protects": "V-1a a red pre-stack step stops the stack steps",
+    "file": "packages/engine/run.mjs",
+    "find": "stoppedBy === null && preStack(step.id)) stoppedBy = step.id;",
+    "replace": "stoppedBy === null && preStack(step.id)) void step.id;",
+    "test": "node --test --test-name-pattern='^V-1a ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs V-1a -> packages/engine/test/verify-stack.test.mjs V-1a"
+      }
+    ]
+  },
+  "INFRA-30/M2": {
+    "kind": "patch",
+    "protects": "V-1b --keep-going runs every selected stack step",
+    "file": "packages/engine/run.mjs",
+    "find": "if (!ok && !keepGoing && stoppedBy",
+    "replace": "if (!ok && stoppedBy",
+    "test": "node --test --test-name-pattern='^V-1b ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs V-1b -> packages/engine/test/verify-stack.test.mjs V-1b"
+      }
+    ]
+  },
+  "INFRA-30/M3": {
+    "kind": "patch",
+    "protects": "V-1c a stopped step is recorded stopped, never skipped",
+    "file": "packages/engine/run.mjs",
+    "find": "status: 'stopped',",
+    "replace": "status: 'skipped',",
+    "test": "node --test --test-name-pattern='^V-1c ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1c ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs V-1a -> packages/engine/test/verify-stack.test.mjs V-1c"
+      }
+    ]
+  },
+  "INFRA-30/M4": {
+    "kind": "patch",
+    "protects": "V-1e only a red step before seed stops the stack steps",
+    "file": "packages/engine/run.mjs",
+    "find": "const preStack = (id) => stopsOf(GATE).some((s) => STEP_IDS.indexOf(id) < STEP_IDS.indexOf(s));",
+    "replace": "const preStack = () => true;",
+    "test": "node --test --test-name-pattern='^V-1e ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1e ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs V-1e -> packages/engine/test/verify-stack.test.mjs V-1e"
+      }
+    ]
+  },
+  "INFRA-30/M5": {
+    "kind": "patch",
+    "protects": "V-2 --precheck exits before any gate state is written",
+    "file": "packages/engine/cli.mjs",
+    "find": "if (args.includes('--precheck')) process.exit(await runPrecheck({ base: baseSha }));",
+    "replace": "if (args.includes('--precheck')) await runPrecheck({ base: baseSha });",
+    "test": "node --test --test-name-pattern='^V-2 ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/cli.mjs -> packages/engine/cli.mjs; test tools/verify-ticket-stack.test.mjs V-2 -> packages/engine/test/verify-stack.test.mjs V-2"
+      }
+    ]
+  },
+  "INFRA-30/M7": {
+    "kind": "patch",
+    "protects": "V-3b a failed precheck exits non-zero",
+    "file": "packages/engine/precheck.mjs",
+    "find": "return failed.length > 0 ? 1 : 0;",
+    "replace": "return 0;",
+    "test": "node --test --test-name-pattern='^V-3b ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-3b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/precheck.mjs -> packages/engine/precheck.mjs; test tools/verify-ticket-stack.test.mjs V-3b -> packages/engine/test/verify-stack.test.mjs V-3b"
+      }
+    ]
+  },
+  "INFRA-30/M9": {
+    "kind": "patch",
+    "protects": "V-1d the failures file first line names the early stop",
+    "file": "packages/engine/failures.mjs",
+    "find": "`# verify:ticket failures - stopped before the stack steps: ${stoppedBy} red`",
+    "replace": "'# verify:ticket failures'",
+    "test": "node --test --test-name-pattern='^V-1d ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1d ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/failures.mjs -> packages/engine/failures.mjs; test tools/verify-ticket-stack.test.mjs V-1d -> packages/engine/test/verify-stack.test.mjs V-1d"
       }
     ]
   },
