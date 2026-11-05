@@ -31,6 +31,86 @@
       }
     ]
   },
+  "INFRA-15/M1": {
+    "kind": "patch",
+    "protects": "3 I2 RM-MR-3 tagged dollar-quote matched by tag",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "const DOLLAR_TAG = /\\$([A-Za-z_][A-Za-z_0-9]*)?\\$/y;",
+    "replace": "const DOLLAR_TAG = /\\$\\$/y;",
+    "test": "node --test --test-name-pattern='^RM-MR-3 ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-3 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-3"
+      }
+    ]
+  },
+  "INFRA-15/M2": {
+    "kind": "patch",
+    "protects": "3 I2 RM-MR-7 function start is case-insensitive",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "const FUNCTION_START = /create\\s+(?:or\\s+replace\\s+)?function\\b/iy;",
+    "replace": "const FUNCTION_START = /create\\s+(?:or\\s+replace\\s+)?function\\b/y;",
+    "test": "node --test --test-name-pattern='^RM-MR-7 ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-7 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-7"
+      }
+    ]
+  },
+  "INFRA-15/M3": {
+    "kind": "patch",
+    "protects": "3 I3 RM-MR-6 unparseable file reads whole",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "if (spans === null) return null;",
+    "replace": "if (spans === null) return [];",
+    "test": "node --test --test-name-pattern='^RM-MR-6 ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-6 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-6"
+      }
+    ]
+  },
+  "INFRA-15/M4": {
+    "kind": "patch",
+    "protects": "3 I3 RM-MR-5a no function reads whole",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "if (spans.length === 0) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^RM-MR-5a ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-5a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-5 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-5a"
+      }
+    ]
+  },
+  "INFRA-15/M5": {
+    "kind": "patch",
+    "protects": "3 I3 RM-MR-5b empty ranges read whole (R4)",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "if (ranges.length === 0) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^RM-MR-5b ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-5b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-5 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-5b"
+      }
+    ]
+  },
   "INFRA-23b/M1": {
     "kind": "patch",
     "protects": "5 VE-1a G1 core src arm",

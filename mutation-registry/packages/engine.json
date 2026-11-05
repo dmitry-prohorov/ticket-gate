@@ -1,4 +1,52 @@
 {
+  "FU154/M1": {
+    "kind": "patch",
+    "protects": "5 FV-13 a green run deletes a stale failures file (R2)",
+    "file": "packages/engine/failures.mjs",
+    "find": "rmSync(path, { force: true });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^FV-13 ' packages/engine/test/failures.test.mjs",
+    "testFile": "packages/engine/test/failures.test.mjs",
+    "testName": "FV-13 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/failures.mjs -> packages/engine/failures.mjs; test tools/verify-failures.test.mjs FV-13 -> packages/engine/test/failures.test.mjs FV-13"
+      }
+    ]
+  },
+  "FU154/M2": {
+    "kind": "patch",
+    "protects": "5 FV-12 at most MAX_ENTRIES entries per step (R6)",
+    "file": "packages/engine/failures.mjs",
+    "find": "const shown = entries.slice(0, MAX_ENTRIES);",
+    "replace": "const shown = entries;",
+    "test": "node --test --test-name-pattern='^FV-12 ' packages/engine/test/failures.test.mjs",
+    "testFile": "packages/engine/test/failures.test.mjs",
+    "testName": "FV-12 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/failures.mjs -> packages/engine/failures.mjs; test tools/verify-failures.test.mjs FV-12 -> packages/engine/test/failures.test.mjs FV-12"
+      }
+    ]
+  },
+  "FU154/M3": {
+    "kind": "patch",
+    "protects": "5 FV-10 an unrecognised failure falls back to the output tail (R6)",
+    "file": "packages/engine/failures.mjs",
+    "find": "if (entries.length === 0) entries.push(tailEntry(f.out));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^FV-10 ' packages/engine/test/failures.test.mjs",
+    "testFile": "packages/engine/test/failures.test.mjs",
+    "testName": "FV-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/failures.mjs -> packages/engine/failures.mjs; test tools/verify-failures.test.mjs FV-10 -> packages/engine/test/failures.test.mjs FV-10"
+      }
+    ]
+  },
   "INFRA-16/M7": {
     "kind": "patch",
     "protects": "3 I9 GS-9 corrupt history line skipped",
