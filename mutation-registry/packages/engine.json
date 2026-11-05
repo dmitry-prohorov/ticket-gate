@@ -367,6 +367,166 @@
       }
     ]
   },
+  "INFRA-19/M3": {
+    "kind": "patch",
+    "protects": "G1 reuse only on a pass",
+    "file": "packages/engine/plan.mjs",
+    "find": "last?.status === 'pass'",
+    "replace": "last !== undefined",
+    "test": "node --test --test-name-pattern='^VR-2a ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VR-2a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/verify-ticket-reuse.test.mjs VR-2 -> packages/engine/test/step-reuse.test.mjs VR-2a"
+      }
+    ]
+  },
+  "INFRA-19/M4": {
+    "kind": "patch",
+    "protects": "G1 newest ledger line rules",
+    "file": "packages/engine/ledger.mjs",
+    "find": "ledger.findLast(",
+    "replace": "ledger.find(",
+    "test": "node --test --test-name-pattern='^VR-2b ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VR-2b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-reuse.test.mjs VR-2 -> packages/engine/test/step-reuse.test.mjs VR-2b"
+      }
+    ]
+  },
+  "INFRA-19/M5": {
+    "kind": "patch",
+    "protects": "G9 --fresh reuses nothing",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (digestOf && c.reuse && !fresh) {",
+    "replace": "if (digestOf && c.reuse) {",
+    "test": "node --test --test-name-pattern='^VR-5 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VR-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/verify-ticket-reuse.test.mjs VR-5 -> packages/engine/test/step-reuse.test.mjs VR-5"
+      }
+    ]
+  },
+  "INFRA-19/M6": {
+    "kind": "patch",
+    "protects": "G3 tools/ never denied",
+    "file": "packages/engine/digest.mjs",
+    "find": "if (isToolPath(path)) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SI-8 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-8 -> packages/engine/test/step-inputs.test.mjs SI-8"
+      }
+    ]
+  },
+  "INFRA-19/M7": {
+    "kind": "patch",
+    "protects": "G2 env files hashed",
+    "file": "packages/engine/digest.mjs",
+    "find": "basename(p).startsWith('.env')",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^SI-6 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-6 -> packages/engine/test/step-inputs.test.mjs SI-6"
+      }
+    ]
+  },
+  "INFRA-19/M8": {
+    "kind": "patch",
+    "protects": "INFRA-19 G14 test VG-1: the step ledger keeps only the last LEDGER_MAX records; without the cap it grows unbounded",
+    "file": "packages/engine/ledger.mjs",
+    "find": ".slice(-LEDGER_MAX)",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VG-1 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VG-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-reuse.test.mjs VL-1 -> packages/engine/test/step-reuse.test.mjs VG-1"
+      }
+    ]
+  },
+  "INFRA-19/M9": {
+    "kind": "patch",
+    "protects": "INFRA-19 G6 test VR-7: receiptOk accepts only the VERIFIED_STATUSES allow-list; without it an unknown status counts as verified",
+    "file": "packages/engine/receipt.mjs",
+    "find": "return results.every((r) => VERIFIED_STATUSES.includes(r.status));",
+    "replace": "return !results.some((r) => r.status === 'fail' || r.status === 'skipped');",
+    "test": "node --test --test-name-pattern='^VR-7 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VR-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/receipt.mjs -> packages/engine/receipt.mjs; test tools/verify-ticket-reuse.test.mjs VR-7 -> packages/engine/test/step-reuse.test.mjs VR-7"
+      }
+    ]
+  },
+  "INFRA-19/M10": {
+    "kind": "patch",
+    "protects": "INFRA-19 G12 test VG-3: failed steps are ledgered as well as passes; without it a fail leaves no record to reuse or diagnose",
+    "file": "packages/engine/ledger.mjs",
+    "find": "(r.status === 'pass' || r.status === 'fail')",
+    "replace": "(r.status === 'pass')",
+    "test": "node --test --test-name-pattern='^VG-3 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VG-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-reuse.test.mjs VL-3 -> packages/engine/test/step-reuse.test.mjs VG-3"
+      }
+    ]
+  },
+  "INFRA-19/M11": {
+    "kind": "patch",
+    "protects": "G13 post-run digest check",
+    "file": "packages/engine/ledger.mjs",
+    "find": "digestNow(r.id, r.cmd) === r.digest",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^VG-4 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VG-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-reuse.test.mjs VL-4 -> packages/engine/test/step-reuse.test.mjs VG-4"
+      }
+    ]
+  },
+  "INFRA-19/M12": {
+    "kind": "patch",
+    "protects": "INFRA-19 G2 test SI-7: the deny-list is applied when computing step inputs; without it denied paths enter the digest and break reuse",
+    "file": "packages/engine/digest.mjs",
+    "find": ".filter(([p]) => !isDenied(id, p))",
+    "replace": ".filter(() => true)",
+    "test": "node --test --test-name-pattern='^SI-7 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-7 -> packages/engine/test/step-inputs.test.mjs SI-7"
+      }
+    ]
+  },
   "INFRA-23b/M9": {
     "kind": "patch",
     "protects": "VE-7a a unit digest covers its inputs and tooling paths",
@@ -431,6 +591,22 @@
       }
     ]
   },
+  "INFRA-26a/M17": {
+    "kind": "patch",
+    "protects": "SI-R1 registry paths feed only the mutation-registry step",
+    "file": "packages/engine/digest.mjs",
+    "find": "if (path.startsWith(prefix)) return !steps.includes(id);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SI-R1 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-R1 -> packages/engine/test/step-inputs.test.mjs SI-R1"
+      }
+    ]
+  },
   "INFRA-26a/M18": {
     "kind": "patch",
     "protects": "TH-R1 treeHash exclude option drops the prefix",
@@ -476,6 +652,22 @@
       {
         "by": "INFRA-58b",
         "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-MR5 -> packages/engine/test/plan-steps.test.mjs VT-MR5"
+      }
+    ]
+  },
+  "INFRA-27/M16": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 SI-MR1 R7: e2e spec digests ignore registry data",
+    "file": "packages/engine/digest.mjs",
+    "find": "inputs.includes(p) || (isToolPath(p) && !isDenied('e2e', p))",
+    "replace": "inputs.includes(p) || isToolPath(p)",
+    "test": "node --test --test-name-pattern='^SI-MR1 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-MR1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-MR1 -> packages/engine/test/step-inputs.test.mjs SI-MR1"
       }
     ]
   },
