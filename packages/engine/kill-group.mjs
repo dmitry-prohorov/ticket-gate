@@ -1,6 +1,6 @@
-// Process-group kill helpers shared by stack-preflight.mjs and mutate-check.mjs. A leaf
-// module: stack-preflight.mjs reads gate.config.mjs at load, so mutate-check.mjs (which
-// gate.config.mjs hands to the pack) must not import it.
+// Process-group kill helpers: signal a spawned child's whole group, not only the child. A leaf
+// module with no imports of its own, so any script that spawns a stack, a test run or a server
+// can share it without pulling in a config or another script.
 export const killGroup = (pid, sig) => process.kill(-pid, sig);
 
 /** killGroup that ignores ESRCH: the group may already be gone. */

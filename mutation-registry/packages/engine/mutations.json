@@ -1741,5 +1741,15 @@
     "test": "node --test --test-name-pattern='^PS-1 ' packages/engine/test/mutations/project.test.mjs",
     "testFile": "packages/engine/test/mutations/project.test.mjs",
     "testName": "PS-1 "
+  },
+  "INFRA-58a/M15": {
+    "kind": "patch",
+    "protects": "5 MC-13a a restore on a patch mutation is rejected: restore is for sql only",
+    "file": "packages/engine/mutations/validate.mjs",
+    "find": "errors.push(`${at}: \"restore\" is only for sql mutations`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MC-13a ' packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/sql-kind.test.mjs",
+    "testName": "MC-13a "
   }
 }

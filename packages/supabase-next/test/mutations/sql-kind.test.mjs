@@ -298,6 +298,14 @@ test('MC-12 an uncovered apply resets without a snapshot', async () => {
   assert.equal(w.log.filter((l) => l === 'snapshot').length, 1); // baseline only
 });
 
+test('MC-13a restore is validated: sql only, a non-empty string', () => {
+  const one = (m) => validateSpec({ mutations: [m] }, () => ORIGINAL);
+  assert.equal(one({ ...sql('M1'), restore: '' }).length, 1);
+  assert.equal(one({ ...sql('M1'), restore: 1 }).length, 1);
+  assert.match(one({ ...patch('M1'), restore: 'select 1' })[0], /only for sql/);
+  assert.deepEqual(one({ ...sql('M1'), restore: 'select 1;' }), []);
+});
+
 test('MC-14 summaryLine is unchanged without a re-run', () => {
   const results = [
     { id: 'M1', status: 'killed' },

@@ -340,6 +340,40 @@ test('MS-7 cron, enum and appeared-table handling', () => {
   );
 });
 
+test('MS-8a uncoveredStatement matches each R9 shape and ignores the shapes the digest covers', () => {
+  const hits = {
+    'alter table t alter column c drop not null': 'alter column',
+    'alter table t add column c int': 'add column',
+    'alter table t drop column c': 'drop column',
+    "create type x as enum ('a')": 'create type',
+    'alter domain d set default 1': 'alter domain',
+    'create or replace view v as select 1': 'create or replace view',
+    'create materialized view v as select 1': 'create materialized view',
+    'drop sequence s': 'drop sequence',
+    'create schema s': 'create schema',
+    'drop extension e': 'drop extension',
+    'create rule r as on insert to t do nothing': 'create rule',
+    'drop table t': 'drop table',
+    "comment on table t is 'x'": 'comment on',
+    'alter table t rename to u': 'rename to',
+    'alter table t rename column a to b': 'rename column',
+    'alter table t alter a set not null': 'set not null',
+    'alter table t alter a set default 1': 'set default',
+    'alter table t owner to bob': 'owner to',
+    "security label for x on table t is 'y'": 'security label',
+    'alter default privileges in schema public grant select on tables to anon':
+      'default privileges',
+  };
+  for (const [sql, m] of Object.entries(hits))
+    assert.equal(uncoveredStatement(sql), m, sql);
+  assert.equal(
+    uncoveredStatement(
+      'drop trigger t on public.x; alter table t drop constraint c; create policy p on t using (true)',
+    ),
+    null,
+  );
+});
+
 test('MS-9 dbContainer reads the first uncommented project_id', () => {
   const toml = `# project_id = "x"\n  project_id = "demo-project"\n# project_id = "y"\n`;
   assert.equal(dbContainer(toml), 'supabase_db_demo-project');

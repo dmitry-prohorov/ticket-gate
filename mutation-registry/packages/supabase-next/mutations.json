@@ -606,5 +606,15 @@
         "why": "export: tools/mutations/supabase-next/next-typecheck.mjs -> packages/supabase-next/mutations/next-typecheck.mjs; test tools/mutations/supabase-next/next-typecheck.test.mjs -> packages/supabase-next/test/mutations/next-typecheck.test.mjs"
       }
     ]
+  },
+  "INFRA-58a/M16": {
+    "kind": "patch",
+    "protects": "5 MS-8a uncoveredStatement flags a drop or create table, which the digest cannot restore",
+    "file": "packages/supabase-next/mutations/snapshot.mjs",
+    "find": "extension|rule|table)|comment",
+    "replace": "extension|rule)|comment",
+    "test": "node --test --test-name-pattern='^MS-8a ' packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testFile": "packages/supabase-next/test/mutations/snapshot.test.mjs",
+    "testName": "MS-8a "
   }
 }
