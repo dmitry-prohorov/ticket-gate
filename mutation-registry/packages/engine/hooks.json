@@ -1,0 +1,418 @@
+{
+  "INFRA-10/M11": {
+    "kind": "patch",
+    "protects": "5 GT-1 oversize receipt blocks a DoD tick",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (receipt.oversize === true) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^GT-1 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GT-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GT-1 -> packages/engine/test/stop-hook.test.mjs GT-1"
+      }
+    ]
+  },
+  "INFRA-16/M1": {
+    "kind": "patch",
+    "protects": "3 I2/I3 GS-1 all-settled ticks approve",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (unsettled.length === 0) approve();",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GS-1 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-1 -> packages/engine/test/stop-hook.test.mjs GS-1"
+      }
+    ]
+  },
+  "INFRA-16/M2": {
+    "kind": "patch",
+    "protects": "3 I2 GS-3 settled only on history membership",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "return !hashes.has(hashAt.get(commit));",
+    "replace": "return false;",
+    "test": "node --test --test-name-pattern='^GS-3 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-3 -> packages/engine/test/stop-hook.test.mjs GS-3"
+      }
+    ]
+  },
+  "INFRA-16/M4": {
+    "kind": "patch",
+    "protects": "3 I4 GS-8 human check over every tick",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const humanOnly = ticks.filter((t) => HUMAN.test(t.text));",
+    "replace": "const humanOnly = [];",
+    "test": "node --test --test-name-pattern='^GS-8 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-8 -> packages/engine/test/stop-hook.test.mjs GS-8"
+      }
+    ]
+  },
+  "INFRA-16/M5": {
+    "kind": "patch",
+    "protects": "3 I5 GS-6 FU check sees only unsettled ids",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const tickedTickets = new Set(unsettled.filter((t) => t.id).map((t) => t.id));",
+    "replace": "const tickedTickets = new Set(ticks.filter((t) => t.id).map((t) => t.id));",
+    "test": "node --test --test-name-pattern='^GS-6 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-6 -> packages/engine/test/stop-hook.test.mjs GS-6"
+      }
+    ]
+  },
+  "INFRA-16/M6": {
+    "kind": "patch",
+    "protects": "3 I5 GS-7 headless state from unsettled only",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const headlessTick = unsettled.some((t) => !t.id);",
+    "replace": "const headlessTick = ticks.some((t) => !t.id);",
+    "test": "node --test --test-name-pattern='^GS-7 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GS-7 -> packages/engine/test/stop-hook.test.mjs GS-7"
+      }
+    ]
+  },
+  "INFRA-19/M1": {
+    "kind": "patch",
+    "protects": "G4 allow-list in ticket-gate",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "!VERIFIED_STATUSES.includes(r.status)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GR-3 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GR-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GR-3 -> packages/engine/test/stop-hook.test.mjs GR-3"
+      }
+    ]
+  },
+  "INFRA-19/M2": {
+    "kind": "patch",
+    "protects": "G5 reused digest re-check",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "stepDigest(r.id, r.cmd, { base: receipt.base }) === r.digest",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^GR-2 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GR-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GR-2 -> packages/engine/test/stop-hook.test.mjs GR-2"
+      }
+    ]
+  },
+  "INFRA-20/M11": {
+    "kind": "patch",
+    "protects": "R11 gate: missing FU file blocks",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (text === null) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^FG-3 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "FG-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs FG-3 -> packages/engine/test/stop-hook-e2e-fu.test.mjs FG-3"
+      }
+    ]
+  },
+  "INFRA-20/M12": {
+    "kind": "patch",
+    "protects": "R12 gate: closes needs status done",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (status !== 'done')",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^FG-2 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "FG-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs FG-2 -> packages/engine/test/stop-hook-e2e-fu.test.mjs FG-2"
+      }
+    ]
+  },
+  "INFRA-20/M13": {
+    "kind": "patch",
+    "protects": "R13 gate: PARTIAL note required",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": ".test(toRow(text))",
+    "replace": ".test('PARTIAL: ' + id)",
+    "test": "node --test --test-name-pattern='^FG-5 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "FG-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs FG-5 -> packages/engine/test/stop-hook-e2e-fu.test.mjs FG-5"
+      }
+    ]
+  },
+  "INFRA-23b/M13": {
+    "kind": "patch",
+    "protects": "5 GE-2 reused spec digest recomputed (F3)",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "specDigest(s.file, s.inputs, { state }) === s.digest;",
+    "replace": "true;",
+    "test": "node --test --test-name-pattern='^GE-2 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "GE-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GE-2 -> packages/engine/test/stop-hook-e2e-fu.test.mjs GE-2"
+      }
+    ]
+  },
+  "INFRA-23b/M14": {
+    "kind": "patch",
+    "protects": "5 GE-3 knownRed inside the selection blocks (G5)",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const inside = (r.knownRed ?? []).filter((f) =>\n    (r.selected ?? []).includes(f),\n  );",
+    "replace": "const inside = [];",
+    "test": "node --test --test-name-pattern='^GE-3 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "GE-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GE-3 -> packages/engine/test/stop-hook-e2e-fu.test.mjs GE-3"
+      }
+    ]
+  },
+  "INFRA-23b/M15": {
+    "kind": "patch",
+    "protects": "5 GE-4 a receipt without mode is full (F4)",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const mode = r.mode ?? 'full';",
+    "replace": "const mode = r.mode ?? 'affected';",
+    "test": "node --test --test-name-pattern='^GE-4 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "GE-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GE-4 -> packages/engine/test/stop-hook-e2e-fu.test.mjs GE-4"
+      }
+    ]
+  },
+  "INFRA-23b/M16": {
+    "kind": "patch",
+    "protects": "5 GE-5 affected needs a fresh green/amber nightly (G3, D4)",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "!AFFECTED_NIGHTLY.includes(r.nightly?.status) ||\n      !(\n        Date.parse(r.nightly?.checkedAt) - Date.parse(r.nightly?.ranAt) <=\n        NIGHTLY_MAX_AGE_MS\n      )",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GE-5 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "GE-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GE-5 -> packages/engine/test/stop-hook-e2e-fu.test.mjs GE-5"
+      }
+    ]
+  },
+  "INFRA-23b/M17": {
+    "kind": "patch",
+    "protects": "5 GE-6 every selected spec passed or reused (G3)",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const uncovered = (r.selected ?? []).filter(\n      (f) =>\n        !specs.some(\n          (s) => s.file === f && ['pass', 'reused'].includes(s.status),\n        ),\n    );",
+    "replace": "const uncovered = [];",
+    "test": "node --test --test-name-pattern='^GE-6 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "GE-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GE-6 -> packages/engine/test/stop-hook-e2e-fu.test.mjs GE-6"
+      }
+    ]
+  },
+  "INFRA-41/M1": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 GT-M2 a move-only waiver needs zero unmatched lines",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "return receipt.moveProof?.unmatched === 0;",
+    "replace": "return true;",
+    "test": "node --test --test-name-pattern='^GT-M2 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GT-M2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GT-M2 -> packages/engine/test/stop-hook.test.mjs GT-M2"
+      }
+    ]
+  },
+  "INFRA-41/M2": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 GT-M3 a move-only reason is recognised by its prefix",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const MOVE_ONLY = /^move-only/;",
+    "replace": "const MOVE_ONLY = /^$/;",
+    "test": "node --test --test-name-pattern='^GT-M3 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GT-M3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.test.mjs GT-M3 -> packages/engine/test/stop-hook.test.mjs GT-M3"
+      }
+    ]
+  },
+  "INFRA-43/M1": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-2: a broken gate.config.mjs must deny pushes; without the guard.error branch pushDenial throws and the hook exits 1 (open)",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "if (guard.error) return failClosedDenial(command, guard.error);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^BG-FC-1a ' packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testName": "BG-FC-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/pre-tool-use.mjs -> packages/engine/hooks/pre-tool-use.mjs; test tools/block-git-push.fail-closed.test.mjs INFRA-43 BG-FC-1 -> packages/engine/test/push-guard-fail-closed.test.mjs BG-FC-1a"
+      }
+    ]
+  },
+  "INFRA-43/M2": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-2: a broken config denies gh pr, repo and api calls too",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "(?:pr|repo|api)",
+    "replace": "(?:never)",
+    "test": "node --test --test-name-pattern='^BG-FC-1b ' packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testName": "BG-FC-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/pre-tool-use.mjs -> packages/engine/hooks/pre-tool-use.mjs; test tools/block-git-push.fail-closed.test.mjs INFRA-43 BG-FC-1 -> packages/engine/test/push-guard-fail-closed.test.mjs BG-FC-1b"
+      }
+    ]
+  },
+  "INFRA-43/M3": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-2: the loader must not fall back to built-in main|master names under a broken config",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "return { error: String(err?.message ?? err) };",
+    "replace": "return { protected: /^(?:refs\\/heads\\/)?(?:main|master)$/ };",
+    "test": "node --test --test-name-pattern='^BG-FC-2 ' packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testName": "BG-FC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/pre-tool-use.mjs -> packages/engine/hooks/pre-tool-use.mjs; test tools/block-git-push.fail-closed.test.mjs INFRA-43 BG-FC-2 -> packages/engine/test/push-guard-fail-closed.test.mjs BG-FC-2"
+      }
+    ]
+  },
+  "INFRA-43/M4": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-4: protected names from the config are matched literally, not as regex",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "names.map(escapeRegExp)",
+    "replace": "names",
+    "test": "node --test --test-name-pattern='^BG-FC-3 ' packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/push-guard-fail-closed.test.mjs",
+    "testName": "BG-FC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/pre-tool-use.mjs -> packages/engine/hooks/pre-tool-use.mjs; test tools/block-git-push.fail-closed.test.mjs INFRA-43 BG-FC-3 -> packages/engine/test/push-guard-fail-closed.test.mjs BG-FC-3"
+      }
+    ]
+  },
+  "INFRA-43/M6": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-7: a broken config blocks a newly ticked box",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "failClosed(err);",
+    "replace": "approve();",
+    "test": "node --test --test-name-pattern='^TG-FC-1a ' packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testName": "TG-FC-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.fail-closed.test.mjs INFRA-43 TG-FC-1 -> packages/engine/test/stop-hook-fail-closed.test.mjs TG-FC-1a"
+      }
+    ]
+  },
+  "INFRA-43/M7": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-7: a broken config exits 2, not a silent pass",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "process.exit(2);",
+    "replace": "process.exit(0);",
+    "test": "node --test --test-name-pattern='^TG-FC-1b ' packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testName": "TG-FC-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.fail-closed.test.mjs INFRA-43 TG-FC-1 -> packages/engine/test/stop-hook-fail-closed.test.mjs TG-FC-1b"
+      }
+    ]
+  },
+  "INFRA-43/M9": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-10: a dod.files glob matching nothing fails closed",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (dodFiles.length === 0)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^TG-FC-3 ' packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-fail-closed.test.mjs",
+    "testName": "TG-FC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.fail-closed.test.mjs INFRA-43 TG-FC-3 -> packages/engine/test/stop-hook-fail-closed.test.mjs TG-FC-3"
+      }
+    ]
+  },
+  "INFRA-44a/M3": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-3 the Stop hook recomputes every reused digest and writes nothing",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "stepDigest(r.id, r.cmd, { base: receipt.base }) === r.digest",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^EI-3 ' packages/engine/test/engine-inputs.test.mjs",
+    "testFile": "packages/engine/test/engine-inputs.test.mjs",
+    "testName": "EI-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/gate-engine.test.mjs EI-3 -> packages/engine/test/engine-inputs.test.mjs EI-3"
+      }
+    ]
+  }
+}

@@ -1,4 +1,1492 @@
 {
+  "FU154/M1": {
+    "kind": "patch",
+    "protects": "5 FV-13 a green run deletes a stale failures file (R2)",
+    "file": "packages/engine/failures.mjs",
+    "find": "rmSync(path, { force: true });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^FV-13 ' packages/engine/test/failures.test.mjs",
+    "testFile": "packages/engine/test/failures.test.mjs",
+    "testName": "FV-13 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/failures.mjs -> packages/engine/failures.mjs; test tools/verify-failures.test.mjs FV-13 -> packages/engine/test/failures.test.mjs FV-13"
+      }
+    ]
+  },
+  "FU154/M2": {
+    "kind": "patch",
+    "protects": "5 FV-12 at most MAX_ENTRIES entries per step (R6)",
+    "file": "packages/engine/failures.mjs",
+    "find": "const shown = entries.slice(0, MAX_ENTRIES);",
+    "replace": "const shown = entries;",
+    "test": "node --test --test-name-pattern='^FV-12 ' packages/engine/test/failures.test.mjs",
+    "testFile": "packages/engine/test/failures.test.mjs",
+    "testName": "FV-12 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/failures.mjs -> packages/engine/failures.mjs; test tools/verify-failures.test.mjs FV-12 -> packages/engine/test/failures.test.mjs FV-12"
+      }
+    ]
+  },
+  "FU154/M3": {
+    "kind": "patch",
+    "protects": "5 FV-10 an unrecognised failure falls back to the output tail (R6)",
+    "file": "packages/engine/failures.mjs",
+    "find": "if (entries.length === 0) entries.push(tailEntry(f.out));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^FV-10 ' packages/engine/test/failures.test.mjs",
+    "testFile": "packages/engine/test/failures.test.mjs",
+    "testName": "FV-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/failures.mjs -> packages/engine/failures.mjs; test tools/verify-failures.test.mjs FV-10 -> packages/engine/test/failures.test.mjs FV-10"
+      }
+    ]
+  },
+  "FU154/M4": {
+    "kind": "patch",
+    "protects": "VT-F1 buildResults collects the output of failed steps",
+    "file": "packages/engine/run.mjs",
+    "find": "failures.push({ id: step.id, cmd: step.cmd, why: step.why, out: timedOut",
+    "replace": "void ({ id: step.id, cmd: step.cmd, why: step.why, out: timedOut",
+    "test": "node --test --test-name-pattern='^VT-F1 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VT-F1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket.test.mjs VT-F1 -> packages/engine/test/verify-run.test.mjs VT-F1"
+      }
+    ]
+  },
+  "FU154/M5": {
+    "kind": "patch",
+    "protects": "VT-F2 the paste block names the failures file",
+    "file": "packages/engine/summary.mjs",
+    "find": "if (failures) lines.push(`Failures: ${failures}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-F2 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VT-F2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/summary.mjs -> packages/engine/summary.mjs; test tools/verify-ticket.test.mjs VT-F2 -> packages/engine/test/verify-run.test.mjs VT-F2"
+      }
+    ]
+  },
+  "FU154/M6": {
+    "kind": "patch",
+    "protects": "VT-F4 main() writes the failures file on a red run",
+    "file": "packages/engine/cli.mjs",
+    "find": "failuresPath = writeFailures(FAILURES, { treeHash: hash, ranAt, failures, stoppedBy });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-F4 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VT-F4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/cli.mjs -> packages/engine/cli.mjs; test tools/verify-ticket.test.mjs VT-F4 -> packages/engine/test/verify-run.test.mjs VT-F4"
+      }
+    ]
+  },
+  "INFRA-10/M10": {
+    "kind": "patch",
+    "protects": "VT-1 the receipt records oversize",
+    "file": "packages/engine/receipt.mjs",
+    "find": "oversize: size.level === 'oversize',",
+    "replace": "oversize: false,",
+    "test": "node --test --test-name-pattern='^VT-1 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VT-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/receipt.mjs -> packages/engine/receipt.mjs; test tools/verify-ticket.test.mjs VT-1 -> packages/engine/test/verify-run.test.mjs VT-1"
+      }
+    ]
+  },
+  "INFRA-16/M3": {
+    "kind": "patch",
+    "protects": "I1 TH-5 zero sha is uncommitted",
+    "file": "packages/engine/tree.mjs",
+    "find": "if (/^0{40}$/.test(sha)) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^TH-5 ' packages/engine/test/tree-hash.test.mjs",
+    "testFile": "packages/engine/test/tree-hash.test.mjs",
+    "testName": "TH-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/tree-hash.test.mjs TH-5 -> packages/engine/test/tree-hash.test.mjs TH-5"
+      }
+    ]
+  },
+  "INFRA-16/M7": {
+    "kind": "patch",
+    "protects": "3 I9 GS-9 corrupt history line skipped",
+    "file": "packages/engine/tree.mjs",
+    "find": "continue; // a corrupt line is skipped, never fatal",
+    "replace": "throw new Error(\"corrupt history line\");",
+    "test": "node --test --test-name-pattern='^GS-9 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/ticket-gate.test.mjs GS-9 -> packages/engine/test/stop-hook.test.mjs GS-9"
+      }
+    ]
+  },
+  "INFRA-16/M8": {
+    "kind": "patch",
+    "protects": "I11 TH-3 an excluded directory is left out of treeHashAt",
+    "file": "packages/engine/tree.mjs",
+    "find": "'--no-renames', base, commit]).filter((p) => !excluded(p));",
+    "replace": "'--no-renames', base, commit]);",
+    "test": "node --test --test-name-pattern='^TH-3 ' packages/engine/test/tree-hash.test.mjs",
+    "testFile": "packages/engine/test/tree-hash.test.mjs",
+    "testName": "TH-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/tree-hash.test.mjs TH-3 -> packages/engine/test/tree-hash.test.mjs TH-3"
+      }
+    ]
+  },
+  "INFRA-16/M9": {
+    "kind": "patch",
+    "protects": "I6 VH-2 ok false is not green",
+    "file": "packages/engine/ledger.mjs",
+    "find": "if (receipt?.ok !== true) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VH-2 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket.test.mjs VH-2 -> packages/engine/test/verify-run.test.mjs VH-2"
+      }
+    ]
+  },
+  "INFRA-16/M10": {
+    "kind": "patch",
+    "protects": "I6 VH-6 skipped result is not green",
+    "file": "packages/engine/ledger.mjs",
+    "find": "if (!(receipt.results ?? []).every((r) => VERIFIED_STATUSES.includes(r.status))) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VH-6 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket.test.mjs VH-6 -> packages/engine/test/verify-run.test.mjs VH-6"
+      }
+    ]
+  },
+  "INFRA-16/M11": {
+    "kind": "patch",
+    "protects": "I6 VH-3 oversize run is not recorded (R3)",
+    "file": "packages/engine/ledger.mjs",
+    "find": "if (receipt.oversize === true) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VH-3 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket.test.mjs VH-3 -> packages/engine/test/verify-run.test.mjs VH-3"
+      }
+    ]
+  },
+  "INFRA-16/M12": {
+    "kind": "patch",
+    "protects": "I7 VH-4 newest 50 kept",
+    "file": "packages/engine/ledger.mjs",
+    "find": "const kept = [...readHistory(historyPath), entry].slice(-HISTORY_MAX);",
+    "replace": "const kept = [...readHistory(historyPath), entry];",
+    "test": "node --test --test-name-pattern='^VH-4 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket.test.mjs VH-4 -> packages/engine/test/verify-run.test.mjs VH-4"
+      }
+    ]
+  },
+  "INFRA-16/M13": {
+    "kind": "patch",
+    "protects": "I8 VH-7 seed before the receipt overwrite",
+    "file": "packages/engine/cli.mjs",
+    "find": "seedHistory(HISTORY, RECEIPT);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VH-7 ' packages/engine/test/verify-run.test.mjs",
+    "testFile": "packages/engine/test/verify-run.test.mjs",
+    "testName": "VH-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/cli.mjs -> packages/engine/cli.mjs; test tools/verify-ticket.test.mjs VH-7 -> packages/engine/test/verify-run.test.mjs VH-7"
+      }
+    ]
+  },
+  "INFRA-16/M14": {
+    "kind": "patch",
+    "protects": "3 I1/I10 GS-10 blame failure is unsettled",
+    "file": "packages/engine/tree.mjs",
+    "find": "return null; // untracked file, or no git: never settled",
+    "replace": "return 'HEAD';",
+    "test": "node --test --test-name-pattern='^GS-10 ' packages/engine/test/stop-hook.test.mjs",
+    "testFile": "packages/engine/test/stop-hook.test.mjs",
+    "testName": "GS-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/ticket-gate.test.mjs GS-10 -> packages/engine/test/stop-hook.test.mjs GS-10"
+      }
+    ]
+  },
+  "INFRA-18/M1": {
+    "kind": "patch",
+    "protects": "VT-P2 a red preflight stops the gate",
+    "file": "packages/engine/run.mjs",
+    "find": "if (step.id === 'preflight' && !ok) break;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-P2 ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-P2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs VT-P2 -> packages/engine/test/verify-stack.test.mjs VT-P2"
+      }
+    ]
+  },
+  "INFRA-18/M2": {
+    "kind": "patch",
+    "protects": "G3 seed step before e2e",
+    "file": "packages/engine/plan.mjs",
+    "find": "reset.before.some(runs) && !reset.satisfiedBy.some(runs);",
+    "replace": "false;",
+    "test": "node --test --test-name-pattern='^VT-P3a ' packages/engine/test/plan-steps.test.mjs",
+    "testFile": "packages/engine/test/plan-steps.test.mjs",
+    "testName": "VT-P3a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-P3a -> packages/engine/test/plan-steps.test.mjs VT-P3a"
+      }
+    ]
+  },
+  "INFRA-18/M3": {
+    "kind": "patch",
+    "protects": "VT-T1a the watchdog enforces the wall-clock limit",
+    "file": "packages/engine/run.mjs",
+    "find": "( sleep \"$2\"; echo timeout",
+    "replace": "( sleep 600; echo timeout",
+    "test": "node --test --test-name-pattern='^VT-T1a ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-T1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs VT-T1 -> packages/engine/test/verify-stack.test.mjs VT-T1a"
+      }
+    ]
+  },
+  "INFRA-18/M4": {
+    "kind": "patch",
+    "protects": "INFRA-18 G2 test VT-P1: the stack preflight runs when any selected step needs the local stack; without it a down stack fails mid-run",
+    "file": "packages/engine/plan.mjs",
+    "find": "health.when = stackRuns.length > 0;",
+    "replace": "health.when = false;",
+    "test": "node --test --test-name-pattern='^VT-P1 ' packages/engine/test/plan-steps.test.mjs",
+    "testFile": "packages/engine/test/plan-steps.test.mjs",
+    "testName": "VT-P1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-P1 -> packages/engine/test/plan-steps.test.mjs VT-P1"
+      }
+    ]
+  },
+  "INFRA-18/M6": {
+    "kind": "patch",
+    "protects": "VT-T4 --timeout accepts only a positive whole number of seconds",
+    "file": "packages/engine/cli.mjs",
+    "find": "if (!/^[1-9]\\d*$/.test(sec))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^VT-T4 ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-T4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/cli.mjs -> packages/engine/cli.mjs; test tools/verify-ticket-stack.test.mjs VT-T4 -> packages/engine/test/verify-stack.test.mjs VT-T4"
+      }
+    ]
+  },
+  "INFRA-18/M19": {
+    "kind": "patch",
+    "protects": "VT-R1 readiness runs after the db or seed step",
+    "file": "packages/engine/run.mjs",
+    "find": "if (ok && step.ready) {",
+    "replace": "if (false && step.ready) {",
+    "test": "node --test --test-name-pattern='^VT-R1 ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs VT-R1 -> packages/engine/test/verify-stack.test.mjs VT-R1"
+      }
+    ]
+  },
+  "INFRA-18/M20": {
+    "kind": "patch",
+    "protects": "VT-T1b the watchdog kills the whole process group",
+    "file": "packages/engine/run.mjs",
+    "find": "echo timeout > \"$4\"; kill -TERM -\"$child\" 2>/dev/null; sleep 5; kill -KILL -\"$child\"",
+    "replace": "echo timeout > \"$4\"; kill -TERM \"$child\" 2>/dev/null; sleep 5; kill -KILL \"$child\"",
+    "test": "node --test --test-name-pattern='^VT-T1b ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "VT-T1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs VT-T1 -> packages/engine/test/verify-stack.test.mjs VT-T1b"
+      }
+    ]
+  },
+  "INFRA-19/M3": {
+    "kind": "patch",
+    "protects": "G1 reuse only on a pass",
+    "file": "packages/engine/plan.mjs",
+    "find": "last?.status === 'pass'",
+    "replace": "last !== undefined",
+    "test": "node --test --test-name-pattern='^VR-2a ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VR-2a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/verify-ticket-reuse.test.mjs VR-2 -> packages/engine/test/step-reuse.test.mjs VR-2a"
+      }
+    ]
+  },
+  "INFRA-19/M4": {
+    "kind": "patch",
+    "protects": "G1 newest ledger line rules",
+    "file": "packages/engine/ledger.mjs",
+    "find": "ledger.findLast(",
+    "replace": "ledger.find(",
+    "test": "node --test --test-name-pattern='^VR-2b ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VR-2b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-reuse.test.mjs VR-2 -> packages/engine/test/step-reuse.test.mjs VR-2b"
+      }
+    ]
+  },
+  "INFRA-19/M5": {
+    "kind": "patch",
+    "protects": "G9 --fresh reuses nothing",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (digestOf && c.reuse && !fresh) {",
+    "replace": "if (digestOf && c.reuse) {",
+    "test": "node --test --test-name-pattern='^VR-5 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VR-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/verify-ticket-reuse.test.mjs VR-5 -> packages/engine/test/step-reuse.test.mjs VR-5"
+      }
+    ]
+  },
+  "INFRA-19/M6": {
+    "kind": "patch",
+    "protects": "G3 tools/ never denied",
+    "file": "packages/engine/digest.mjs",
+    "find": "if (isToolPath(path)) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SI-8 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-8 -> packages/engine/test/step-inputs.test.mjs SI-8"
+      }
+    ]
+  },
+  "INFRA-19/M7": {
+    "kind": "patch",
+    "protects": "G2 env files hashed",
+    "file": "packages/engine/digest.mjs",
+    "find": "basename(p).startsWith('.env')",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^SI-6 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-6 -> packages/engine/test/step-inputs.test.mjs SI-6"
+      }
+    ]
+  },
+  "INFRA-19/M8": {
+    "kind": "patch",
+    "protects": "INFRA-19 G14 test VG-1: the step ledger keeps only the last LEDGER_MAX records; without the cap it grows unbounded",
+    "file": "packages/engine/ledger.mjs",
+    "find": ".slice(-LEDGER_MAX)",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VG-1 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VG-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-reuse.test.mjs VL-1 -> packages/engine/test/step-reuse.test.mjs VG-1"
+      }
+    ]
+  },
+  "INFRA-19/M9": {
+    "kind": "patch",
+    "protects": "INFRA-19 G6 test VR-7: receiptOk accepts only the VERIFIED_STATUSES allow-list; without it an unknown status counts as verified",
+    "file": "packages/engine/receipt.mjs",
+    "find": "return results.every((r) => VERIFIED_STATUSES.includes(r.status));",
+    "replace": "return !results.some((r) => r.status === 'fail' || r.status === 'skipped');",
+    "test": "node --test --test-name-pattern='^VR-7 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VR-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/receipt.mjs -> packages/engine/receipt.mjs; test tools/verify-ticket-reuse.test.mjs VR-7 -> packages/engine/test/step-reuse.test.mjs VR-7"
+      }
+    ]
+  },
+  "INFRA-19/M10": {
+    "kind": "patch",
+    "protects": "INFRA-19 G12 test VG-3: failed steps are ledgered as well as passes; without it a fail leaves no record to reuse or diagnose",
+    "file": "packages/engine/ledger.mjs",
+    "find": "(r.status === 'pass' || r.status === 'fail')",
+    "replace": "(r.status === 'pass')",
+    "test": "node --test --test-name-pattern='^VG-3 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VG-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-reuse.test.mjs VL-3 -> packages/engine/test/step-reuse.test.mjs VG-3"
+      }
+    ]
+  },
+  "INFRA-19/M11": {
+    "kind": "patch",
+    "protects": "G13 post-run digest check",
+    "file": "packages/engine/ledger.mjs",
+    "find": "digestNow(r.id, r.cmd) === r.digest",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^VG-4 ' packages/engine/test/step-reuse.test.mjs",
+    "testFile": "packages/engine/test/step-reuse.test.mjs",
+    "testName": "VG-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-reuse.test.mjs VL-4 -> packages/engine/test/step-reuse.test.mjs VG-4"
+      }
+    ]
+  },
+  "INFRA-19/M12": {
+    "kind": "patch",
+    "protects": "INFRA-19 G2 test SI-7: the deny-list is applied when computing step inputs; without it denied paths enter the digest and break reuse",
+    "file": "packages/engine/digest.mjs",
+    "find": ".filter(([p]) => !isDenied(id, p))",
+    "replace": ".filter(() => true)",
+    "test": "node --test --test-name-pattern='^SI-7 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-7 -> packages/engine/test/step-inputs.test.mjs SI-7"
+      }
+    ]
+  },
+  "INFRA-20/M1": {
+    "kind": "patch",
+    "protects": "L-1 frontmatter values that need quoting are written JSON-quoted; without it a colon or hash in a value corrupts the file",
+    "file": "packages/engine/fu.mjs",
+    "find": "needsQuote(value) ? JSON.stringify(value) : value",
+    "replace": "value",
+    "test": "node --test --test-name-pattern='^L-1 ' packages/engine/test/fu-register.test.mjs",
+    "testFile": "packages/engine/test/fu-register.test.mjs",
+    "testName": "L-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/follow-ups.test.mjs L-1 -> packages/engine/test/fu-register.test.mjs L-1"
+      }
+    ]
+  },
+  "INFRA-20/M2": {
+    "kind": "patch",
+    "protects": "L-4 a row whose Owner or Fixed in is not trailing is refused",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (!trailing) throw",
+    "replace": "if (false) throw",
+    "test": "node --test --test-name-pattern='^L-4 ' packages/engine/test/fu-register.test.mjs",
+    "testFile": "packages/engine/test/fu-register.test.mjs",
+    "testName": "L-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/follow-ups.test.mjs L-4 -> packages/engine/test/fu-register.test.mjs L-4"
+      }
+    ]
+  },
+  "INFRA-20/M3": {
+    "kind": "patch",
+    "protects": "C-5 close refuses a follow-up that is already done",
+    "file": "packages/engine/fu.mjs",
+    "find": "const alreadyDone = data.status === 'done';",
+    "replace": "const alreadyDone = false;",
+    "test": "node --test --test-name-pattern='^C-5 ' packages/engine/test/fu-register.test.mjs",
+    "testFile": "packages/engine/test/fu-register.test.mjs",
+    "testName": "C-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/follow-ups.test.mjs C-5 -> packages/engine/test/fu-register.test.mjs C-5"
+      }
+    ]
+  },
+  "INFRA-20/M4": {
+    "kind": "patch",
+    "protects": "K-1 the check names a file whose name does not match its id",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (name !== `${fileIdOf(id)}.md`)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^K-1 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-1 -> packages/engine/test/fu-check.test.mjs K-1"
+      }
+    ]
+  },
+  "INFRA-20/M5": {
+    "kind": "patch",
+    "protects": "K-7 numbers named in the README collision sentence are exempt from the duplicate rule; without the exemption old ids fail the check",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (exempt.has(num)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^K-7 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-7 -> packages/engine/test/fu-check.test.mjs K-7"
+      }
+    ]
+  },
+  "INFRA-20/M6": {
+    "kind": "patch",
+    "protects": "K-3 the check rejects a missing or unknown status",
+    "file": "packages/engine/fu.mjs",
+    "find": "!STATUSES.includes(status)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-3 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-3 -> packages/engine/test/fu-check.test.mjs K-3"
+      }
+    ]
+  },
+  "INFRA-20/M7": {
+    "kind": "patch",
+    "protects": "K-4a the check requires an owner on an open follow-up",
+    "file": "packages/engine/fu.mjs",
+    "find": "status === 'open' && data.owner === undefined",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-4a ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-4a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-4 -> packages/engine/test/fu-check.test.mjs K-4a"
+      }
+    ]
+  },
+  "INFRA-20/M8": {
+    "kind": "patch",
+    "protects": "K-4b the check requires fixed-in on a done follow-up",
+    "file": "packages/engine/fu.mjs",
+    "find": "status === 'done' && data['fixed-in'] === undefined",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-4b ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-4b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-4 -> packages/engine/test/fu-check.test.mjs K-4b"
+      }
+    ]
+  },
+  "INFRA-20/M9": {
+    "kind": "patch",
+    "protects": "K-5 the check rejects an unknown frontmatter key",
+    "file": "packages/engine/fu.mjs",
+    "find": "!KEYS.includes(key)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-5 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-5 -> packages/engine/test/fu-check.test.mjs K-5"
+      }
+    ]
+  },
+  "INFRA-20/M10": {
+    "kind": "patch",
+    "protects": "K-6 the check rejects a follow-up row in the pointer page",
+    "file": "packages/engine/fu.mjs",
+    "find": "POINTER_ROW.test(pointer)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-6 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-6 -> packages/engine/test/fu-check.test.mjs K-6"
+      }
+    ]
+  },
+  "INFRA-22/M1": {
+    "kind": "patch",
+    "protects": "5 S-3 dead pid takeover",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (holder === null || alive(holder.pid)) return false;",
+    "replace": "return false;",
+    "test": "node --test --test-name-pattern='^S-3 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-3 -> packages/engine/test/stack-lock.test.mjs S-3"
+      }
+    ]
+  },
+  "INFRA-22/M2": {
+    "kind": "patch",
+    "protects": "5 S-2 atomic take",
+    "file": "packages/engine/lock.mjs",
+    "find": "mkdirSync(path);",
+    "replace": "mkdirSync(path, { recursive: true });",
+    "test": "node --test --test-name-pattern='^S-2 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-2 -> packages/engine/test/stack-lock.test.mjs S-2"
+      }
+    ]
+  },
+  "INFRA-22/M3": {
+    "kind": "patch",
+    "protects": "5 S-6 release only by the holder",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (onDisk?.id !== holder.id) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^S-6 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-6 -> packages/engine/test/stack-lock.test.mjs S-6"
+      }
+    ]
+  },
+  "INFRA-22/M4": {
+    "kind": "patch",
+    "protects": "5 S-4 release writes lastReleasedAt",
+    "file": "packages/engine/lock.mjs",
+    "find": "writeReleased(path, { owner: holder.owner, pid: holder.pid, stale: false, now });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^S-4 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-4 -> packages/engine/test/stack-lock.test.mjs S-4"
+      }
+    ]
+  },
+  "INFRA-22/M5": {
+    "kind": "patch",
+    "protects": "5 S-8 a holder's own runs pass the lock check",
+    "file": "packages/engine/lock.mjs",
+    "find": "=== holder.id) return null;",
+    "replace": "=== holder.id && false) return null;",
+    "test": "node --test --test-name-pattern='^S-8 ' packages/engine/test/stack-lock.test.mjs",
+    "testFile": "packages/engine/test/stack-lock.test.mjs",
+    "testName": "S-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/stack-lock.test.mjs S-8 -> packages/engine/test/stack-lock.test.mjs S-8; find shortened to keep the consumer variable name out of the public registry (NS-1)"
+      }
+    ]
+  },
+  "INFRA-22/M7": {
+    "kind": "patch",
+    "protects": "5 VK-1 refused acquire fails preflight",
+    "file": "packages/engine/run.mjs",
+    "find": "if (!got.ok) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^VK-1 ' packages/engine/test/verify-lock.test.mjs",
+    "testFile": "packages/engine/test/verify-lock.test.mjs",
+    "testName": "VK-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-lock.test.mjs VL-1 -> packages/engine/test/verify-lock.test.mjs VK-1"
+      }
+    ]
+  },
+  "INFRA-22/M8": {
+    "kind": "patch",
+    "protects": "5 VK-3 release on every path",
+    "file": "packages/engine/run.mjs",
+    "find": "lock?.release();",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VK-3 ' packages/engine/test/verify-lock.test.mjs",
+    "testFile": "packages/engine/test/verify-lock.test.mjs",
+    "testName": "VK-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-lock.test.mjs VL-3 -> packages/engine/test/verify-lock.test.mjs VK-3"
+      }
+    ]
+  },
+  "INFRA-22/M9": {
+    "kind": "patch",
+    "protects": "5 VK-4 the gate waits, not fails at once",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (now() - started >= waitS * 1000) return fail(holder);",
+    "replace": "return fail(holder);",
+    "test": "node --test --test-name-pattern='^VK-4 ' packages/engine/test/verify-lock.test.mjs",
+    "testFile": "packages/engine/test/verify-lock.test.mjs",
+    "testName": "VK-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/lock.mjs -> packages/engine/lock.mjs; test tools/verify-ticket-lock.test.mjs VL-4 -> packages/engine/test/verify-lock.test.mjs VK-4"
+      }
+    ]
+  },
+  "INFRA-23b/M9": {
+    "kind": "patch",
+    "protects": "VE-7a a unit digest covers its inputs and tooling paths",
+    "file": "packages/engine/digest.mjs",
+    "find": "([p]) => inputs.includes(p) || (isToolPath(p) && !isDenied('e2e', p))",
+    "replace": "() => false",
+    "test": "node --test --test-name-pattern='^VE-7a ' packages/engine/test/e2e-ledger.test.mjs",
+    "testFile": "packages/engine/test/e2e-ledger.test.mjs",
+    "testName": "VE-7a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/verify-ticket-e2e.test.mjs VE-7 -> packages/engine/test/e2e-ledger.test.mjs VE-7a"
+      }
+    ]
+  },
+  "INFRA-23b/M11": {
+    "kind": "patch",
+    "protects": "VE-9 a full-only step is not reused from an affected or known-red e2e run",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (c.reuse.fullOnly && (o?.mode === 'affected' || (last?.mode ?? 'full') !== 'full' || (o?.knownRedCount ?? 0) > 0)) return 'run';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-9 ' packages/engine/test/e2e-ledger.test.mjs",
+    "testFile": "packages/engine/test/e2e-ledger.test.mjs",
+    "testName": "VE-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test tools/verify-ticket-e2e.test.mjs VE-9 -> packages/engine/test/e2e-ledger.test.mjs VE-9"
+      }
+    ]
+  },
+  "INFRA-23b/M12": {
+    "kind": "patch",
+    "protects": "VE-10a the full-run median warns above the 20 min budget",
+    "file": "packages/engine/ledger.mjs",
+    "find": "const warn = median > FULL_MEDIAN_WARN_MS;",
+    "replace": "const warn = false;",
+    "test": "node --test --test-name-pattern='^VE-10a ' packages/engine/test/e2e-ledger.test.mjs",
+    "testFile": "packages/engine/test/e2e-ledger.test.mjs",
+    "testName": "VE-10a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-e2e.test.mjs VE-10 -> packages/engine/test/e2e-ledger.test.mjs VE-10a"
+      }
+    ]
+  },
+  "INFRA-23b/M18": {
+    "kind": "patch",
+    "protects": "VE-10b the median counts full runs only, a mode-less line as full",
+    "file": "packages/engine/ledger.mjs",
+    "find": "(l.mode ?? 'full') === 'full'",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^VE-10b ' packages/engine/test/e2e-ledger.test.mjs",
+    "testFile": "packages/engine/test/e2e-ledger.test.mjs",
+    "testName": "VE-10b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ledger.mjs -> packages/engine/ledger.mjs; test tools/verify-ticket-e2e.test.mjs VE-10 -> packages/engine/test/e2e-ledger.test.mjs VE-10b"
+      }
+    ]
+  },
+  "INFRA-26a/M17": {
+    "kind": "patch",
+    "protects": "SI-R1 registry paths feed only the mutation-registry step",
+    "file": "packages/engine/digest.mjs",
+    "find": "if (path.startsWith(prefix)) return !steps.includes(id);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SI-R1 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-R1 -> packages/engine/test/step-inputs.test.mjs SI-R1"
+      }
+    ]
+  },
+  "INFRA-26a/M18": {
+    "kind": "patch",
+    "protects": "TH-R1 treeHash exclude option drops the prefix",
+    "file": "packages/engine/tree.mjs",
+    "find": "!exclude.some((x) => p.startsWith(x))",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^TH-R1 ' packages/engine/test/tree-hash.test.mjs",
+    "testFile": "packages/engine/test/tree-hash.test.mjs",
+    "testName": "TH-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/tree-hash.test.mjs TH-R1 -> packages/engine/test/tree-hash.test.mjs TH-R1"
+      }
+    ]
+  },
+  "INFRA-27/M10": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 VT-MR1: a non-empty selection plans the mutation-registry step",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (o?.when !== undefined) s.when = o.when;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-MR1 ' packages/engine/test/plan-steps.test.mjs",
+    "testFile": "packages/engine/test/plan-steps.test.mjs",
+    "testName": "VT-MR1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-MR1 -> packages/engine/test/plan-steps.test.mjs VT-MR1"
+      }
+    ]
+  },
+  "INFRA-27/M12": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 VT-MR5 R4: mutation-registry without e2e gets a seed reset",
+    "file": "packages/engine/plan.mjs",
+    "find": "reset.before.some(runs) && !reset.satisfiedBy.some(runs);",
+    "replace": "reset.before.filter((id) => id !== 'mutation-registry').some(runs) && !reset.satisfiedBy.some(runs);",
+    "test": "node --test --test-name-pattern='^VT-MR5 ' packages/engine/test/plan-steps.test.mjs",
+    "testFile": "packages/engine/test/plan-steps.test.mjs",
+    "testName": "VT-MR5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-MR5 -> packages/engine/test/plan-steps.test.mjs VT-MR5"
+      }
+    ]
+  },
+  "INFRA-27/M16": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 SI-MR1 R7: e2e spec digests ignore registry data",
+    "file": "packages/engine/digest.mjs",
+    "find": "inputs.includes(p) || (isToolPath(p) && !isDenied('e2e', p))",
+    "replace": "inputs.includes(p) || isToolPath(p)",
+    "test": "node --test --test-name-pattern='^SI-MR1 ' packages/engine/test/step-inputs.test.mjs",
+    "testFile": "packages/engine/test/step-inputs.test.mjs",
+    "testName": "SI-MR1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/step-inputs.test.mjs SI-MR1 -> packages/engine/test/step-inputs.test.mjs SI-MR1"
+      }
+    ]
+  },
+  "INFRA-30/M1": {
+    "kind": "patch",
+    "protects": "V-1a a red pre-stack step stops the stack steps",
+    "file": "packages/engine/run.mjs",
+    "find": "stoppedBy === null && preStack(step.id)) stoppedBy = step.id;",
+    "replace": "stoppedBy === null && preStack(step.id)) void step.id;",
+    "test": "node --test --test-name-pattern='^V-1a ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs V-1a -> packages/engine/test/verify-stack.test.mjs V-1a"
+      }
+    ]
+  },
+  "INFRA-30/M2": {
+    "kind": "patch",
+    "protects": "V-1b --keep-going runs every selected stack step",
+    "file": "packages/engine/run.mjs",
+    "find": "if (!ok && !keepGoing && stoppedBy",
+    "replace": "if (!ok && stoppedBy",
+    "test": "node --test --test-name-pattern='^V-1b ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs V-1b -> packages/engine/test/verify-stack.test.mjs V-1b"
+      }
+    ]
+  },
+  "INFRA-30/M3": {
+    "kind": "patch",
+    "protects": "V-1c a stopped step is recorded stopped, never skipped",
+    "file": "packages/engine/run.mjs",
+    "find": "status: 'stopped',",
+    "replace": "status: 'skipped',",
+    "test": "node --test --test-name-pattern='^V-1c ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1c ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs V-1a -> packages/engine/test/verify-stack.test.mjs V-1c"
+      }
+    ]
+  },
+  "INFRA-30/M4": {
+    "kind": "patch",
+    "protects": "V-1e only a red step before seed stops the stack steps",
+    "file": "packages/engine/run.mjs",
+    "find": "const preStack = (id) => stopsOf(GATE).some((s) => STEP_IDS.indexOf(id) < STEP_IDS.indexOf(s));",
+    "replace": "const preStack = () => true;",
+    "test": "node --test --test-name-pattern='^V-1e ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1e ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/run.mjs -> packages/engine/run.mjs; test tools/verify-ticket-stack.test.mjs V-1e -> packages/engine/test/verify-stack.test.mjs V-1e"
+      }
+    ]
+  },
+  "INFRA-30/M5": {
+    "kind": "patch",
+    "protects": "V-2 --precheck exits before any gate state is written",
+    "file": "packages/engine/cli.mjs",
+    "find": "if (args.includes('--precheck')) process.exit(await runPrecheck({ base: baseSha }));",
+    "replace": "if (args.includes('--precheck')) await runPrecheck({ base: baseSha });",
+    "test": "node --test --test-name-pattern='^V-2 ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/cli.mjs -> packages/engine/cli.mjs; test tools/verify-ticket-stack.test.mjs V-2 -> packages/engine/test/verify-stack.test.mjs V-2"
+      }
+    ]
+  },
+  "INFRA-30/M7": {
+    "kind": "patch",
+    "protects": "V-3b a failed precheck exits non-zero",
+    "file": "packages/engine/precheck.mjs",
+    "find": "return failed.length > 0 ? 1 : 0;",
+    "replace": "return 0;",
+    "test": "node --test --test-name-pattern='^V-3b ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-3b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/precheck.mjs -> packages/engine/precheck.mjs; test tools/verify-ticket-stack.test.mjs V-3b -> packages/engine/test/verify-stack.test.mjs V-3b"
+      }
+    ]
+  },
+  "INFRA-30/M9": {
+    "kind": "patch",
+    "protects": "V-1d the failures file first line names the early stop",
+    "file": "packages/engine/failures.mjs",
+    "find": "`# verify:ticket failures - stopped before the stack steps: ${stoppedBy} red`",
+    "replace": "'# verify:ticket failures'",
+    "test": "node --test --test-name-pattern='^V-1d ' packages/engine/test/verify-stack.test.mjs",
+    "testFile": "packages/engine/test/verify-stack.test.mjs",
+    "testName": "V-1d ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/failures.mjs -> packages/engine/failures.mjs; test tools/verify-ticket-stack.test.mjs V-1d -> packages/engine/test/verify-stack.test.mjs V-1d"
+      }
+    ]
+  },
+  "INFRA-40/M1": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-1a an unlisted module over 600 lines fails",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (!was && n > limitOf(path)) fresh.push(",
+    "replace": "if (false) fresh.push(",
+    "test": "node --test --test-name-pattern='^MZ-1a ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-1 -> packages/engine/test/module-size.test.mjs MZ-1a"
+      }
+    ]
+  },
+  "INFRA-40/M2": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-2 a baselined file that grew fails",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (was && n > was) grown.push(",
+    "replace": "if (false) grown.push(",
+    "test": "node --test --test-name-pattern='^MZ-2 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-2 -> packages/engine/test/module-size.test.mjs MZ-2"
+      }
+    ]
+  },
+  "INFRA-40/M3": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-3 a shrunk or untracked baseline entry prints a SHRUNK note",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (now === undefined || now < e.lines) shrunk.push(",
+    "replace": "if (false) shrunk.push(",
+    "test": "node --test --test-name-pattern='^MZ-3 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-3 -> packages/engine/test/module-size.test.mjs MZ-3"
+      }
+    ]
+  },
+  "INFRA-40/M5": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-1b physical line count, a 600-line module passes",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "- (text.endsWith('\\n') ? 1 : 0)",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MZ-1b ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-1 -> packages/engine/test/module-size.test.mjs MZ-1b"
+      }
+    ]
+  },
+  "INFRA-40/M6": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-6 only git-tracked files are measured (D11)",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "['ls-files', '-z', '--', ...roots]",
+    "replace": "['ls-files', '-z', '--cached', '--others', '--', ...roots]",
+    "test": "node --test --test-name-pattern='^MZ-6 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-6 -> packages/engine/test/module-size.test.mjs MZ-6"
+      }
+    ]
+  },
+  "INFRA-40/M7": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-7 --update refuses to raise a grown entry without allow",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (prev && n > prev.lines && !allow[path]) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^MZ-7 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-7 -> packages/engine/test/module-size.test.mjs MZ-7"
+      }
+    ]
+  },
+  "INFRA-40/M8": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 MZ-8 --update refuses a new entry without allow reason",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (!prev && !seed && !allow[path]) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^MZ-8 ' packages/engine/test/module-size.test.mjs",
+    "testFile": "packages/engine/test/module-size.test.mjs",
+    "testName": "MZ-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-module-size.test.mjs MS-8 -> packages/engine/test/module-size.test.mjs MZ-8"
+      }
+    ]
+  },
+  "INFRA-40/M9": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 SR-3 a superpowers: or sf-skills: name fails closed until INFRA-49",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (ref.prefix) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SR-3 ' packages/engine/test/skill-refs.test.mjs",
+    "testFile": "packages/engine/test/skill-refs.test.mjs",
+    "testName": "SR-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-skill-refs.test.mjs SR-3 -> packages/engine/test/skill-refs.test.mjs SR-3"
+      }
+    ]
+  },
+  "INFRA-40/M10": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 SR-1 a .agents/skills/<name> path with no directory fails",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (ref.form === 'path') return isDir(join(root, ref.root, ref.name));",
+    "replace": "if (ref.form === 'path') return true;",
+    "test": "node --test --test-name-pattern='^SR-1 ' packages/engine/test/skill-refs.test.mjs",
+    "testFile": "packages/engine/test/skill-refs.test.mjs",
+    "testName": "SR-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-skill-refs.test.mjs SR-1 -> packages/engine/test/skill-refs.test.mjs SR-1"
+      }
+    ]
+  },
+  "INFRA-40/M11": {
+    "kind": "patch",
+    "protects": "INFRA-40 5 SR-2 a skills: frontmatter name with no installed skill fails",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "return installed.has(ref.name);",
+    "replace": "return true;",
+    "test": "node --test --test-name-pattern='^SR-2 ' packages/engine/test/skill-refs.test.mjs",
+    "testFile": "packages/engine/test/skill-refs.test.mjs",
+    "testName": "SR-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/ratchet.mjs -> packages/engine/ratchet.mjs; test tools/check-skill-refs.test.mjs SR-2 -> packages/engine/test/skill-refs.test.mjs SR-2"
+      }
+    ]
+  },
+  "INFRA-41/M3": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 MP-1 an added line with no removed twin is listed",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "if (left === 0) unmatched.push(a);",
+    "replace": "if (left === 0) {}",
+    "test": "node --test --test-name-pattern='^MP-1 ' packages/engine/test/move-proof.test.mjs",
+    "testFile": "packages/engine/test/move-proof.test.mjs",
+    "testName": "MP-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/move-proof.mjs -> packages/engine/move-proof.mjs; test tools/move-check.test.mjs MC-1 -> packages/engine/test/move-proof.test.mjs MP-1; replace re-aimed so the mutant parses (a load failure is not a kill): \"\" -> \"if (left === 0) {}\""
+      }
+    ]
+  },
+  "INFRA-41/M4": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 MP-4 each removed line matches one added line only",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "else pool.set(key, left - 1);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MP-4 ' packages/engine/test/move-proof.test.mjs",
+    "testFile": "packages/engine/test/move-proof.test.mjs",
+    "testName": "MP-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/move-proof.mjs -> packages/engine/move-proof.mjs; test tools/move-check.test.mjs MC-4 -> packages/engine/test/move-proof.test.mjs MP-4"
+      }
+    ]
+  },
+  "INFRA-41/M5": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 MP-3 only an import or re-export statement is exempt",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "const IMPORT_START = /^(?:import(?:\\s+|\\s*[{'\"*])|export\\s*(?:type\\s+)?[{*])/;",
+    "replace": "const IMPORT_START = /^(?:import|export)/;",
+    "test": "node --test --test-name-pattern='^MP-3 ' packages/engine/test/move-proof.test.mjs",
+    "testFile": "packages/engine/test/move-proof.test.mjs",
+    "testName": "MP-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/move-proof.mjs -> packages/engine/move-proof.mjs; test tools/move-check.test.mjs MC-3 -> packages/engine/test/move-proof.test.mjs MP-3"
+      }
+    ]
+  },
+  "INFRA-41/M6": {
+    "kind": "patch",
+    "protects": "INFRA-41 5 MP-R1 the receipt carries moveProof for the stop hook",
+    "file": "packages/engine/receipt.mjs",
+    "find": "shadow,\n    moveProof,",
+    "replace": "shadow,",
+    "test": "node --test --test-name-pattern='^MP-R1 ' packages/engine/test/move-proof.test.mjs",
+    "testFile": "packages/engine/test/move-proof.test.mjs",
+    "testName": "MP-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/receipt.mjs -> packages/engine/receipt.mjs; test tools/move-check.test.mjs MC-R1 -> packages/engine/test/move-proof.test.mjs MP-R1"
+      }
+    ]
+  },
+  "INFRA-42/M1": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I3 GC-1: an unknown gate.config key throws; without it a typo silently drops a rule",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!GATE_KEYS.includes(key)) fail(key, 'unknown key');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-1 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-1 -> packages/engine/test/config-validation.test.mjs GC-1"
+      }
+    ]
+  },
+  "INFRA-42/M2": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I4 GC-2: duplicate step ids throw; without it a later step shadows an earlier one",
+    "file": "packages/engine/config.mjs",
+    "find": "if (seen.has(s.id)) fail(at, `duplicate step id \"${s.id}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-2 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-2 -> packages/engine/test/config-validation.test.mjs GC-2"
+      }
+    ]
+  },
+  "INFRA-42/M3": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I5 GC-3: every non-human step needs a positive limitS; without it a step runs unbounded",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!s.human && !(Number.isInteger(s.limitS) && s.limitS > 0)) fail(at, 'limitS must be a positive integer');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-3 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-3 -> packages/engine/test/config-validation.test.mjs GC-3"
+      }
+    ]
+  },
+  "INFRA-42/M4": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I6 GC-4: reuse must be explicit per step; without it reuse follows from omission",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!s.human && s.reuse !== false && !Array.isArray(s.reuse?.deny)) fail(at, 'reuse must be false or { deny: [...] }');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-4 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-4 -> packages/engine/test/config-validation.test.mjs GC-4"
+      }
+    ]
+  },
+  "INFRA-42/M5": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I7 GC-5: an unknown step id reference throws; without it stopOnRedBefore typo disables the early stop",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!seen.has(id)) fail(where, `unknown step id \"${id}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-5 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-5 -> packages/engine/test/config-validation.test.mjs GC-5"
+      }
+    ]
+  },
+  "INFRA-42/M6": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I8 GC-6: a human step has no reuse or limitS; without it maestro could be reused",
+    "file": "packages/engine/config.mjs",
+    "find": "if (s.human && (s.reuse !== undefined || s.limitS !== undefined)) fail(at, 'a human step has no reuse or limitS');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-6 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-6 -> packages/engine/test/config-validation.test.mjs GC-6"
+      }
+    ]
+  },
+  "INFRA-42/M7": {
+    "kind": "patch",
+    "protects": "INFRA-42 3#I9 GC-7: a step stack must exist; without it preflight never checks that step",
+    "file": "packages/engine/config.mjs",
+    "find": "if (s.stack !== undefined && !Object.hasOwn(stacks, s.stack)) fail(at, `unknown stack \"${s.stack}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^GC-7 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs GC-7 -> packages/engine/test/config-validation.test.mjs GC-7"
+      }
+    ]
+  },
+  "INFRA-43/M5": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-5 GC-3: an empty pushGuard.protected is rejected; an empty list would allow a push to main",
+    "file": "packages/engine/config.mjs",
+    "find": "protected.length === 0",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GC-8 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs INFRA-43 GC-3 -> packages/engine/test/config-validation.test.mjs GC-8"
+      }
+    ]
+  },
+  "INFRA-43/M8": {
+    "kind": "patch",
+    "protects": "INFRA-43 3-10 GC-2: an empty dod.files is rejected; no DoD file read means a silent open",
+    "file": "packages/engine/config.mjs",
+    "find": "files.length === 0",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^GC-9 ' packages/engine/test/config-validation.test.mjs",
+    "testFile": "packages/engine/test/config-validation.test.mjs",
+    "testName": "GC-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate-config.test.mjs INFRA-43 GC-2 -> packages/engine/test/config-validation.test.mjs GC-9"
+      }
+    ]
+  },
+  "INFRA-44a/M1": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-1 a path no deny-list names is an input of every step",
+    "file": "packages/engine/digest.mjs",
+    "find": ".filter(([p]) => !isDenied(id, p))",
+    "replace": ".filter(() => false)",
+    "test": "node --test --test-name-pattern='^EI-1 ' packages/engine/test/engine-inputs.test.mjs",
+    "testFile": "packages/engine/test/engine-inputs.test.mjs",
+    "testName": "EI-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/gate-engine.test.mjs EI-1 -> packages/engine/test/engine-inputs.test.mjs EI-1"
+      }
+    ]
+  },
+  "INFRA-44a/M2": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-2 an engine file change re-runs every step, even one whose deny-list names tools/",
+    "file": "packages/engine/digest.mjs",
+    "find": "if (isToolPath(path)) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EI-2 ' packages/engine/test/engine-inputs.test.mjs",
+    "testFile": "packages/engine/test/engine-inputs.test.mjs",
+    "testName": "EI-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/gate-engine.test.mjs EI-2 -> packages/engine/test/engine-inputs.test.mjs EI-2"
+      }
+    ]
+  },
+  "INFRA-44a/M4": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-4 a skipped selected step is not verified; skipping an unselected step is a no-op",
+    "file": "packages/engine/receipt.mjs",
+    "find": "return results.every((r) => VERIFIED_STATUSES.includes(r.status));",
+    "replace": "return true;",
+    "test": "node --test --test-name-pattern='^EI-4 ' packages/engine/test/engine-inputs.test.mjs",
+    "testFile": "packages/engine/test/engine-inputs.test.mjs",
+    "testName": "EI-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/receipt.mjs -> packages/engine/receipt.mjs; test tools/gate-engine.test.mjs EI-4 -> packages/engine/test/engine-inputs.test.mjs EI-4"
+      }
+    ]
+  },
   "INFRA-45/M7": {
     "kind": "patch",
     "protects": "INFRA-45 3-14 CL-5 a malformed ratchet entry fails config load",
@@ -220,6 +1708,38 @@
       {
         "by": "INFRA-58a",
         "why": "re-registered in the public repo (D6): tools/gate/config.mjs -> packages/engine/config.mjs; test tools/gate/test/engine-api.test.mjs -> packages/engine/test/engine-api.test.mjs"
+      }
+    ]
+  },
+  "INFRA-45/M22": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-33 DR-1 the root is the nearest dir holding gate.config.mjs",
+    "file": "packages/engine/root.mjs",
+    "find": "if (existsSync(join(dir, 'gate.config.mjs'))) return dir;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DR-1 ' packages/engine/test/root-and-tree.test.mjs",
+    "testFile": "packages/engine/test/root-and-tree.test.mjs",
+    "testName": "DR-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/root.mjs -> packages/engine/root.mjs; test tools/gate-wiring.test.mjs DR-1 -> packages/engine/test/root-and-tree.test.mjs DR-1"
+      }
+    ]
+  },
+  "INFRA-45/M23": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-34 DR-4 the tree hash excludes exactly tree.json exclude",
+    "file": "packages/engine/tree.mjs",
+    "find": "const excluded = (p) => treeExclude().some((d) => p === d || p.startsWith(`${d}/`));",
+    "replace": "const excluded = () => false;",
+    "test": "node --test --test-name-pattern='^DR-4 ' packages/engine/test/root-and-tree.test.mjs",
+    "testFile": "packages/engine/test/root-and-tree.test.mjs",
+    "testName": "DR-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/tree.mjs -> packages/engine/tree.mjs; test tools/gate-wiring.test.mjs DR-4 -> packages/engine/test/root-and-tree.test.mjs DR-4"
       }
     ]
   },

@@ -1,4 +1,292 @@
 {
+  "INFRA-14/M10": {
+    "kind": "patch",
+    "protects": "3 I10 VT-S1a untracked snapshot files fail the drift check",
+    "file": "packages/supabase-next/step-defaults.mjs",
+    "find": "! git ls-files --others --exclude-standard supabase/schema/ | grep . && ",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-S1a ' packages/supabase-next/test/step-defaults.test.mjs",
+    "testFile": "packages/supabase-next/test/step-defaults.test.mjs",
+    "testName": "VT-S1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/step-defaults.mjs -> packages/supabase-next/step-defaults.mjs; test gate.config.test.mjs VT-S1 -> packages/supabase-next/test/step-defaults.test.mjs VT-S1a"
+      }
+    ]
+  },
+  "INFRA-14/M11": {
+    "kind": "patch",
+    "protects": "3 I10 VT-S1b drift diff covers supabase/schema/",
+    "file": "packages/supabase-next/step-defaults.mjs",
+    "find": "git diff --exit-code packages/core/src/db.types.ts supabase/schema/",
+    "replace": "git diff --exit-code packages/core/src/db.types.ts",
+    "test": "node --test --test-name-pattern='^VT-S1b ' packages/supabase-next/test/step-defaults.test.mjs",
+    "testFile": "packages/supabase-next/test/step-defaults.test.mjs",
+    "testName": "VT-S1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/step-defaults.mjs -> packages/supabase-next/step-defaults.mjs; test gate.config.test.mjs VT-S1 -> packages/supabase-next/test/step-defaults.test.mjs VT-S1b"
+      }
+    ]
+  },
+  "INFRA-15/M1": {
+    "kind": "patch",
+    "protects": "3 I2 RM-MR-3 tagged dollar-quote matched by tag",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "const DOLLAR_TAG = /\\$([A-Za-z_][A-Za-z_0-9]*)?\\$/y;",
+    "replace": "const DOLLAR_TAG = /\\$\\$/y;",
+    "test": "node --test --test-name-pattern='^RM-MR-3 ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-3 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-3"
+      }
+    ]
+  },
+  "INFRA-15/M2": {
+    "kind": "patch",
+    "protects": "3 I2 RM-MR-7 function start is case-insensitive",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "const FUNCTION_START = /create\\s+(?:or\\s+replace\\s+)?function\\b/iy;",
+    "replace": "const FUNCTION_START = /create\\s+(?:or\\s+replace\\s+)?function\\b/y;",
+    "test": "node --test --test-name-pattern='^RM-MR-7 ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-7 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-7"
+      }
+    ]
+  },
+  "INFRA-15/M3": {
+    "kind": "patch",
+    "protects": "3 I3 RM-MR-6 unparseable file reads whole",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "if (spans === null) return null;",
+    "replace": "if (spans === null) return [];",
+    "test": "node --test --test-name-pattern='^RM-MR-6 ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-6 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-6"
+      }
+    ]
+  },
+  "INFRA-15/M4": {
+    "kind": "patch",
+    "protects": "3 I3 RM-MR-5a no function reads whole",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "if (spans.length === 0) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^RM-MR-5a ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-5a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-5 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-5a"
+      }
+    ]
+  },
+  "INFRA-15/M5": {
+    "kind": "patch",
+    "protects": "3 I3 RM-MR-5b empty ranges read whole (R4)",
+    "file": "packages/supabase-next/sql-ranges.mjs",
+    "find": "if (ranges.length === 0) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^RM-MR-5b ' packages/supabase-next/test/sql-ranges.test.mjs",
+    "testFile": "packages/supabase-next/test/sql-ranges.test.mjs",
+    "testName": "RM-MR-5b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/sql-ranges.mjs -> packages/supabase-next/sql-ranges.mjs; test tools/review-map.test.mjs RM-MR-5 -> packages/supabase-next/test/sql-ranges.test.mjs RM-MR-5b"
+      }
+    ]
+  },
+  "INFRA-23b/M1": {
+    "kind": "patch",
+    "protects": "5 VE-1a G1 core src arm",
+    "file": "packages/supabase-next/step-defaults.mjs",
+    "find": "if (paths.some((p) => p.startsWith('packages/core/src/') && !tools.e2eAreas.TEST_FILE_RE.test(p))) return true;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-1a ' packages/supabase-next/test/step-defaults.test.mjs",
+    "testFile": "packages/supabase-next/test/step-defaults.test.mjs",
+    "testName": "VE-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/step-defaults.mjs -> packages/supabase-next/step-defaults.mjs; test gate.config.test.mjs VE-1 -> packages/supabase-next/test/step-defaults.test.mjs VE-1a"
+      }
+    ]
+  },
+  "INFRA-23b/M2": {
+    "kind": "patch",
+    "protects": "5 VE-1b R4(d) full-trigger arm",
+    "file": "packages/supabase-next/step-defaults.mjs",
+    "find": "if (paths.some(isTrigger)) return true;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-1b ' packages/supabase-next/test/step-defaults.test.mjs",
+    "testFile": "packages/supabase-next/test/step-defaults.test.mjs",
+    "testName": "VE-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/step-defaults.mjs -> packages/supabase-next/step-defaults.mjs; test gate.config.test.mjs VE-1 -> packages/supabase-next/test/step-defaults.test.mjs VE-1b"
+      }
+    ]
+  },
+  "INFRA-23b/M3": {
+    "kind": "patch",
+    "protects": "VE-3a a stale nightly forces a full run",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": "if (!(nowMs - Date.parse(nightly.ranAt) <= NIGHTLY_MAX_AGE_MS)) return { mode: 'full', why: 'nightly stale' };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-3a ' packages/supabase-next/test/e2e-units.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-units.test.mjs",
+    "testName": "VE-3a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/verify-ticket-e2e.test.mjs VE-3 -> packages/supabase-next/test/e2e-units.test.mjs VE-3a"
+      }
+    ]
+  },
+  "INFRA-23b/M4": {
+    "kind": "patch",
+    "protects": "VE-3b a nightly that is not green or amber forces a full run",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": "if (!AFFECTED_NIGHTLY.includes(nightly?.status)) return { mode: 'full', why: `nightly ${nightly?.status ?? 'missing'}` };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-3b ' packages/supabase-next/test/e2e-units.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-units.test.mjs",
+    "testName": "VE-3b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/verify-ticket-e2e.test.mjs VE-3 -> packages/supabase-next/test/e2e-units.test.mjs VE-3b"
+      }
+    ]
+  },
+  "INFRA-23b/M5": {
+    "kind": "patch",
+    "protects": "VE-3c the full flag forces a full run",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": "if (flag === 'full') return { mode: 'full', why: '--e2e=full' };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-3c ' packages/supabase-next/test/e2e-units.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-units.test.mjs",
+    "testName": "VE-3c ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/verify-ticket-e2e.test.mjs VE-3 -> packages/supabase-next/test/e2e-units.test.mjs VE-3c"
+      }
+    ]
+  },
+  "INFRA-23b/M6": {
+    "kind": "patch",
+    "protects": "VE-4 a full selection forces a full run",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": "if (selection.mode !== 'affected') return { mode: 'full', why: selection.why };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-4 ' packages/supabase-next/test/e2e-units.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-units.test.mjs",
+    "testName": "VE-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/verify-ticket-e2e.test.mjs VE-4 -> packages/supabase-next/test/e2e-units.test.mjs VE-4"
+      }
+    ]
+  },
+  "INFRA-23b/M7": {
+    "kind": "patch",
+    "protects": "VE-5a a nightly-fix branch has no known red units",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": "if (/^fix\\/nightly-/.test(branch)) return [];",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VE-5a ' packages/supabase-next/test/e2e-units.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-units.test.mjs",
+    "testName": "VE-5a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/verify-ticket-e2e.test.mjs VE-5 -> packages/supabase-next/test/e2e-units.test.mjs VE-5a"
+      }
+    ]
+  },
+  "INFRA-23b/M8": {
+    "kind": "patch",
+    "protects": "VE-5b selected units are not known red",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": ".filter((f) => !selected.includes(f))",
+    "replace": ".filter(() => true)",
+    "test": "node --test --test-name-pattern='^VE-5b ' packages/supabase-next/test/e2e-units.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-units.test.mjs",
+    "testName": "VE-5b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/verify-ticket-e2e.test.mjs VE-5 -> packages/supabase-next/test/e2e-units.test.mjs VE-5b"
+      }
+    ]
+  },
+  "INFRA-23b/M10": {
+    "kind": "patch",
+    "protects": "VE-7b only a pass line is reused",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": "if (!fresh && !alwaysRun.has(file) && line?.status === 'pass') {",
+    "replace": "if (!fresh && !alwaysRun.has(file) && line !== undefined) {",
+    "test": "node --test --test-name-pattern='^VE-7b ' packages/supabase-next/test/e2e-units.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-units.test.mjs",
+    "testName": "VE-7b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/verify-ticket-e2e.test.mjs VE-7 -> packages/supabase-next/test/e2e-units.test.mjs VE-7b"
+      }
+    ]
+  },
+  "INFRA-23b/M19": {
+    "kind": "patch",
+    "protects": "VE-8b the selection keeps only units on disk",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": ": selected.filter((f) => specNames.includes(f));",
+    "replace": ": selected;",
+    "test": "node --test --test-name-pattern='^VE-8b ' packages/supabase-next/test/e2e-units.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-units.test.mjs",
+    "testName": "VE-8b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/verify-ticket-e2e.test.mjs VE-8b -> packages/supabase-next/test/e2e-units.test.mjs VE-8b"
+      }
+    ]
+  },
+  "INFRA-44a/M5": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-5 units are ledgered per unit and reused only on an identical unit digest",
+    "file": "packages/supabase-next/e2e-units.mjs",
+    "find": "l.id === 'e2e-spec' && l.file === file && l.digest === digest",
+    "replace": "l.id === 'e2e-spec' && l.file === file",
+    "test": "node --test --test-name-pattern='^EI-5 ' packages/supabase-next/test/e2e-unit-reuse.test.mjs",
+    "testFile": "packages/supabase-next/test/e2e-unit-reuse.test.mjs",
+    "testName": "EI-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/packs/supabase-next/e2e-units.mjs -> packages/supabase-next/e2e-units.mjs; test tools/gate-engine.test.mjs EI-5 -> packages/supabase-next/test/e2e-unit-reuse.test.mjs EI-5"
+      }
+    ]
+  },
   "INFRA-58a/M13": {
     "kind": "patch",
     "protects": "5 SN-1 the pack contributes the next-served harness only when mutations opts are given",
