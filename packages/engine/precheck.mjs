@@ -1,6 +1,6 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { firstError } from './summary.mjs';
-import { packHook } from './pack-hooks.mjs';
+import { registryHooks } from './mutations/gate.mjs';
 import { commandsOf } from './config.mjs';
 import { GATE } from './project.mjs';
 import { ROOT } from './root.mjs';
@@ -20,8 +20,8 @@ const precheckIo = {
       cwd: ROOT,
       encoding: 'utf8',
     }).trim(),
-  registry: () => packHook('registry')?.entries?.() ?? new Map(),
-  baseRegistry: (base) => packHook('registry')?.entriesAt?.(base) ?? new Map(),
+  registry: () => registryHooks(GATE)?.entries?.() ?? new Map(),
+  baseRegistry: (base) => registryHooks(GATE)?.entriesAt?.(base) ?? new Map(),
 };
 
 /** `--ticket=ID` from an argv, else undefined. */
@@ -56,7 +56,7 @@ export async function runPrecheck(
     .filter((k) => !baseKeys.has(k))
     .map((k) => k.split('/')[0]);
   const fromBranch =
-    packHook('registry')?.ticketFromBranch?.(io.branch()) ?? null;
+    registryHooks(GATE)?.ticketFromBranch?.(io.branch()) ?? null;
   const known = live(reg);
   const ids = [
     ...new Set(

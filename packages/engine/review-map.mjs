@@ -32,6 +32,7 @@ import { basename, dirname, join } from 'node:path';
 import { GATE as config, CONFIG_EXPORTS as project } from './project.mjs';
 import { globRe } from './config.mjs';
 import { packHook } from './pack-hooks.mjs';
+import { registryHooks } from './mutations/gate.mjs';
 import { ROOT } from './root.mjs';
 import { baseRef } from './tree.mjs';
 
@@ -234,7 +235,7 @@ export function collect(base, root = ROOT) {
   let baseReg = null;
   let treeReg = null;
   if (paths.some(isRegistryFile)) {
-    const reg = packHook('registry');
+    const reg = registryHooks(config);
     baseReg = reg?.at?.(base, root).entries ?? new Map();
     treeReg = reg?.load?.(root).entries ?? new Map();
   }

@@ -5,9 +5,8 @@
 //
 // The engine reaches the pack only through these hooks (tools/gate/pack-hooks.mjs); a pack
 // without one is a pack that does not do that:
-//   registry   { plan(base), dryLine(plan), entries(), entriesAt(base), load(root),
-//                at(base, root), ticketFromBranch(branch) }   mutation-registry plan, dry-run
-//              line, precheck lookups and the review map's retirement rows
+//   mutationKinds     { sql }                      the mutation kinds this pack contributes
+//   mutationHarnesses [nextServed(opts)] or []     the served-test harness, when `mutations` is given
 //   nightly    { line(nowMs) }                                  the dry-run's nightly status line
 //   e2e        () => Promise<{ reportPath, parseFlag(args), dryLine(plan), finish(result, ctx),
 //                finishShadow(plan, results), shadowLine(shadow) }>   loaded lazily: it reads
@@ -15,7 +14,7 @@
 //   sqlRanges  { H1_REASON, migrationFacts, migrationReadRanges }   migration read ranges
 // It also carries `e2eWhen` and `e2eUnits` for gate.config.mjs's e2e step.
 import { bindTools, tools } from './tools.mjs';
-import { registryDryLine, registryPlan } from './steps.mjs';
+import { mutationHarnesses, mutationKinds } from './mutations/pack.mjs';
 import {
   H1_REASON,
   migrationFacts,
@@ -24,21 +23,13 @@ import {
 import { e2eWhen } from './step-defaults.mjs';
 import { e2eUnits } from './units.mjs';
 
-export function supabaseNext({ tools: project } = {}) {
+export function supabaseNext({ tools: project, mutations } = {}) {
   bindTools(project);
   return {
     name: 'supabase-next',
     version: '0.0.0-local',
-    registry: {
-      plan: registryPlan,
-      dryLine: registryDryLine,
-      entries: () => tools.mutationSelect.registryEntries(),
-      entriesAt: (base) => tools.mutationSelect.registryEntriesAt(base),
-      load: (root) => tools.mutateCheck.loadRegistry(root),
-      at: (base, root) => tools.mutateCheck.registryAt(base, root),
-      ticketFromBranch: (branch) =>
-        tools.checkMutations.ticketFromBranch(branch),
-    },
+    mutationKinds,
+    mutationHarnesses: mutations ? mutationHarnesses(mutations) : [],
     nightly: {
       line(nowMs) {
         const { nightlyDir, readNightly, statusLines } = tools.nightly;

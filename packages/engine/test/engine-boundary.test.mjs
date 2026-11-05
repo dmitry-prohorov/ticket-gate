@@ -390,7 +390,7 @@ test(
     const root = mkdtempSync(join(tmpdir(), 'engine-boundary-pack-'));
     const dir = join(root, 'supabase-next');
     cpSync(PACK_DIR, dir, { recursive: true });
-    const steps = join(dir, 'steps.mjs');
+    const steps = join(dir, 'index.mjs');
     writeFileSync(
       steps,
       readFileSync(steps, 'utf8') +
