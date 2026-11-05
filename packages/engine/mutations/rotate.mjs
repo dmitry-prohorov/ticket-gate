@@ -1,41 +1,41 @@
 // Mutation rotation: run the registry's guards in batches, oldest proof first, inside a time
 // budget, and keep a ledger of what each run did. The caller supplies `io` (clock, registry,
 // process runner, files) so a project's own runner and `ticket-gate mutate --rotate` share this core.
-import { spawn, execFileSync } from "node:child_process";
+import { spawn, execFileSync } from 'node:child_process';
 import {
   existsSync,
   mkdirSync,
   readFileSync,
   rmSync,
   writeFileSync,
-} from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+} from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { safeKillGroup } from "../kill-group.mjs";
-import { takeOrExit } from "../lock.mjs";
-import { ROOT } from "../root.mjs";
-import { compareKeys, loadRegistry } from "./registry.mjs";
+import { safeKillGroup } from '../kill-group.mjs';
+import { takeOrExit } from '../lock.mjs';
+import { ROOT } from '../root.mjs';
+import { compareKeys, loadRegistry } from './registry.mjs';
 
 export const ROTATE_DEFAULTS = Object.freeze({
   budgetMs: 3_600_000,
   batch: 10,
   graceS: 120,
-  receipt: ".turbo/mutation-registry.json",
+  receipt: '.turbo/mutation-registry.json',
 });
 
 const DAY_MS = 86_400_000;
-const LEDGER_STATUS = new Set(["killed", "survived", "error"]);
-const ledgerFile = (dir) => join(dir, "mutations.jsonl");
+const LEDGER_STATUS = new Set(['killed', 'survived', 'error']);
+const ledgerFile = (dir) => join(dir, 'mutations.jsonl');
 const ts = (l) => Date.parse(l.ranAt);
 
 function parseLedgerLine(text) {
   try {
     const l = JSON.parse(text);
     const ok =
-      typeof l?.key === "string" &&
-      typeof l.sha === "string" &&
-      typeof l.ranAt === "string" &&
+      typeof l?.key === 'string' &&
+      typeof l.sha === 'string' &&
+      typeof l.ranAt === 'string' &&
       LEDGER_STATUS.has(l.status);
     return ok ? [l] : [];
   } catch {
@@ -47,8 +47,8 @@ function parseLedgerLine(text) {
 export function readLedger(dir) {
   const f = ledgerFile(dir);
   if (!existsSync(f)) return [];
-  return readFileSync(f, "utf8")
-    .split("\n")
+  return readFileSync(f, 'utf8')
+    .split('\n')
     .filter(Boolean)
     .flatMap(parseLedgerLine);
 }
@@ -59,7 +59,7 @@ export function compactLedger(lines) {
   for (const l of lines) {
     const e = per.get(l.key) ?? { newest: null, killed: null };
     if (e.newest === null || ts(l) >= ts(e.newest)) e.newest = l;
-    if (l.status === "killed" && (e.killed === null || ts(l) >= ts(e.killed)))
+    if (l.status === 'killed' && (e.killed === null || ts(l) >= ts(e.killed)))
       e.killed = l;
     per.set(l.key, e);
   }
@@ -89,7 +89,7 @@ export function rotationOrder(live, ledger) {
 function survivorOf(key, byKey, ledger) {
   const e = byKey.get(key);
   const kill = ledger
-    .filter((l) => l.key === key && l.status === "killed")
+    .filter((l) => l.key === key && l.status === 'killed')
     .sort((a, b) => ts(b) - ts(a))[0];
   return {
     key,
@@ -102,9 +102,10 @@ function survivorOf(key, byKey, ledger) {
 /**
  * Runs registry keys in rotation order in batches until the budget (soft: a batch in flight
  * finishes) or the deadline (hard: the batch limit is the time left, SIGTERM then SIGKILL) is
- * reached. Appends to <dir>/mutations.jsonl after every batch. Throws on a registry error; the
- * caller records it. `command` is the batch runner as [cmd, ...args]; `--registry --ids=<keys>`
- * is appended to it.
+ * reached. Without a finite `deadlineMs` there is no hard deadline and a batch has no limit.
+ * Appends to <dir>/mutations.jsonl after every batch. Throws on a registry error; the caller
+ * records it. `command` is the batch runner as [cmd, ...args]; `--registry --ids=<keys>` is
+ * appended to it.
  */
 export async function runRotation(
   io,
@@ -126,7 +127,7 @@ export async function runRotation(
   if (reg.errors.length > 0)
     throw new Error(`registry is invalid: ${reg.errors[0]}`);
   const entries = [...reg.entries].flatMap(([key, v]) =>
-    v.entry.kind === "unguarded"
+    v.entry.kind === 'unguarded'
       ? []
       : [
           {
@@ -141,17 +142,19 @@ export async function runRotation(
   const byKey = new Map(live.map((e) => [e.key, e]));
   let ledger = readLedger(dir);
   const order = rotationOrder(live, ledger);
-  const stopAt = Math.min(startMs + budgetMs, deadlineMs);
+  const hard = Number.isFinite(deadlineMs);
+  const budgetEnd = startMs + budgetMs;
+  const stopAt = hard ? Math.min(budgetEnd, deadlineMs) : budgetEnd;
   const receipt = join(cwd, receiptRel);
   const n = { ran: 0, killed: 0, survived: 0, error: 0 };
   const survivors = [];
-  let status = "ran";
+  let status = 'ran';
   let reason = null;
-  let stoppedBy = "done";
+  let stoppedBy = 'done';
   for (let i = 0; i < order.length; ) {
     const now = io.now();
     if (now >= stopAt) {
-      stoppedBy = startMs + budgetMs <= deadlineMs ? "budget" : "deadline";
+      stoppedBy = !hard || budgetEnd <= deadlineMs ? 'budget' : 'deadline';
       break;
     }
     const keys = order.slice(i, i + batch);
@@ -159,17 +162,19 @@ export async function runRotation(
     io.rm(receipt);
     const r = await io.run(
       command[0],
-      [...command.slice(1), "--registry", `--ids=${keys.join(",")}`],
+      [...command.slice(1), '--registry', `--ids=${keys.join(',')}`],
       {
         cwd,
         env,
-        limitS: Math.max(1, Math.ceil((deadlineMs - now) / 1000)),
-        killSignal: "SIGTERM",
+        limitS: hard
+          ? Math.max(1, Math.ceil((deadlineMs - now) / 1000))
+          : undefined,
+        killSignal: 'SIGTERM',
         graceS,
       },
     );
     if (r.timedOut) {
-      [status, reason, stoppedBy] = ["error", "cut-short", null];
+      [status, reason, stoppedBy] = ['error', 'cut-short', null];
       break;
     }
     let results = null;
@@ -181,13 +186,13 @@ export async function runRotation(
         results = null;
       }
     if (results === null) {
-      [status, reason, stoppedBy] = ["error", "no-receipt", null];
+      [status, reason, stoppedBy] = ['error', 'no-receipt', null];
       break;
     }
     const fresh = [];
     for (const x of results) {
       if (!keys.includes(x?.id) || !LEDGER_STATUS.has(x.status)) continue;
-      if (x.status === "survived")
+      if (x.status === 'survived')
         survivors.push(survivorOf(x.id, byKey, ledger));
       n[x.status] += 1;
       n.ran += 1;
@@ -201,14 +206,14 @@ export async function runRotation(
     ledger = compactLedger([...ledger, ...fresh]);
     io.writeFile(
       ledgerFile(dir),
-      `${ledger.map((l) => JSON.stringify(l)).join("\n")}\n`,
+      `${ledger.map((l) => JSON.stringify(l)).join('\n')}\n`,
     );
   }
   const kills = live
     .map(
       (e) =>
         ledger
-          .filter((l) => l.key === e.key && l.status === "killed")
+          .filter((l) => l.key === e.key && l.status === 'killed')
           .map(ts)
           .sort((a, b) => b - a)[0],
     )
@@ -237,10 +242,10 @@ export async function runRotation(
 export function runGroup(
   cmd,
   args,
-  { cwd, env = {}, limitS, killSignal = "SIGTERM", graceS = 120 } = {},
+  { cwd, env = {}, limitS, killSignal = 'SIGTERM', graceS = 120 } = {},
 ) {
   return new Promise((done) => {
-    let out = "";
+    let out = '';
     let timedOut = false;
     let settled = false;
     const timers = [];
@@ -248,13 +253,13 @@ export function runGroup(
       cwd,
       env: { ...process.env, ...env },
       detached: true,
-      stdio: ["ignore", "pipe", "pipe"],
+      stdio: ['ignore', 'pipe', 'pipe'],
     });
     const finish = (code) => {
       if (settled) return;
       settled = true;
       timers.forEach(clearTimeout);
-      safeKillGroup(child.pid, "SIGKILL");
+      safeKillGroup(child.pid, 'SIGKILL');
       done({ code, timedOut, out });
     };
     if (limitS !== undefined)
@@ -264,23 +269,30 @@ export function runGroup(
           safeKillGroup(child.pid, killSignal);
           timers.push(
             setTimeout(() => {
-              safeKillGroup(child.pid, "SIGKILL");
+              safeKillGroup(child.pid, 'SIGKILL');
               finish(124);
             }, graceS * 1000),
           );
         }, limitS * 1000),
       );
-    child.stdout.on("data", (d) => (out += d));
-    child.stderr.on("data", (d) => (out += d));
-    child.on("error", (err) => {
+    child.stdout.on('data', (d) => (out += d));
+    child.stderr.on('data', (d) => (out += d));
+    child.on('error', (err) => {
       out += String(err);
       finish(1);
     });
-    child.on("close", (code) => finish(code ?? 1));
+    child.on('close', (code) => finish(code ?? 1));
   });
 }
 
-const ROTATE_FLAGS = ["rotate", "ledger", "budget-min", "batch", "deadline", "sha"];
+const ROTATE_FLAGS = [
+  'rotate',
+  'ledger',
+  'budget-min',
+  'batch',
+  'deadline',
+  'sha',
+];
 
 function rotateUsage(msg, setup) {
   console.error(
@@ -313,25 +325,34 @@ async function rotate(args, setup) {
       return rotateUsage(`unexpected argument ${a}`, setup);
     flags.set(m[1], m[2]);
   }
-  if (!flags.get("ledger")) return rotateUsage("--rotate needs --ledger=<dir>", setup);
-  const budgetMin = flags.has("budget-min") ? positive(flags.get("budget-min")) : 60;
+  if (!flags.get('ledger'))
+    return rotateUsage('--rotate needs --ledger=<dir>', setup);
+  const budgetMin = flags.has('budget-min')
+    ? positive(flags.get('budget-min'))
+    : 60;
   if (budgetMin === null)
-    return rotateUsage("--budget-min must be a positive number", setup);
-  const batch = flags.has("batch") ? positive(flags.get("batch")) : ROTATE_DEFAULTS.batch;
+    return rotateUsage('--budget-min must be a positive number', setup);
+  const batch = flags.has('batch')
+    ? positive(flags.get('batch'))
+    : ROTATE_DEFAULTS.batch;
   if (batch === null || !Number.isInteger(batch))
-    return rotateUsage("--batch must be a positive integer", setup);
+    return rotateUsage('--batch must be a positive integer', setup);
   const startMs = Date.now();
-  const deadlineMs = flags.has("deadline")
-    ? Date.parse(flags.get("deadline"))
-    : startMs + budgetMin * 60_000;
-  if (!Number.isFinite(deadlineMs))
-    return rotateUsage("--deadline must be an ISO date-time", setup);
+  // No --deadline: the budget is soft and the batch in flight at its end finishes.
+  const deadlineMs = flags.has('deadline')
+    ? Date.parse(flags.get('deadline'))
+    : undefined;
+  if (flags.has('deadline') && !Number.isFinite(deadlineMs))
+    return rotateUsage('--deadline must be an ISO date-time', setup);
   const sha =
-    flags.get("sha") ||
-    execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
-  const dir = resolve(ROOT, flags.get("ledger"));
+    flags.get('sha') ||
+    execFileSync('git', ['rev-parse', 'HEAD'], {
+      cwd: ROOT,
+      encoding: 'utf8',
+    }).trim();
+  const dir = resolve(ROOT, flags.get('ledger'));
   // One run on the local stack at a time; the batch children inherit the owner id.
-  takeOrExit("mutate:check");
+  takeOrExit('mutate:check');
   mkdirSync(dir, { recursive: true });
   const io = {
     now: Date.now,
@@ -339,7 +360,7 @@ async function rotate(args, setup) {
     run: runGroup,
     rm: (p) => rmSync(p, { force: true }),
     exists: existsSync,
-    readFile: (p) => readFileSync(p, "utf8"),
+    readFile: (p) => readFileSync(p, 'utf8'),
     writeFile: (p, text) => writeFileSync(p, text),
   };
   let summary;
@@ -354,22 +375,29 @@ async function rotate(args, setup) {
       batch,
       command: [
         process.execPath,
-        join(dirname(fileURLToPath(import.meta.url)), "..", "bin", "ticket-gate.mjs"),
-        "mutate",
+        join(
+          dirname(fileURLToPath(import.meta.url)),
+          '..',
+          'bin',
+          'ticket-gate.mjs',
+        ),
+        'mutate',
       ],
       receipt: setup.receipts.registry,
     });
   } catch (err) {
-    console.error(`${err.message}\nRun ${setup.commands.checkMutations} for the full report.`);
-    return err.message.startsWith("registry is invalid") ? 2 : 1;
+    console.error(
+      `${err.message}\nRun ${setup.commands.checkMutations} for the full report.`,
+    );
+    return err.message.startsWith('registry is invalid') ? 2 : 1;
   }
   const s = summary;
   console.log(
-    `rotate: ${s.ran} ran (${s.killed} killed, ${s.survived} survived, ${s.error} error) of ${s.live} live; ${s.stoppedBy ?? `error ${s.reason}`}; oldest proof ${s.oldestProofDays ?? "none"} days; ${s.unproven} unproven`,
+    `rotate: ${s.ran} ran (${s.killed} killed, ${s.survived} survived, ${s.error} error) of ${s.live} live; ${s.stoppedBy ?? `error ${s.reason}`}; oldest proof ${s.oldestProofDays ?? 'none'} days; ${s.unproven} unproven`,
   );
   for (const v of s.survivors)
     console.log(
-      `  ${v.key} survived  ${v.file ?? "-"}  ${v.testFile ?? "-"}  last kill ${v.lastKillSha ?? "none"}`,
+      `  ${v.key} survived  ${v.file ?? '-'}  ${v.testFile ?? '-'}  last kill ${v.lastKillSha ?? 'none'}`,
     );
-  return s.status === "ran" && s.survivors.length === 0 ? 0 : 1;
+  return s.status === 'ran' && s.survivors.length === 0 ? 0 : 1;
 }

@@ -1466,7 +1466,7 @@
     "kind": "patch",
     "protects": "NM-2a no batch starts once the budget is spent",
     "file": "packages/engine/mutations/rotate.mjs",
-    "find": "const stopAt = Math.min(startMs + budgetMs, deadlineMs);",
+    "find": "const stopAt = hard ? Math.min(budgetEnd, deadlineMs) : budgetEnd;",
     "replace": "const stopAt = deadlineMs;",
     "test": "node --test --test-name-pattern='^NM-2a ' packages/engine/test/mutations/rotate.test.mjs",
     "testFile": "packages/engine/test/mutations/rotate.test.mjs",
@@ -1475,6 +1475,10 @@
       {
         "by": "INFRA-60",
         "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs"
+      },
+      {
+        "by": "INFRA-60",
+        "why": "quote style to the house style"
       }
     ]
   },
@@ -1482,8 +1486,8 @@
     "kind": "patch",
     "protects": "NM-2b the deadline stops the phase before the budget",
     "file": "packages/engine/mutations/rotate.mjs",
-    "find": "const stopAt = Math.min(startMs + budgetMs, deadlineMs);",
-    "replace": "const stopAt = startMs + budgetMs;",
+    "find": "const stopAt = hard ? Math.min(budgetEnd, deadlineMs) : budgetEnd;",
+    "replace": "const stopAt = budgetEnd;",
     "test": "node --test --test-name-pattern='^NM-2b ' packages/engine/test/mutations/rotate.test.mjs",
     "testFile": "packages/engine/test/mutations/rotate.test.mjs",
     "testName": "NM-2b ",
@@ -1491,6 +1495,10 @@
       {
         "by": "INFRA-60",
         "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs"
+      },
+      {
+        "by": "INFRA-60",
+        "why": "quote style to the house style"
       }
     ]
   },
@@ -1498,7 +1506,7 @@
     "kind": "patch",
     "protects": "NM-3 a survivor is recorded with file, testFile and last kill",
     "file": "packages/engine/mutations/rotate.mjs",
-    "find": "if (x.status === \"survived\")\n        survivors.push(survivorOf(x.id, byKey, ledger));",
+    "find": "if (x.status === 'survived')\n        survivors.push(survivorOf(x.id, byKey, ledger));",
     "replace": "",
     "test": "node --test --test-name-pattern='^NM-3 ' packages/engine/test/mutations/rotate.test.mjs",
     "testFile": "packages/engine/test/mutations/rotate.test.mjs",
@@ -1507,6 +1515,10 @@
       {
         "by": "INFRA-60",
         "why": "export: tools/nightly-e2e.mjs -> packages/engine/mutations/rotate.mjs; test tools/nightly-e2e.test.mjs -> packages/engine/test/mutations/rotate.test.mjs; find widened to the two-line if statement (the formatter splits it)"
+      },
+      {
+        "by": "INFRA-60",
+        "why": "quote style to the house style"
       }
     ]
   },
@@ -1882,10 +1894,26 @@
     "kind": "patch",
     "protects": "INFRA-60 5#RT-2 a rotation refuses while another owner holds the stack lock",
     "file": "packages/engine/mutations/rotate.mjs",
-    "find": "takeOrExit(\"mutate:check\");",
+    "find": "takeOrExit('mutate:check');",
     "replace": "",
     "test": "node --test --test-name-pattern='^RT-2 ' packages/engine/test/mutations/rotate.test.mjs",
     "testFile": "packages/engine/test/mutations/rotate.test.mjs",
-    "testName": "RT-2 "
+    "testName": "RT-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "quote style to the house style"
+      }
+    ]
+  },
+  "INFRA-60/M5": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#RT-4 a rotation with no hard deadline lets the batch in flight at the budget end finish",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "const hard = Number.isFinite(deadlineMs);",
+    "replace": "const hard = true;",
+    "test": "node --test --test-name-pattern='^RT-4 ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "RT-4 "
   }
 }
