@@ -527,6 +527,166 @@
       }
     ]
   },
+  "INFRA-20/M1": {
+    "kind": "patch",
+    "protects": "L-1 frontmatter values that need quoting are written JSON-quoted; without it a colon or hash in a value corrupts the file",
+    "file": "packages/engine/fu.mjs",
+    "find": "needsQuote(value) ? JSON.stringify(value) : value",
+    "replace": "value",
+    "test": "node --test --test-name-pattern='^L-1 ' packages/engine/test/fu-register.test.mjs",
+    "testFile": "packages/engine/test/fu-register.test.mjs",
+    "testName": "L-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/follow-ups.test.mjs L-1 -> packages/engine/test/fu-register.test.mjs L-1"
+      }
+    ]
+  },
+  "INFRA-20/M2": {
+    "kind": "patch",
+    "protects": "L-4 a row whose Owner or Fixed in is not trailing is refused",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (!trailing) throw",
+    "replace": "if (false) throw",
+    "test": "node --test --test-name-pattern='^L-4 ' packages/engine/test/fu-register.test.mjs",
+    "testFile": "packages/engine/test/fu-register.test.mjs",
+    "testName": "L-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/follow-ups.test.mjs L-4 -> packages/engine/test/fu-register.test.mjs L-4"
+      }
+    ]
+  },
+  "INFRA-20/M3": {
+    "kind": "patch",
+    "protects": "C-5 close refuses a follow-up that is already done",
+    "file": "packages/engine/fu.mjs",
+    "find": "const alreadyDone = data.status === 'done';",
+    "replace": "const alreadyDone = false;",
+    "test": "node --test --test-name-pattern='^C-5 ' packages/engine/test/fu-register.test.mjs",
+    "testFile": "packages/engine/test/fu-register.test.mjs",
+    "testName": "C-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/follow-ups.test.mjs C-5 -> packages/engine/test/fu-register.test.mjs C-5"
+      }
+    ]
+  },
+  "INFRA-20/M4": {
+    "kind": "patch",
+    "protects": "K-1 the check names a file whose name does not match its id",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (name !== `${fileIdOf(id)}.md`)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^K-1 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-1 -> packages/engine/test/fu-check.test.mjs K-1"
+      }
+    ]
+  },
+  "INFRA-20/M5": {
+    "kind": "patch",
+    "protects": "K-7 numbers named in the README collision sentence are exempt from the duplicate rule; without the exemption old ids fail the check",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (exempt.has(num)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^K-7 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-7 -> packages/engine/test/fu-check.test.mjs K-7"
+      }
+    ]
+  },
+  "INFRA-20/M6": {
+    "kind": "patch",
+    "protects": "K-3 the check rejects a missing or unknown status",
+    "file": "packages/engine/fu.mjs",
+    "find": "!STATUSES.includes(status)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-3 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-3 -> packages/engine/test/fu-check.test.mjs K-3"
+      }
+    ]
+  },
+  "INFRA-20/M7": {
+    "kind": "patch",
+    "protects": "K-4a the check requires an owner on an open follow-up",
+    "file": "packages/engine/fu.mjs",
+    "find": "status === 'open' && data.owner === undefined",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-4a ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-4a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-4 -> packages/engine/test/fu-check.test.mjs K-4a"
+      }
+    ]
+  },
+  "INFRA-20/M8": {
+    "kind": "patch",
+    "protects": "K-4b the check requires fixed-in on a done follow-up",
+    "file": "packages/engine/fu.mjs",
+    "find": "status === 'done' && data['fixed-in'] === undefined",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-4b ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-4b ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-4 -> packages/engine/test/fu-check.test.mjs K-4b"
+      }
+    ]
+  },
+  "INFRA-20/M9": {
+    "kind": "patch",
+    "protects": "K-5 the check rejects an unknown frontmatter key",
+    "file": "packages/engine/fu.mjs",
+    "find": "!KEYS.includes(key)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-5 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-5 -> packages/engine/test/fu-check.test.mjs K-5"
+      }
+    ]
+  },
+  "INFRA-20/M10": {
+    "kind": "patch",
+    "protects": "K-6 the check rejects a follow-up row in the pointer page",
+    "file": "packages/engine/fu.mjs",
+    "find": "POINTER_ROW.test(pointer)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^K-6 ' packages/engine/test/fu-check.test.mjs",
+    "testFile": "packages/engine/test/fu-check.test.mjs",
+    "testName": "K-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/fu.mjs -> packages/engine/fu.mjs; test tools/check-follow-ups.test.mjs K-6 -> packages/engine/test/fu-check.test.mjs K-6"
+      }
+    ]
+  },
   "INFRA-23b/M9": {
     "kind": "patch",
     "protects": "VE-7a a unit digest covers its inputs and tooling paths",
