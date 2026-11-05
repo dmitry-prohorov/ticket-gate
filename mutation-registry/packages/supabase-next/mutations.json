@@ -616,5 +616,25 @@
     "test": "node --test --test-name-pattern='^MS-8a ' packages/supabase-next/test/mutations/snapshot.test.mjs",
     "testFile": "packages/supabase-next/test/mutations/snapshot.test.mjs",
     "testName": "MS-8a "
+  },
+  "INFRA-60/M3": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#PO-1 sql.reset replaces the lean reset command of the sql session",
+    "file": "packages/supabase-next/mutations/sql-kind.mjs",
+    "find": "resetDb: () => h.sh(reset, LIMITS.reset),",
+    "replace": "resetDb: () => h.sh(LEAN_RESET, LIMITS.reset),",
+    "test": "node --test --test-name-pattern='^PO-1 ' packages/supabase-next/test/pack-mutations.test.mjs",
+    "testFile": "packages/supabase-next/test/pack-mutations.test.mjs",
+    "testName": "PO-1 "
+  },
+  "INFRA-60/M4": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#PO-2 sql.preflight replaces the preflight command, args and limit",
+    "file": "packages/supabase-next/mutations/sql-channel.mjs",
+    "find": "preflight: () =>\n      exec(preflight.cmd, preflight.args, { limitS: preflight.limitS ?? 30 }),",
+    "replace": "preflight: () => exec('node', ['tools/stack-preflight.mjs', '--steps=db', '--wait=20'], { limitS: 30 }),",
+    "test": "node --test --test-name-pattern='^PO-2 ' packages/supabase-next/test/pack-mutations.test.mjs",
+    "testFile": "packages/supabase-next/test/pack-mutations.test.mjs",
+    "testName": "PO-2 "
   }
 }
