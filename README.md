@@ -39,6 +39,8 @@ unreviewed. Update by editing the version yourself.
 | `move-check [--base=REF]` | Prove a move-only diff; exit 1 while lines are unmatched. |
 | `fu list\|show\|next\|close\|check` | Work with the follow-up register. |
 | `ratchet <name> [args]` | Run a configured ratchet (`--update` where it has one). |
+| `mutate <ID>` / `mutate --registry (--ids=\|--all\|--changed)` | Prove each registered guard bites: apply its patch, run its test, expect a failure, restore the file. Needs `mutations` in the config. |
+| `mutations check [--fix]` / `mutations select [--affected --paths=]` | Validate (and repair) the mutation registry; list the entries a diff selects. |
 
 ## A minimal `gate.config.mjs`
 
@@ -60,6 +62,21 @@ export default defineGate({
 A step runs when its `when` matches the diff (`true` always runs it). `reuse: false` reruns a step every time; `reuse: { deny: [...] }` lets an earlier result stand and lists the paths that cannot affect the step. The engine validates the file on load and names the
 key to fix when something is wrong.
 
+## The mutation registry
+
+A guard is only worth having if its test fails without it. `mutation-registry/` holds one JSON entry per guard
+(`patch`: a file, a line to find, what to put there instead, and the test that must then fail). `mutations` in a
+`gate.config.mjs` turns the commands on: `mutations: { dir: 'mutation-registry' }`, optionally with `kinds`, `receipts`,
+`area`, `fieldOrder` and `legacy`. A pack contributes kinds and harnesses through the `mutationKinds` and
+`mutationHarnesses` hooks; `supabaseNext({ mutations })` adds the SQL kind and the served-test harness.
+
+This repository registers its own engine and pack guards the same way (`scripts/mutations.mjs` is its config):
+
+```sh
+npm run mutations:check            # validate the registry (part of npm run check)
+npm run mutate -- --registry --all # apply every guard, expect its test to fail (run by the release script)
+```
+
 ## What the hooks do and do not do
 
 - The hooks read the working tree and the receipt, and they exit. They make no network call and collect no telemetry.
@@ -72,7 +89,7 @@ key to fix when something is wrong.
 ```sh
 npm ci            # installs the workspace links; nothing is downloaded
 npm test          # every test, offline
-npm run check     # npm test, then the scrub (below)
+npm run check     # npm test, the scrub (below), then the mutation registry check
 ```
 
 `npm run check` is the gate for a pull request. The scrub (`scripts/scrub.mjs`) scans the working tree and every commit
@@ -89,7 +106,7 @@ Maintainers only. Publishing runs from CI, by trusted publishing with provenance
 1. Write the changes under `## Unreleased` in `CHANGELOG.md`.
 2. On `main` with a clean tree, with `gitleaks` and `trufflehog` installed and `TICKET_GATE_DENYLIST` exported:
    `npm run release -- <version>` (add `--dry-run` to check the gates only). It runs the scrub and both scanners, runs
-   the tests, sets both versions and the exact engine dependency, moves the changelog entry, commits and tags. It does
+   the tests, proves every registry guard with `mutate --registry --all`, sets both versions and the exact engine dependency, moves the changelog entry, commits and tags. It does
    not push and does not publish.
 3. Push `main`, then push the tag it printed. The tag push starts the `publish` workflow, which waits on the
    `npm-publish` environment's reviewer, re-checks that the tag matches the manifests, and publishes the engine, then the

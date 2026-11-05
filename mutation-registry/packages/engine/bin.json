@@ -1,0 +1,18 @@
+{
+  "INFRA-45/M8": {
+    "kind": "patch",
+    "protects": "INFRA-45 3-13 CL-2 a ratchet failing code reaches the exit status",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "process.exitCode = result.code;",
+    "replace": "process.exitCode = 0;",
+    "test": "node --test --test-name-pattern='^CL-2 ' packages/engine/test/cli.test.mjs",
+    "testFile": "packages/engine/test/cli.test.mjs",
+    "testName": "CL-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58a",
+        "why": "re-registered in the public repo (D6): tools/gate/bin/ticket-gate.mjs -> packages/engine/bin/ticket-gate.mjs; test tools/gate/test/cli.test.mjs -> packages/engine/test/cli.test.mjs"
+      }
+    ]
+  }
+}

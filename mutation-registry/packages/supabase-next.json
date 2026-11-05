@@ -1,0 +1,12 @@
+{
+  "INFRA-58a/M13": {
+    "kind": "patch",
+    "protects": "5 SN-1 the pack contributes the next-served harness only when mutations opts are given",
+    "file": "packages/supabase-next/index.mjs",
+    "find": "mutationHarnesses: mutations ? mutationHarnesses(mutations) : [],",
+    "replace": "mutationHarnesses: [],",
+    "test": "node --test --test-name-pattern='^SN-1 ' packages/supabase-next/test/pack-mutations.test.mjs",
+    "testFile": "packages/supabase-next/test/pack-mutations.test.mjs",
+    "testName": "SN-1 "
+  }
+}
