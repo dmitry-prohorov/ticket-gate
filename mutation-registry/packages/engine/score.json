@@ -1,0 +1,340 @@
+{
+  "INFRA-11/M2": {
+    "kind": "patch",
+    "protects": "5 VT-M2 tests, fixtures, index, constants are never mutated",
+    "file": "packages/engine/score/targets.mjs",
+    "find": ".filter((p) => !cfg.excluded.test(p))",
+    "replace": ".filter((p) => true)",
+    "test": "node --test --test-name-pattern='^ST-1 ' packages/engine/test/score/targets-select.test.mjs",
+    "testFile": "packages/engine/test/score/targets-select.test.mjs",
+    "testName": "ST-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/targets.mjs -> packages/engine/score/targets.mjs; test tools/verify-ticket-mutation.test.mjs VT-M2 -> packages/engine/test/score/targets-select.test.mjs ST-1"
+      }
+    ]
+  },
+  "INFRA-11/M3": {
+    "kind": "patch",
+    "protects": "5 VT-M4 a file deleted on the branch is not mutated",
+    "file": "packages/engine/score/targets.mjs",
+    "find": ".filter((p) => exists(p))",
+    "replace": ".filter((p) => true)",
+    "test": "node --test --test-name-pattern='^ST-2 ' packages/engine/test/score/targets-select.test.mjs",
+    "testFile": "packages/engine/test/score/targets-select.test.mjs",
+    "testName": "ST-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/targets.mjs -> packages/engine/score/targets.mjs; test tools/verify-ticket-mutation.test.mjs VT-M4 -> packages/engine/test/score/targets-select.test.mjs ST-2"
+      }
+    ]
+  },
+  "INFRA-11/M4": {
+    "kind": "patch",
+    "protects": "5 MS-S1 timeouts count as killed",
+    "file": "packages/engine/score/judge.mjs",
+    "find": "const killed = c.Killed + c.Timeout;",
+    "replace": "const killed = c.Killed;",
+    "test": "node --test --test-name-pattern='^MS-S1 ' packages/engine/test/score/judge.test.mjs",
+    "testFile": "packages/engine/test/score/judge.test.mjs",
+    "testName": "MS-S1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/judge.mjs -> packages/engine/score/judge.mjs; test tools/score/engine/judge.test.mjs -> packages/engine/test/score/judge.test.mjs"
+      }
+    ]
+  },
+  "INFRA-11/M5": {
+    "kind": "patch",
+    "protects": "5 MS-R1 a new file below 80 fails",
+    "file": "packages/engine/score/judge.mjs",
+    "find": "if (v.isNew && v.score < cfg.newFileMin)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^MS-R1 ' packages/engine/test/score/judge.test.mjs",
+    "testFile": "packages/engine/test/score/judge.test.mjs",
+    "testName": "MS-R1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/judge.mjs -> packages/engine/score/judge.mjs; test tools/score/engine/judge.test.mjs -> packages/engine/test/score/judge.test.mjs"
+      }
+    ]
+  },
+  "INFRA-11/M7": {
+    "kind": "patch",
+    "protects": "5 MS-R2 a whole-file drop below base with no regressed mutant is a WARN",
+    "file": "packages/engine/score/judge.mjs",
+    "find": "if (!v.isNew && v.score < v.baseScore && !(v.regressed?.length ?? 0))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^MS-R2 ' packages/engine/test/score/judge.test.mjs",
+    "testFile": "packages/engine/test/score/judge.test.mjs",
+    "testName": "MS-R2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/judge.mjs -> packages/engine/score/judge.mjs; test tools/score/engine/judge.test.mjs -> packages/engine/test/score/judge.test.mjs"
+      }
+    ]
+  },
+  "INFRA-11/M8": {
+    "kind": "patch",
+    "protects": "5 MS-R3 no-coverage mutants on changed lines fail an existing file",
+    "file": "packages/engine/score/judge.mjs",
+    "find": "if (!v.isNew && v.noCoverageOnChanged > 0)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^MS-R3 ' packages/engine/test/score/judge.test.mjs",
+    "testFile": "packages/engine/test/score/judge.test.mjs",
+    "testName": "MS-R3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/judge.mjs -> packages/engine/score/judge.mjs; test tools/score/engine/judge.test.mjs -> packages/engine/test/score/judge.test.mjs"
+      }
+    ]
+  },
+  "INFRA-11/M11": {
+    "kind": "patch",
+    "protects": "5 MS-L a hunk with an omitted count adds one line",
+    "file": "packages/engine/score/lines.mjs",
+    "find": "const count = m[2] === undefined ? 1 : Number(m[2]);",
+    "replace": "const count = Number(m[2] ?? 0);",
+    "test": "node --test --test-name-pattern='^MS-L ' packages/engine/test/score/lines.test.mjs",
+    "testFile": "packages/engine/test/score/lines.test.mjs",
+    "testName": "MS-L ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/lines.mjs -> packages/engine/score/lines.mjs; test tools/score/engine/lines.test.mjs -> packages/engine/test/score/lines.test.mjs"
+      }
+    ]
+  },
+  "INFRA-11/M12": {
+    "kind": "patch",
+    "protects": "5 MS-CLI5 a no-coverage mutant on a changed line fails the CLI",
+    "file": "packages/engine/score/cli.mjs",
+    "find": "noCoverageOnChanged: onChanged('NoCoverage'),",
+    "replace": "noCoverageOnChanged: 0,",
+    "test": "node --test --test-name-pattern='^MS-CLI5 ' packages/engine/test/score/cli.test.mjs",
+    "testFile": "packages/engine/test/score/cli.test.mjs",
+    "testName": "MS-CLI5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/cli.mjs -> packages/engine/score/cli.mjs; test tools/score/engine/cli.test.mjs -> packages/engine/test/score/cli.test.mjs"
+      }
+    ]
+  },
+  "INFRA-11/M13": {
+    "kind": "patch",
+    "protects": "5 MS-CLI6 new disable comments are listed in the survivors file",
+    "file": "packages/engine/score/cli.mjs",
+    "find": "const newDisables = targets.flatMap((t) =>\n      adapter.addedDisables(root, sha, t, isNew[t]),\n    );",
+    "replace": "const newDisables = [];",
+    "test": "node --test --test-name-pattern='^MS-CLI6 ' packages/engine/test/score/cli.test.mjs",
+    "testFile": "packages/engine/test/score/cli.test.mjs",
+    "testName": "MS-CLI6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/cli.mjs -> packages/engine/score/cli.mjs; test tools/score/engine/cli.test.mjs -> packages/engine/test/score/cli.test.mjs"
+      }
+    ]
+  },
+  "INFRA-18/M17": {
+    "kind": "patch",
+    "protects": "G13 marker decides reinstall",
+    "file": "packages/engine/score/base.mjs",
+    "find": "if (!existsSync(join(dir, baseInstall.marker))) {",
+    "replace": "if (!existsSync(join(dir, cfg.packageDir, 'node_modules'))) {",
+    "test": "node --test --test-name-pattern='^MS-B1 ' packages/engine/test/score/base.test.mjs",
+    "testFile": "packages/engine/test/score/base.test.mjs",
+    "testName": "MS-B1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/base.mjs -> packages/engine/score/base.mjs; test tools/score/engine/base.test.mjs -> packages/engine/test/score/base.test.mjs"
+      }
+    ]
+  },
+  "INFRA-18/M18": {
+    "kind": "patch",
+    "protects": "G13 marker written after install",
+    "file": "packages/engine/score/base.mjs",
+    "find": "writeFileSync(join(dir, baseInstall.marker), sha);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-B2 ' packages/engine/test/score/base.test.mjs",
+    "testFile": "packages/engine/test/score/base.test.mjs",
+    "testName": "MS-B2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/base.mjs -> packages/engine/score/base.mjs; test tools/score/engine/base.test.mjs -> packages/engine/test/score/base.test.mjs"
+      }
+    ]
+  },
+  "INFRA-29/M1": {
+    "kind": "patch",
+    "protects": "INFRA-29 MS-R5 a regressed mutant on an unchanged line fails an existing file",
+    "file": "packages/engine/score/judge.mjs",
+    "find": "if (!v.isNew && (v.regressed?.length ?? 0) > 0)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^MS-R5 ' packages/engine/test/score/judge.test.mjs",
+    "testFile": "packages/engine/test/score/judge.test.mjs",
+    "testName": "MS-R5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/judge.mjs -> packages/engine/score/judge.mjs; test tools/score/engine/judge.test.mjs -> packages/engine/test/score/judge.test.mjs"
+      }
+    ]
+  },
+  "INFRA-29/M2": {
+    "kind": "patch",
+    "protects": "INFRA-29 MS-RG2 a key the base already left open is not counted as regressed",
+    "file": "packages/engine/score/judge.mjs",
+    "find": "Math.max(0, list.length - c.open)",
+    "replace": "list.length",
+    "test": "node --test --test-name-pattern='^MS-RG2 ' packages/engine/test/score/judge.test.mjs",
+    "testFile": "packages/engine/test/score/judge.test.mjs",
+    "testName": "MS-RG2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/judge.mjs -> packages/engine/score/judge.mjs; test tools/score/engine/judge.test.mjs -> packages/engine/test/score/judge.test.mjs"
+      }
+    ]
+  },
+  "INFRA-29/M3": {
+    "kind": "patch",
+    "protects": "INFRA-29 MS-LM a base line inside a rewritten hunk maps to no head line",
+    "file": "packages/engine/score/lines.mjs",
+    "find": "if (h.oldCount > 0 && line >= h.oldStart && line <= last) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^MS-LM ' packages/engine/test/score/lines.test.mjs",
+    "testFile": "packages/engine/test/score/lines.test.mjs",
+    "testName": "MS-LM ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/lines.mjs -> packages/engine/score/lines.mjs; test tools/score/engine/lines.test.mjs -> packages/engine/test/score/lines.test.mjs"
+      }
+    ]
+  },
+  "INFRA-29/M4": {
+    "kind": "patch",
+    "protects": "INFRA-29 MS-RG3 the forced rerun runs only when this run ran Stryker",
+    "file": "packages/engine/score/judge.mjs",
+    "find": "return ranStryker && verdicts",
+    "replace": "return verdicts",
+    "test": "node --test --test-name-pattern='^MS-RG3 ' packages/engine/test/score/judge.test.mjs",
+    "testFile": "packages/engine/test/score/judge.test.mjs",
+    "testName": "MS-RG3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/judge.mjs -> packages/engine/score/judge.mjs; test tools/score/engine/judge.test.mjs -> packages/engine/test/score/judge.test.mjs"
+      }
+    ]
+  },
+  "INFRA-29/M5": {
+    "kind": "patch",
+    "protects": "INFRA-29 VT-M8 a changed core test file selects the module beside it",
+    "file": "packages/engine/score/targets.mjs",
+    "find": ".map((p) => testedModule(p, exists) ?? p)",
+    "replace": ".map((p) => p)",
+    "test": "node --test --test-name-pattern='^ST-3 ' packages/engine/test/score/targets-select.test.mjs",
+    "testFile": "packages/engine/test/score/targets-select.test.mjs",
+    "testName": "ST-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/targets.mjs -> packages/engine/score/targets.mjs; test tools/verify-ticket-mutation.test.mjs VT-M8 -> packages/engine/test/score/targets-select.test.mjs ST-3"
+      }
+    ]
+  },
+  "INFRA-29/M6": {
+    "kind": "patch",
+    "protects": "INFRA-29 MS-T a case-suffixed test maps to the longest existing module",
+    "file": "packages/engine/score/targets.mjs",
+    "find": "for (let n = parts.length; n >= 1; n--) {",
+    "replace": "for (let n = parts.length; n >= parts.length; n--) {",
+    "test": "node --test --test-name-pattern='^MS-T ' packages/engine/test/score/targets.test.mjs",
+    "testFile": "packages/engine/test/score/targets.test.mjs",
+    "testName": "MS-T ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/targets.mjs -> packages/engine/score/targets.mjs; test tools/score/engine/targets.test.mjs -> packages/engine/test/score/targets.test.mjs"
+      }
+    ]
+  },
+  "INFRA-29/M7": {
+    "kind": "patch",
+    "protects": "INFRA-29 MS-T2 a module selected by two test files is mutated once",
+    "file": "packages/engine/score/targets.mjs",
+    "find": ".filter((p, i, all) => all.indexOf(p) === i)",
+    "replace": ".filter(() => true)",
+    "test": "node --test --test-name-pattern='^MS-T2 ' packages/engine/test/score/targets.test.mjs",
+    "testFile": "packages/engine/test/score/targets.test.mjs",
+    "testName": "MS-T2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-62b",
+        "why": "export: tools/score/engine/targets.mjs -> packages/engine/score/targets.mjs; test tools/score/engine/targets.test.mjs -> packages/engine/test/score/targets.test.mjs"
+      }
+    ]
+  },
+  "INFRA-62b/M1": {
+    "kind": "patch",
+    "protects": "5 SG-2 an unsupported or missing schemaVersion in a report is named",
+    "file": "packages/engine/score/schema.mjs",
+    "find": "!SCHEMA_VERSION.test(report.schemaVersion)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^SG-2 ' packages/engine/test/score/schema.test.mjs",
+    "testFile": "packages/engine/test/score/schema.test.mjs",
+    "testName": "SG-2 "
+  },
+  "INFRA-62b/M2": {
+    "kind": "patch",
+    "protects": "5 SG-3 a mutant status outside the schema enum is named",
+    "file": "packages/engine/score/schema.mjs",
+    "find": "if (!STATUSES.has(m?.status))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^SG-3 ' packages/engine/test/score/schema.test.mjs",
+    "testFile": "packages/engine/test/score/schema.test.mjs",
+    "testName": "SG-3 "
+  },
+  "INFRA-62b/M3": {
+    "kind": "patch",
+    "protects": "5 SG-4 a location line or column must be a positive integer",
+    "file": "packages/engine/score/schema.mjs",
+    "find": "Number.isInteger(n) && n >= 1",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^SG-4 ' packages/engine/test/score/schema.test.mjs",
+    "testFile": "packages/engine/test/score/schema.test.mjs",
+    "testName": "SG-4 "
+  },
+  "INFRA-62b/M4": {
+    "kind": "patch",
+    "protects": "5 SG-5 a report file without a mutants array is named",
+    "file": "packages/engine/score/schema.mjs",
+    "find": "if (!Array.isArray(file?.mutants))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^SG-5 ' packages/engine/test/score/schema.test.mjs",
+    "testFile": "packages/engine/test/score/schema.test.mjs",
+    "testName": "SG-5 "
+  },
+  "INFRA-62b/M5": {
+    "kind": "patch",
+    "protects": "5 SG-6 readReport turns a schema problem into the mutation: FAIL line",
+    "file": "packages/engine/score/base.mjs",
+    "find": "if (problem) fail2(`${label} report ${path}: ${problem}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SG-6 ' packages/engine/test/score/schema.test.mjs",
+    "testFile": "packages/engine/test/score/schema.test.mjs",
+    "testName": "SG-6 "
+  }
+}

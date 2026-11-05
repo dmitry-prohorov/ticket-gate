@@ -5,6 +5,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ROOT } from './root.mjs';
+import { scoreOf, validateScore } from './score-config.mjs';
 
 export const GATE_KEYS = Object.freeze([
   'steps',
@@ -26,6 +27,7 @@ export const GATE_KEYS = Object.freeze([
   'stackHint',
   'commands',
   'mutations',
+  'score',
 ]);
 
 /**
@@ -264,6 +266,7 @@ export function defineGate(config) {
   validateHooks(config);
   validateCommands(config.commands);
   if (config.mutations !== undefined) validateMutations(config.mutations);
+  if (config.score !== undefined) validateScore(config.score, fail);
 
   return deepFreeze({
     ...config,
@@ -277,6 +280,7 @@ export function defineGate(config) {
     commands: commandsOf(config),
     packs,
     precheck,
+    ...(config.score !== undefined ? { score: scoreOf(config.score) } : {}),
   });
 }
 

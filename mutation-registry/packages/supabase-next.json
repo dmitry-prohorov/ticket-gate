@@ -296,5 +296,15 @@
     "test": "node --test --test-name-pattern='^SN-1 ' packages/supabase-next/test/pack-mutations.test.mjs",
     "testFile": "packages/supabase-next/test/pack-mutations.test.mjs",
     "testName": "SN-1 "
+  },
+  "INFRA-62b/M12": {
+    "kind": "patch",
+    "protects": "5 PF-1 pnpmFilterInstall installs the filter and its dependencies",
+    "file": "packages/supabase-next/score.mjs",
+    "find": "\"--filter\",\n      `${filter}...`,",
+    "replace": "\"--filter\",\n      filter,",
+    "test": "node --test --test-name-pattern='^PF-1 ' packages/supabase-next/test/score.test.mjs",
+    "testFile": "packages/supabase-next/test/score.test.mjs",
+    "testName": "PF-1 "
   }
 }

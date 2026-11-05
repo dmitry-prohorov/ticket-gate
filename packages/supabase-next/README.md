@@ -6,6 +6,8 @@ end-to-end test selection, and ratchets for projects on that stack.
 With `supabaseNext({ mutations })` it also contributes the SQL mutation kind and the served-test harness to the engine's
 `mutate` and `mutations` commands (the `mutationKinds` and `mutationHarnesses` hooks).
 
+`pnpmFilterInstall(filter)` (from `score.mjs`) builds the `score.baseInstall` of a pnpm workspace package for the engine's `score` gate.
+
 A pack is optional. The engine reaches it only through the `packs` key of a project's `gate.config.mjs`; the
 project supplies the project-specific tools the pack calls. This package depends on the engine at the same exact
 version.

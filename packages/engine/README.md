@@ -4,8 +4,9 @@ The engine of ticket-gate: a configurable verification gate for agent-driven tic
 
 It provides:
 
-- the `ticket-gate` command (`verify`, `hook`, `review-map`, `move-check`, `fu`, `ratchet`, `mutate`, `mutations`);
+- the `ticket-gate` command (`verify`, `hook`, `review-map`, `move-check`, `fu`, `ratchet`, `mutate`, `mutations`, `score`);
 - the mutation engine behind `mutate` and `mutations`, enabled by the `mutations` key of `defineGate`;
+- the mutation score gate behind `score`, enabled by the `score` key of `defineGate`;
 - `defineGate` and `step`, the API a project's `gate.config.mjs` is written against;
 - the Stop and PreToolUse hooks, which make no network call and collect no telemetry;
 - the receipt, ledger, review-map and follow-up register code.
