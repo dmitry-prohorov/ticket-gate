@@ -20,7 +20,8 @@ const USAGE = `usage: ticket-gate <command> [args]
                               | --rotate --ledger=<dir> [--budget-min= --batch= --deadline= --sha=]
                               prove a ticket's registry guards bite (needs mutations in gate.config.mjs)
   mutations check [--fix]     validate (and repair) the mutation registry
-  mutations select [--affected --paths=]   list the registry entries a diff selects`;
+  mutations select [--affected --paths=]   list the registry entries a diff selects
+  score --base=REF [--files= --report= --base-report=]   judge a mutation report (needs score in gate.config.mjs)`;
 
 const say = (s) => console.log(s);
 const warn = (s) => console.error(s);
@@ -35,6 +36,16 @@ function hook(event) {
   const child = join(HERE, '..', 'hooks', `${event}.mjs`);
   const r = spawnSync(process.execPath, [child], { stdio: 'inherit' });
   return r.status ?? 1;
+}
+
+async function score(args) {
+  const { GATE, ROOT } = await import('../project.mjs');
+  if (!GATE.score) {
+    warn('mutation: FAIL score is not configured: add a score key to gate.config.mjs');
+    return 2;
+  }
+  const { runScore } = await import('../score/cli.mjs');
+  return runScore(args, GATE.score, ROOT);
 }
 
 async function fu(args) {
@@ -114,6 +125,7 @@ export async function run(argv) {
     }
     return mutation(`mutations ${sub}`, rest.slice(1));
   }
+  if (cmd === 'score') return score(rest);
   if (cmd === 'hook') return hook(rest[0]);
   if (cmd === 'fu') return fu(rest);
   if (cmd === 'ratchet') return ratchet(rest[0], rest.slice(1));
