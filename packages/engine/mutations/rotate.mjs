@@ -1,10 +1,21 @@
 // Mutation rotation: run the registry's guards in batches, oldest proof first, inside a time
 // budget, and keep a ledger of what each run did. The caller supplies `io` (clock, registry,
 // process runner, files) so a project's own runner and `ticket-gate mutate --rotate` share this core.
-import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { spawn, execFileSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { compareKeys } from "./registry.mjs";
+import { safeKillGroup } from "../kill-group.mjs";
+import { takeOrExit } from "../lock.mjs";
+import { ROOT } from "../root.mjs";
+import { compareKeys, loadRegistry } from "./registry.mjs";
 
 export const ROTATE_DEFAULTS = Object.freeze({
   budgetMs: 3_600_000,
@@ -216,4 +227,149 @@ export async function runRotation(
     unproven: live.length - kills.length,
     survivors,
   };
+}
+
+/**
+ * The batch runner `ticket-gate mutate --rotate` uses: the command in its own process group,
+ * killed past `limitS` (`killSignal`, then SIGKILL after `graceS`), stragglers killed on exit.
+ * Resolves { code, timedOut, out }; never rejects.
+ */
+export function runGroup(
+  cmd,
+  args,
+  { cwd, env = {}, limitS, killSignal = "SIGTERM", graceS = 120 } = {},
+) {
+  return new Promise((done) => {
+    let out = "";
+    let timedOut = false;
+    let settled = false;
+    const timers = [];
+    const child = spawn(cmd, args, {
+      cwd,
+      env: { ...process.env, ...env },
+      detached: true,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const finish = (code) => {
+      if (settled) return;
+      settled = true;
+      timers.forEach(clearTimeout);
+      safeKillGroup(child.pid, "SIGKILL");
+      done({ code, timedOut, out });
+    };
+    if (limitS !== undefined)
+      timers.push(
+        setTimeout(() => {
+          timedOut = true;
+          safeKillGroup(child.pid, killSignal);
+          timers.push(
+            setTimeout(() => {
+              safeKillGroup(child.pid, "SIGKILL");
+              finish(124);
+            }, graceS * 1000),
+          );
+        }, limitS * 1000),
+      );
+    child.stdout.on("data", (d) => (out += d));
+    child.stderr.on("data", (d) => (out += d));
+    child.on("error", (err) => {
+      out += String(err);
+      finish(1);
+    });
+    child.on("close", (code) => finish(code ?? 1));
+  });
+}
+
+const ROTATE_FLAGS = ["rotate", "ledger", "budget-min", "batch", "deadline", "sha"];
+
+function rotateUsage(msg, setup) {
+  console.error(
+    `${msg}\nusage: ${setup.commands.mutate} --rotate --ledger=<dir> [--budget-min=<n>] [--batch=<n>] [--deadline=<ISO>] [--sha=<sha>]`,
+  );
+  return 2;
+}
+
+const positive = (text) => {
+  const n = Number(text);
+  return Number.isFinite(n) && n > 0 ? n : null;
+};
+
+/**
+ * `ticket-gate mutate --rotate`: one budgeted rotation over the live registry, ledger under
+ * `--ledger`. Returns the exit code: 0 ran with no survivor, 1 a survivor or an error, 2 usage
+ * or an invalid registry. The summary is printed either way.
+ */
+export async function rotateMain(args, setup) {
+  const code = await rotate(args, setup);
+  process.exitCode = code;
+  return code;
+}
+
+async function rotate(args, setup) {
+  const flags = new Map();
+  for (const a of args) {
+    const m = /^--([a-z-]+)(?:=(.*))?$/.exec(a);
+    if (!m || !ROTATE_FLAGS.includes(m[1]))
+      return rotateUsage(`unexpected argument ${a}`, setup);
+    flags.set(m[1], m[2]);
+  }
+  if (!flags.get("ledger")) return rotateUsage("--rotate needs --ledger=<dir>", setup);
+  const budgetMin = flags.has("budget-min") ? positive(flags.get("budget-min")) : 60;
+  if (budgetMin === null)
+    return rotateUsage("--budget-min must be a positive number", setup);
+  const batch = flags.has("batch") ? positive(flags.get("batch")) : ROTATE_DEFAULTS.batch;
+  if (batch === null || !Number.isInteger(batch))
+    return rotateUsage("--batch must be a positive integer", setup);
+  const startMs = Date.now();
+  const deadlineMs = flags.has("deadline")
+    ? Date.parse(flags.get("deadline"))
+    : startMs + budgetMin * 60_000;
+  if (!Number.isFinite(deadlineMs))
+    return rotateUsage("--deadline must be an ISO date-time", setup);
+  const sha =
+    flags.get("sha") ||
+    execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
+  const dir = resolve(ROOT, flags.get("ledger"));
+  // One run on the local stack at a time; the batch children inherit the owner id.
+  takeOrExit("mutate:check");
+  mkdirSync(dir, { recursive: true });
+  const io = {
+    now: Date.now,
+    registry: (root) => loadRegistry(root, setup),
+    run: runGroup,
+    rm: (p) => rmSync(p, { force: true }),
+    exists: existsSync,
+    readFile: (p) => readFileSync(p, "utf8"),
+    writeFile: (p, text) => writeFileSync(p, text),
+  };
+  let summary;
+  try {
+    summary = await runRotation(io, {
+      dir,
+      cwd: ROOT,
+      sha,
+      startMs,
+      deadlineMs,
+      budgetMs: budgetMin * 60_000,
+      batch,
+      command: [
+        process.execPath,
+        join(dirname(fileURLToPath(import.meta.url)), "..", "bin", "ticket-gate.mjs"),
+        "mutate",
+      ],
+      receipt: setup.receipts.registry,
+    });
+  } catch (err) {
+    console.error(`${err.message}\nRun ${setup.commands.checkMutations} for the full report.`);
+    return err.message.startsWith("registry is invalid") ? 2 : 1;
+  }
+  const s = summary;
+  console.log(
+    `rotate: ${s.ran} ran (${s.killed} killed, ${s.survived} survived, ${s.error} error) of ${s.live} live; ${s.stoppedBy ?? `error ${s.reason}`}; oldest proof ${s.oldestProofDays ?? "none"} days; ${s.unproven} unproven`,
+  );
+  for (const v of s.survivors)
+    console.log(
+      `  ${v.key} survived  ${v.file ?? "-"}  ${v.testFile ?? "-"}  last kill ${v.lastKillSha ?? "none"}`,
+    );
+  return s.status === "ran" && s.survivors.length === 0 ? 0 : 1;
 }

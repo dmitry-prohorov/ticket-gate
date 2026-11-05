@@ -11,6 +11,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
 
+import { bin, entries, gateProject } from "./__tests__/gate-project.mjs";
 import {
   compactLedger,
   readLedger,
@@ -313,4 +314,77 @@ test("NM-R a replayed scenario writes the golden ledger and summary byte for byt
     JSON.stringify(got),
     read("expected-summary.json").toString("utf8"),
   );
+});
+
+const withRetired = {
+  ...entries,
+  "T/M3": {
+    ...entries["T/M1"],
+    retired: { by: "T", why: "obsolete per specs/x.md section 2" },
+  },
+};
+const rotateProject = () =>
+  gateProject({
+    config: undefined,
+    registry: withRetired,
+  });
+const ledgerOf = (dir) =>
+  readFileSync(join(dir, "ledger", "mutations.jsonl"), "utf8")
+    .split("\n")
+    .filter(Boolean)
+    .map((l) => JSON.parse(l));
+
+test("RT-1 mutate --rotate runs a scratch registry in batches, appends the ledger and prints the summary line", () => {
+  const p = rotateProject();
+  const r = bin(p.dir, ["mutate", "--rotate", "--ledger=ledger", "--batch=1", "--sha=abc123"]);
+  assert.equal(r.status, 1, r.out);
+  assert.match(
+    r.out,
+    /rotate: 2 ran \(1 killed, 1 survived, 0 error\) of 2 live; done; oldest proof 0 days; 1 unproven/,
+  );
+  assert.match(r.out, /T\/M2 survived {2}src\/guard\.mjs {2}src\/guard\.test\.mjs {2}last kill none/);
+  const got = ledgerOf(p.dir);
+  assert.deepEqual(
+    got.map((l) => [l.key, l.status, l.sha]),
+    [
+      ["T/M1", "killed", "abc123"],
+      ["T/M2", "survived", "abc123"],
+    ],
+  );
+});
+
+test("RT-2 mutate --rotate refuses while another owner holds the stack lock and writes no ledger", () => {
+  const p = rotateProject();
+  const lock = join(p.dir, ".turbo", "stack.lock");
+  mkdirSync(lock, { recursive: true });
+  writeFileSync(
+    join(lock, "owner.json"),
+    JSON.stringify({
+      v: 1,
+      id: `verify:ticket:${process.pid}:1`,
+      owner: "verify:ticket",
+      pid: process.pid,
+      cwd: p.dir,
+      startedAt: new Date().toISOString(),
+    }),
+  );
+  const r = bin(p.dir, ["mutate", "--rotate", "--ledger=ledger", "--sha=abc123"]);
+  assert.equal(r.status, 1, r.out);
+  assert.match(r.out, /stack lock held/);
+  assert.equal(existsSync(join(p.dir, "ledger", "mutations.jsonl")), false);
+});
+
+test("RT-3 mutate --rotate without --ledger, with --budget-min=0, with --ids or a ticket id is usage, exit 2", () => {
+  const p = rotateProject();
+  for (const extra of [
+    [],
+    ["--ledger=ledger", "--budget-min=0"],
+    ["--ledger=ledger", "--ids=T/M1"],
+    ["--ledger=ledger", "T"],
+  ]) {
+    const r = bin(p.dir, ["mutate", "--rotate", ...extra]);
+    assert.equal(r.status, 2, `${extra.join(" ")}: ${r.out}`);
+    assert.match(r.out, /usage: /);
+  }
+  assert.equal(existsSync(join(p.dir, "ledger")), false);
 });
