@@ -31,6 +31,118 @@
       }
     ]
   },
+  "INFRA-18/M2": {
+    "kind": "patch",
+    "protects": "G3 seed step before e2e",
+    "file": "packages/engine/plan.mjs",
+    "find": "reset.before.some(runs) && !reset.satisfiedBy.some(runs);",
+    "replace": "false;",
+    "test": "node --test --test-name-pattern='^VT-P3a ' packages/engine/test/plan-steps.test.mjs",
+    "testFile": "packages/engine/test/plan-steps.test.mjs",
+    "testName": "VT-P3a ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-P3a -> packages/engine/test/plan-steps.test.mjs VT-P3a"
+      }
+    ]
+  },
+  "INFRA-18/M4": {
+    "kind": "patch",
+    "protects": "INFRA-18 G2 test VT-P1: the stack preflight runs when any selected step needs the local stack; without it a down stack fails mid-run",
+    "file": "packages/engine/plan.mjs",
+    "find": "health.when = stackRuns.length > 0;",
+    "replace": "health.when = false;",
+    "test": "node --test --test-name-pattern='^VT-P1 ' packages/engine/test/plan-steps.test.mjs",
+    "testFile": "packages/engine/test/plan-steps.test.mjs",
+    "testName": "VT-P1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-P1 -> packages/engine/test/plan-steps.test.mjs VT-P1"
+      }
+    ]
+  },
+  "INFRA-27/M10": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 VT-MR1: a non-empty selection plans the mutation-registry step",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (o?.when !== undefined) s.when = o.when;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^VT-MR1 ' packages/engine/test/plan-steps.test.mjs",
+    "testFile": "packages/engine/test/plan-steps.test.mjs",
+    "testName": "VT-MR1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-MR1 -> packages/engine/test/plan-steps.test.mjs VT-MR1"
+      }
+    ]
+  },
+  "INFRA-27/M12": {
+    "kind": "patch",
+    "protects": "INFRA-27 s5 VT-MR5 R4: mutation-registry without e2e gets a seed reset",
+    "file": "packages/engine/plan.mjs",
+    "find": "reset.before.some(runs) && !reset.satisfiedBy.some(runs);",
+    "replace": "reset.before.filter((id) => id !== 'mutation-registry').some(runs) && !reset.satisfiedBy.some(runs);",
+    "test": "node --test --test-name-pattern='^VT-MR5 ' packages/engine/test/plan-steps.test.mjs",
+    "testFile": "packages/engine/test/plan-steps.test.mjs",
+    "testName": "VT-MR5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/plan.mjs -> packages/engine/plan.mjs; test gate.config.test.mjs VT-MR5 -> packages/engine/test/plan-steps.test.mjs VT-MR5"
+      }
+    ]
+  },
+  "INFRA-44a/M1": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-1 a path no deny-list names is an input of every step",
+    "file": "packages/engine/digest.mjs",
+    "find": ".filter(([p]) => !isDenied(id, p))",
+    "replace": ".filter(() => false)",
+    "test": "node --test --test-name-pattern='^EI-1 ' packages/engine/test/engine-inputs.test.mjs",
+    "testFile": "packages/engine/test/engine-inputs.test.mjs",
+    "testName": "EI-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/gate-engine.test.mjs EI-1 -> packages/engine/test/engine-inputs.test.mjs EI-1"
+      }
+    ]
+  },
+  "INFRA-44a/M2": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-2 an engine file change re-runs every step, even one whose deny-list names tools/",
+    "file": "packages/engine/digest.mjs",
+    "find": "if (isToolPath(path)) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EI-2 ' packages/engine/test/engine-inputs.test.mjs",
+    "testFile": "packages/engine/test/engine-inputs.test.mjs",
+    "testName": "EI-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/digest.mjs -> packages/engine/digest.mjs; test tools/gate-engine.test.mjs EI-2 -> packages/engine/test/engine-inputs.test.mjs EI-2"
+      }
+    ]
+  },
+  "INFRA-44a/M4": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-4 a skipped selected step is not verified; skipping an unselected step is a no-op",
+    "file": "packages/engine/receipt.mjs",
+    "find": "return results.every((r) => VERIFIED_STATUSES.includes(r.status));",
+    "replace": "return true;",
+    "test": "node --test --test-name-pattern='^EI-4 ' packages/engine/test/engine-inputs.test.mjs",
+    "testFile": "packages/engine/test/engine-inputs.test.mjs",
+    "testName": "EI-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/receipt.mjs -> packages/engine/receipt.mjs; test tools/gate-engine.test.mjs EI-4 -> packages/engine/test/engine-inputs.test.mjs EI-4"
+      }
+    ]
+  },
   "INFRA-45/M7": {
     "kind": "patch",
     "protects": "INFRA-45 3-14 CL-5 a malformed ratchet entry fails config load",

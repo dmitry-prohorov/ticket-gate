@@ -398,5 +398,21 @@
         "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/ticket-gate.fail-closed.test.mjs INFRA-43 TG-FC-3 -> packages/engine/test/stop-hook-fail-closed.test.mjs TG-FC-3"
       }
     ]
+  },
+  "INFRA-44a/M3": {
+    "kind": "patch",
+    "protects": "INFRA-44a 5 EI-3 the Stop hook recomputes every reused digest and writes nothing",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "stepDigest(r.id, r.cmd, { base: receipt.base }) === r.digest",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^EI-3 ' packages/engine/test/engine-inputs.test.mjs",
+    "testFile": "packages/engine/test/engine-inputs.test.mjs",
+    "testName": "EI-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-58b",
+        "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/gate-engine.test.mjs EI-3 -> packages/engine/test/engine-inputs.test.mjs EI-3"
+      }
+    ]
   }
 }
