@@ -317,40 +317,56 @@ export async function rotateMain(args, setup) {
   return code;
 }
 
-async function rotate(args, setup) {
+/**
+ * Turn the `--rotate` flags into the run's settings, or `{ error }` with the usage message.
+ * `now` is the start time in ms. Without `--deadline` there is no hard deadline: the budget is
+ * soft and the batch in flight at its end finishes.
+ */
+export function resolveRotateFlags(args, now) {
   const flags = new Map();
   for (const a of args) {
     const m = /^--([a-z-]+)(?:=(.*))?$/.exec(a);
     if (!m || !ROTATE_FLAGS.includes(m[1]))
-      return rotateUsage(`unexpected argument ${a}`, setup);
+      return { error: `unexpected argument ${a}` };
     flags.set(m[1], m[2]);
   }
-  if (!flags.get('ledger'))
-    return rotateUsage('--rotate needs --ledger=<dir>', setup);
+  if (!flags.get('ledger')) return { error: '--rotate needs --ledger=<dir>' };
   const budgetMin = flags.has('budget-min')
     ? positive(flags.get('budget-min'))
     : 60;
   if (budgetMin === null)
-    return rotateUsage('--budget-min must be a positive number', setup);
+    return { error: '--budget-min must be a positive number' };
   const batch = flags.has('batch')
     ? positive(flags.get('batch'))
     : ROTATE_DEFAULTS.batch;
   if (batch === null || !Number.isInteger(batch))
-    return rotateUsage('--batch must be a positive integer', setup);
-  const startMs = Date.now();
-  // No --deadline: the budget is soft and the batch in flight at its end finishes.
+    return { error: '--batch must be a positive integer' };
   const deadlineMs = flags.has('deadline')
     ? Date.parse(flags.get('deadline'))
     : undefined;
   if (flags.has('deadline') && !Number.isFinite(deadlineMs))
-    return rotateUsage('--deadline must be an ISO date-time', setup);
+    return { error: '--deadline must be an ISO date-time' };
+  return {
+    ledger: flags.get('ledger'),
+    sha: flags.get('sha'),
+    startMs: now,
+    budgetMs: budgetMin * 60_000,
+    batch,
+    deadlineMs,
+  };
+}
+
+async function rotate(args, setup) {
+  const f = resolveRotateFlags(args, Date.now());
+  if (f.error) return rotateUsage(f.error, setup);
+  const { startMs, deadlineMs, batch } = f;
   const sha =
-    flags.get('sha') ||
+    f.sha ||
     execFileSync('git', ['rev-parse', 'HEAD'], {
       cwd: ROOT,
       encoding: 'utf8',
     }).trim();
-  const dir = resolve(ROOT, flags.get('ledger'));
+  const dir = resolve(ROOT, f.ledger);
   // One run on the local stack at a time; the batch children inherit the owner id.
   takeOrExit('mutate:check');
   mkdirSync(dir, { recursive: true });
@@ -371,7 +387,7 @@ async function rotate(args, setup) {
       sha,
       startMs,
       deadlineMs,
-      budgetMs: budgetMin * 60_000,
+      budgetMs: f.budgetMs,
       batch,
       command: [
         process.execPath,

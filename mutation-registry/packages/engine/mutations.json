@@ -1915,5 +1915,15 @@
     "test": "node --test --test-name-pattern='^RT-4 ' packages/engine/test/mutations/rotate.test.mjs",
     "testFile": "packages/engine/test/mutations/rotate.test.mjs",
     "testName": "RT-4 "
+  },
+  "INFRA-60/M6": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#RT-4b rotate flags give no deadline without --deadline and Date.parse of --deadline when given",
+    "file": "packages/engine/mutations/rotate.mjs",
+    "find": "    : undefined;\n  if (flags.has('deadline')",
+    "replace": "    : now + budgetMin * 60_000;\n  if (flags.has('deadline')",
+    "test": "node --test --test-name-pattern='^RT-4b ' packages/engine/test/mutations/rotate.test.mjs",
+    "testFile": "packages/engine/test/mutations/rotate.test.mjs",
+    "testName": "RT-4b "
   }
 }

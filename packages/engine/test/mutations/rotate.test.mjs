@@ -15,6 +15,7 @@ import { bin, entries, gateProject } from './__tests__/gate-project.mjs';
 import {
   compactLedger,
   readLedger,
+  resolveRotateFlags,
   rotationOrder,
   runRotation,
 } from '../../mutations/rotate.mjs';
@@ -347,6 +348,20 @@ test('RT-4 a rotation with no hard deadline lets the batch in flight at the budg
   assert.equal(got.stoppedBy, 'budget');
   assert.equal(got.ran, 10);
   assert.equal(readLedger(w.dir).length, 10);
+});
+
+test('RT-4b rotate flags give no deadline without --deadline and Date.parse of --deadline when given', () => {
+  const none = resolveRotateFlags(['--ledger=l', '--budget-min=30'], 1000);
+  assert.equal(none.deadlineMs, undefined);
+  assert.equal(none.startMs, 1000);
+  assert.equal(none.budgetMs, 30 * 60_000);
+  const iso = '2026-01-02T03:04:05Z';
+  const hard = resolveRotateFlags(['--ledger=l', `--deadline=${iso}`], 1000);
+  assert.equal(hard.deadlineMs, Date.parse(iso));
+  assert.match(
+    resolveRotateFlags(['--ledger=l', '--deadline=soon'], 1000).error,
+    /ISO date-time/,
+  );
 });
 
 const withRetired = {
