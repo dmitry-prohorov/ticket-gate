@@ -6,6 +6,8 @@ or red. Projects describe their own steps in a `gate.config.mjs`; the engine shi
 
 This is a pre-release (`0.1.0-rc.1`). The configuration surface may still change before `0.1.0`.
 
+Why it exists, why it is not assembled from existing tools, and why it is a separate repository: [docs/why.md](docs/why.md).
+
 ## Packages
 
 | Package | What it is |
