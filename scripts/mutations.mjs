@@ -39,8 +39,12 @@ export default defineGate({
 `,
   );
   process.env.TICKET_GATE_CONFIG_DIR = tmp;
+  // Pin the engine root to this repo: it holds no gate.config.mjs, so without the pin the
+  // engine would walk up and adopt an ancestor's (this repo cloned inside a consumer project).
+  process.env.TICKET_GATE_ROOT = ROOT;
   ({ GATE } = await import('../packages/engine/project.mjs'));
 } finally {
+  delete process.env.TICKET_GATE_ROOT;
   delete process.env.TICKET_GATE_CONFIG_DIR; // not for the test commands this process spawns
   rmSync(tmp, { recursive: true, force: true });
 }

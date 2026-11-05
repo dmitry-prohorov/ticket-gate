@@ -46,3 +46,20 @@ test('PC-1 the gate config is the project root gate.config.mjs unless TICKET_GAT
   writeFileSync(join(bare, 'sub', 'gate.config.mjs'), "export default { which: 'rel' };");
   assert.equal(loaded(bare, { TICKET_GATE_CONFIG_DIR: 'sub' }).which, 'rel');
 });
+
+test('PC-2 TICKET_GATE_ROOT pins the project root over the walk; unset, the walk is unchanged', () => {
+  const outer = scratch('pc-outer', "export default { which: 'outer' };");
+  const inner = join(outer, 'inner');
+  mkdirSync(inner);
+  const pinned = scratch('pc-pinned');
+  // Unset (or empty): the nearest ancestor with a config is the root.
+  assert.equal(loaded(inner).root, outer);
+  // Set: the root is that directory, an ancestor's config is not adopted.
+  assert.equal(loaded(inner, { TICKET_GATE_ROOT: pinned, TICKET_GATE_CONFIG_DIR: outer }).root, pinned);
+  // A relative value resolves against the working directory.
+  mkdirSync(join(inner, 'rel'));
+  assert.equal(
+    loaded(inner, { TICKET_GATE_ROOT: 'rel', TICKET_GATE_CONFIG_DIR: outer }).root,
+    join(inner, 'rel'),
+  );
+});
