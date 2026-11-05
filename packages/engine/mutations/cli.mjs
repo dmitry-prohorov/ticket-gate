@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 
+import { safeKillGroup } from '../kill-group.mjs';
 import { takeOrExit } from '../lock.mjs';
 import { ROOT } from '../root.mjs';
 import { baseRef, treeEntries, treeHash } from '../tree.mjs';
@@ -26,6 +27,9 @@ import {
 } from './run.mjs';
 import { selectChanged, splitServed } from './select.mjs';
 import { validateSpec } from './validate.mjs';
+
+// How long a child gets to act on a forwarded signal before its group is KILLed.
+const SIGNAL_GRACE_MS = 5000;
 
 function usage(msg, setup = projectSetup()) {
   const cmd = setup.commands.mutate;
@@ -260,6 +264,13 @@ async function main() {
       }
     }
     if (inFlight.size === 0) void onInterrupt(sig);
+    // A child can swallow the forwarded signal (a shell takes a SIGINT that lands
+    // while it forks and then waits on nothing). Give it the grace the time-limit
+    // path gives, then KILL its group; the child's exit settles the run.
+    else
+      setTimeout(() => {
+        for (const c of inFlight) safeKillGroup(c.pid, 'SIGKILL');
+      }, SIGNAL_GRACE_MS).unref();
   };
   process.on('SIGTERM', onSignal);
   process.on('SIGINT', onSignal);
