@@ -256,7 +256,8 @@ test('SIGINT during a patched test restores the file', async () => {
 async function pidAloneSignal(
   sig,
   expectedCode,
-  body = 'touch started; sleep 30',
+  body = 'trap "touch got-signal" TERM INT; touch started; sleep 30',
+  expectForwarded = body.includes('got-signal'),
 ) {
   const dir = repo();
   writeFileSync(
@@ -302,6 +303,13 @@ async function pidAloneSignal(
   assert.ok(Date.now() - t0 < 10000);
   assert.equal(readFileSync(join(dir, SRC), 'utf8'), ORIGINAL);
   assert.ok(!existsSync(join(dir, '.turbo', 'mutation-check.json')));
+  // The grace KILL also ends a child that never saw the signal, so the exit
+  // time proves nothing: the child must have recorded the forwarded signal.
+  if (expectForwarded)
+    assert.ok(
+      existsSync(join(dir, 'got-signal')),
+      'the in-flight child never received the forwarded signal',
+    );
 }
 
 test('SIGTERM to the tool pid alone restores and exits 143', async () => {
