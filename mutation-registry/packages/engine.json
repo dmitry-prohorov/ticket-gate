@@ -1236,14 +1236,14 @@
     "protects": "INFRA-41 5 MP-1 an added line with no removed twin is listed",
     "file": "packages/engine/move-proof.mjs",
     "find": "if (left === 0) unmatched.push(a);",
-    "replace": "",
+    "replace": "if (left === 0) {}",
     "test": "node --test --test-name-pattern='^MP-1 ' packages/engine/test/move-proof.test.mjs",
     "testFile": "packages/engine/test/move-proof.test.mjs",
     "testName": "MP-1 ",
     "reaimed": [
       {
         "by": "INFRA-58b",
-        "why": "re-registered in the public repo (D6): tools/gate/move-proof.mjs -> packages/engine/move-proof.mjs; test tools/move-check.test.mjs MC-1 -> packages/engine/test/move-proof.test.mjs MP-1"
+        "why": "re-registered in the public repo (D6): tools/gate/move-proof.mjs -> packages/engine/move-proof.mjs; test tools/move-check.test.mjs MC-1 -> packages/engine/test/move-proof.test.mjs MP-1; replace re-aimed so the mutant parses (a load failure is not a kill): \"\" -> \"if (left === 0) {}\""
       }
     ]
   },

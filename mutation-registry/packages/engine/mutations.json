@@ -228,7 +228,7 @@
     "protects": "3#I4 leading ^ on -t/-g is a validation error",
     "file": "packages/engine/mutations/validate.mjs",
     "find": "if (CARET_FILTER.test(m.test)) errors.push(`${at}: ${CARET_HINT}`);",
-    "replace": "",
+    "replace": "{}",
     "test": "node --test --test-name-pattern='^MC-17 ' packages/engine/test/mutations/run.test.mjs",
     "testFile": "packages/engine/test/mutations/run.test.mjs",
     "testName": "MC-17 ",
@@ -240,6 +240,10 @@
       {
         "by": "INFRA-58a",
         "why": "export: tools/mutations/engine/validate.mjs -> packages/engine/mutations/validate.mjs; test tools/mutations/engine/run.test.mjs -> packages/engine/test/mutations/run.test.mjs"
+      },
+      {
+        "by": "INFRA-58b",
+        "why": "replace re-aimed so the mutant parses (a load failure is not a kill): \"\" -> \"{}\""
       }
     ]
   },
@@ -849,7 +853,7 @@
     "protects": "CM-9 a vanished base key fails check:mutations",
     "file": "packages/engine/mutations/check.mjs",
     "find": "report( 'vanished',",
-    "replace": "void ( 'vanished',",
+    "replace": "Array.of( 'vanished',",
     "test": "node --test --test-name-pattern='^CM-9 ' packages/engine/test/mutations/check.test.mjs",
     "testFile": "packages/engine/test/mutations/check.test.mjs",
     "testName": "CM-9 ",
@@ -861,6 +865,10 @@
       {
         "by": "INFRA-58a",
         "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58b",
+        "why": "replace re-aimed so the mutant parses (a load failure is not a kill): \"void ( 'vanished',\" -> \"Array.of( 'vanished',\""
       }
     ]
   },
@@ -889,7 +897,7 @@
     "protects": "CM-12 a duplicate key across area files fails",
     "file": "packages/engine/mutations/check.mjs",
     "find": "report( 'duplicate',",
-    "replace": "void ( 'duplicate',",
+    "replace": "Array.of( 'duplicate',",
     "test": "node --test --test-name-pattern='^CM-12 ' packages/engine/test/mutations/check.test.mjs",
     "testFile": "packages/engine/test/mutations/check.test.mjs",
     "testName": "CM-12 ",
@@ -901,6 +909,10 @@
       {
         "by": "INFRA-58a",
         "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58b",
+        "why": "replace re-aimed so the mutant parses (a load failure is not a kill): \"void ( 'duplicate',\" -> \"Array.of( 'duplicate',\""
       }
     ]
   },
@@ -929,7 +941,7 @@
     "protects": "CM-8 an unsorted area file fails",
     "file": "packages/engine/mutations/check.mjs",
     "find": "report( 'unsorted',",
-    "replace": "void ( 'unsorted',",
+    "replace": "Array.of( 'unsorted',",
     "test": "node --test --test-name-pattern='^CM-8 ' packages/engine/test/mutations/check.test.mjs",
     "testFile": "packages/engine/test/mutations/check.test.mjs",
     "testName": "CM-8 ",
@@ -941,6 +953,10 @@
       {
         "by": "INFRA-58a",
         "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58b",
+        "why": "replace re-aimed so the mutant parses (a load failure is not a kill): \"void ( 'unsorted',\" -> \"Array.of( 'unsorted',\""
       }
     ]
   },
@@ -1019,7 +1035,7 @@
     "protects": "CM-L1 a legacy contracts mutations file fails",
     "file": "packages/engine/mutations/check.mjs",
     "find": "report( 'legacy',",
-    "replace": "void ( 'legacy',",
+    "replace": "Array.of( 'legacy',",
     "test": "node --test --test-name-pattern='^CM-L1 ' packages/engine/test/mutations/check.test.mjs",
     "testFile": "packages/engine/test/mutations/check.test.mjs",
     "testName": "CM-L1 ",
@@ -1031,6 +1047,10 @@
       {
         "by": "INFRA-58a",
         "why": "export: tools/mutations/engine/check.mjs -> packages/engine/mutations/check.mjs; test tools/mutations/engine/check.test.mjs -> packages/engine/test/mutations/check.test.mjs"
+      },
+      {
+        "by": "INFRA-58b",
+        "why": "replace re-aimed so the mutant parses (a load failure is not a kill): \"void ( 'legacy',\" -> \"Array.of( 'legacy',\""
       }
     ]
   },
