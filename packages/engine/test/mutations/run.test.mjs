@@ -251,12 +251,14 @@ test('SIGINT during a patched test restores the file', async () => {
   assert.equal(readFileSync(join(dir, SRC), 'utf8'), ORIGINAL);
 });
 
+// The default body waits in the shell (`sleep & ...; wait`): a signal that lands while bash forks a
+// foreground sleep can be swallowed, and the trap then never runs.
 // The signal goes to the tool's pid only (no group): the child sits in its own
 // group and must be stopped by the tool, not by the terminal.
 async function pidAloneSignal(
   sig,
   expectedCode,
-  body = 'trap "touch got-signal" TERM INT; touch started; sleep 30',
+  body = 'trap "touch got-signal" TERM INT; sleep 30 & touch started; wait',
   expectForwarded = body.includes('got-signal'),
 ) {
   const dir = repo();
