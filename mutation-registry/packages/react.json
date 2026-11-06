@@ -1,0 +1,214 @@
+{
+  "FU133/M1": {
+    "kind": "patch",
+    "protects": "5 CC-1 a new bailout fails",
+    "file": "packages/react/compiler.mjs",
+    "find": "report.bailouts.filter((b) => !known.has(b.key))",
+    "replace": "[]",
+    "test": "node --test --test-name-pattern='^CC-1 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M2": {
+    "kind": "patch",
+    "protects": "5 CC-2 a fixed bailout is stale",
+    "file": "packages/react/compiler.mjs",
+    "find": "baseline.bailouts.filter((e) => !current.has(e.key))",
+    "replace": "[]",
+    "test": "node --test --test-name-pattern='^CC-2 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M3": {
+    "kind": "patch",
+    "protects": "5 CC-3 a silent skip fails",
+    "file": "packages/react/compiler.mjs",
+    "find": "report.skipped.filter((s) => !allowedSkips.has(s.key))",
+    "replace": "[]",
+    "test": "node --test --test-name-pattern='^CC-3 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M4": {
+    "kind": "patch",
+    "protects": "5 CC-4 an empty allow fails",
+    "file": "packages/react/compiler.mjs",
+    "find": "entries.filter((e) => e.allow === '')",
+    "replace": "[]",
+    "test": "node --test --test-name-pattern='^CC-4 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M6": {
+    "kind": "patch",
+    "protects": "5 CC-3 the component-or-hook name rule",
+    "file": "packages/react/compiler.mjs",
+    "find": "/^(use[A-Z0-9]|[A-Z])/",
+    "replace": "/^$/",
+    "test": "node --test --test-name-pattern='^CC-3 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M7": {
+    "kind": "patch",
+    "protects": "5 CC-7 plugin version pinned to the baseline",
+    "file": "packages/react/compiler.mjs",
+    "find": "baseline.plugin !== pluginVersion",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^CC-7 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M9": {
+    "kind": "patch",
+    "protects": "5 CC-2b a stale skip entry fails",
+    "file": "packages/react/compiler.mjs",
+    "find": "baseline.skipped.filter((e) => !currentSkips.has(e.key))",
+    "replace": "[]",
+    "test": "node --test --test-name-pattern='^CC-2b ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-2b ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M14": {
+    "kind": "patch",
+    "protects": "5 CC-10 .ts parses without jsx",
+    "file": "packages/react/compiler.mjs",
+    "find": "path.endsWith('.tsx') ? ['typescript', 'jsx'] : ['typescript']",
+    "replace": "['typescript', 'jsx']",
+    "test": "node --test --test-name-pattern='^CC-10 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M15": {
+    "kind": "patch",
+    "protects": "5 CC-11 nested wrappers keep the name",
+    "file": "packages/react/compiler.mjs",
+    "find": "while (up?.type === 'CallExpression')",
+    "replace": "if (up?.type === 'CallExpression')",
+    "test": "node --test --test-name-pattern='^CC-11 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-11 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "moved: tools/check-react-compiler.mjs -> tools/checks/react/compiler.mjs; test moved to tools/checks/react/compiler.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-76/M1": {
+    "kind": "patch",
+    "protects": "INFRA-76 5-3 RO-1 the scan reads only the scanDirs option",
+    "file": "packages/react/compiler.mjs",
+    "find": "['ls-files', '--', ...scanDirs]",
+    "replace": "['ls-files', '--']",
+    "test": "node --test --test-name-pattern='^RO-1 ' packages/react/test/compiler-options.test.mjs",
+    "testFile": "packages/react/test/compiler-options.test.mjs",
+    "testName": "RO-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler-options.test.mjs -> packages/react/test/compiler-options.test.mjs"
+      }
+    ]
+  },
+  "INFRA-76/M2": {
+    "kind": "patch",
+    "protects": "INFRA-76 5-3 RO-1 the exclude option drops matching files",
+    "file": "packages/react/compiler.mjs",
+    "find": "!exclude.test(f)",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^RO-1 ' packages/react/test/compiler-options.test.mjs",
+    "testFile": "packages/react/test/compiler-options.test.mjs",
+    "testName": "RO-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler-options.test.mjs -> packages/react/test/compiler-options.test.mjs"
+      }
+    ]
+  }
+}

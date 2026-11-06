@@ -1,0 +1,354 @@
+{
+  "FU162/M2": {
+    "kind": "patch",
+    "protects": "5-6 report reads workflow agents",
+    "file": "packages/engine/checks/cache-report.mjs",
+    "find": "const wfFiles = workflowAgents(sub);",
+    "replace": "const wfFiles = [];",
+    "test": "node --test --test-name-pattern='^5-6 ' packages/engine/test/checks/cache-report.test.mjs",
+    "testFile": "packages/engine/test/checks/cache-report.test.mjs",
+    "testName": "5-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-74",
+        "why": "moved: tools/cache-report.mjs -> tools/checks/engine/cache-report.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/cache-report.mjs -> packages/engine/checks/cache-report.mjs; test tools/checks/engine/cache-report.test.mjs -> packages/engine/test/checks/cache-report.test.mjs"
+      }
+    ]
+  },
+  "INFRA-10/M7": {
+    "kind": "patch",
+    "protects": "5 DUP-2 any new cross-boundary clone fails",
+    "file": "packages/engine/checks/duplication.mjs",
+    "find": "const gated = (c) => c.cross || c.lines > withinMax;",
+    "replace": "const gated = (c) => c.lines > withinMax;",
+    "test": "node --test --test-name-pattern='^DUP-2 ' packages/engine/test/checks/duplication.test.mjs",
+    "testFile": "packages/engine/test/checks/duplication.test.mjs",
+    "testName": "DUP-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-74",
+        "why": "moved: tools/check-duplication.mjs -> tools/checks/engine/duplication.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/duplication.mjs -> packages/engine/checks/duplication.mjs; test tools/checks/engine/duplication.test.mjs -> packages/engine/test/checks/duplication.test.mjs"
+      }
+    ]
+  },
+  "INFRA-10/M8": {
+    "kind": "patch",
+    "protects": "5 DUP-5 stale baseline entry fails",
+    "file": "packages/engine/checks/duplication.mjs",
+    "find": "if (stale.length > 0) code = 1;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DUP-5 ' packages/engine/test/checks/duplication.test.mjs",
+    "testFile": "packages/engine/test/checks/duplication.test.mjs",
+    "testName": "DUP-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-74",
+        "why": "moved: process.exitCode becomes the returned code"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/duplication.mjs -> packages/engine/checks/duplication.mjs; test tools/checks/engine/duplication.test.mjs -> packages/engine/test/checks/duplication.test.mjs"
+      }
+    ]
+  },
+  "INFRA-10/M9": {
+    "kind": "patch",
+    "protects": "5 DUP-6 baseline entry with an empty allow reason fails",
+    "file": "packages/engine/checks/duplication.mjs",
+    "find": "if (unreasoned.length > 0) code = 1;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DUP-6 ' packages/engine/test/checks/duplication.test.mjs",
+    "testFile": "packages/engine/test/checks/duplication.test.mjs",
+    "testName": "DUP-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-74",
+        "why": "moved: process.exitCode becomes the returned code"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/duplication.mjs -> packages/engine/checks/duplication.mjs; test tools/checks/engine/duplication.test.mjs -> packages/engine/test/checks/duplication.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M1": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-1a an unlisted tracked file fails rule 1",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (hits.length === 0) out.push([1, file, 'matches no entry']);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-1a \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-1a ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M2": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-1b a stale glob fails rule 1",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (!used.has(glob)) out.push([1, glob, 'matches no tracked file']);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-1b \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-1b ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M3": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-1c a file matching two globs fails rule 1 (ruling R5)",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (hits.length > 1) out.push([1, file, `matches ${hits.length} entries`]);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-1c \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-1c ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M4": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-2a a pending glob absent from the baseline fails rule 2",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (!before.has(glob)) out.push([2, glob, 'pending entry is not in the baseline']);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-2a \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-2a ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M5": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-2c a pending entry must name an owner ticket matching ownerPattern",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (!ownerRe.test(entry.owner ?? '')) out.push([2, glob, 'pending entry names no owner ticket']);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-2c \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-2c ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M6": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-2b --update refuses to add a pending glob to the baseline (ruling R1)",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (added.length > 0) return refuse(added);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-2b \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-2b ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M7": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-3a a config or data module importing node:fs fails rule 3",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (!configImportOk(spec, file)) out.push([3, file, `imports ${spec}`]);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-3a \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-3a ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M8": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-3b a config module calling fetch fails rule 3",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (/\\bfetch\\(/.test(code)) out.push([3, file, 'calls fetch(']);",
+    "replace": ";",
+    "test": "node --test --test-name-pattern=\"SF-3b \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-3b ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M9": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-3c a config relative import must reach a config, data, check or pending file",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "return CONFIG_TARGETS.has(kindOf(target));",
+    "replace": "return true;",
+    "test": "node --test --test-name-pattern=\"SF-3c \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-3c ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M10": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-4a a shim over 15 code lines fails rule 4",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (n > SHIM_MAX)",
+    "replace": "if (n > SHIM_MAX + 1)",
+    "test": "node --test --test-name-pattern=\"SF-4a \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-4a ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M11": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-4b a shim importing a relative module fails rule 4",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (!SHIM_IMPORT.test(spec)) out.push([4, file, `imports ${spec}`]);",
+    "replace": ";",
+    "test": "node --test --test-name-pattern=\"SF-4b \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-4b ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M12": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-4c every entry needs a non-empty why, so a shim names its caller",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (typeof e.why !== 'string' || e.why.trim() === '') throw inputError(`${at}: why must be a non-empty string`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-4c \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-4c ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M13": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-6a a test importing an engine internal module fails rule 6",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (ENGINE_INTERNAL.test(spec)) out.push([6, file, `imports ${spec}`]);",
+    "replace": ";",
+    "test": "node --test --test-name-pattern=\"SF-6a \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-6a ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M14": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-2d strict mode is rejected until INFRA-82 builds it (ruling R2)",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (m.strict !== undefined && m.strict !== false) throw inputError('strict mode is not supported yet');",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-2d \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-2d ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-73/M15": {
+    "kind": "patch",
+    "protects": "INFRA-73 5 SF-10 an unknown manifest kind is an input error",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (!KINDS.includes(e.kind)) throw inputError(`${at}: unknown kind ${e.kind}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-10 \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
+      }
+    ]
+  },
+  "INFRA-74/M1": {
+    "kind": "patch",
+    "protects": "INFRA-74 5-6 expandSources skips node_modules under a ** glob",
+    "file": "packages/engine/checks/ratchet-options.mjs",
+    "find": "if (e === 'node_modules') continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^XS-1 ' packages/engine/test/checks/ratchet-options.test.mjs",
+    "testFile": "packages/engine/test/checks/ratchet-options.test.mjs",
+    "testName": "XS-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/ratchet-options.mjs -> packages/engine/checks/ratchet-options.mjs; test tools/checks/engine/ratchet-options.test.mjs -> packages/engine/test/checks/ratchet-options.test.mjs"
+      }
+    ]
+  },
+  "INFRA-74/M2": {
+    "kind": "patch",
+    "protects": "INFRA-74 5-5 docs-stale diffs each page's sources since its checked-at stamp",
+    "file": "packages/engine/checks/docs-stale.mjs",
+    "find": "`${checkedAt}..HEAD`,",
+    "replace": "'HEAD..HEAD',",
+    "test": "node --test --test-name-pattern='^DS-1 ' packages/engine/test/checks/docs-stale.test.mjs",
+    "testFile": "packages/engine/test/checks/docs-stale.test.mjs",
+    "testName": "DS-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "export: tools/checks/engine/docs-stale.mjs -> packages/engine/checks/docs-stale.mjs; test tools/checks/engine/docs-stale.test.mjs -> packages/engine/test/checks/docs-stale.test.mjs"
+      }
+    ]
+  }
+}

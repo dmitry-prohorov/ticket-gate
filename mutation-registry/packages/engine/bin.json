@@ -54,5 +54,75 @@
     "test": "node --test --test-name-pattern='^SP-4 ' packages/engine/test/e2e/synthetic-project.test.mjs",
     "testFile": "packages/engine/test/e2e/synthetic-project.test.mjs",
     "testName": "SP-4 "
+  },
+  "INFRA-77a/M1": {
+    "kind": "patch",
+    "protects": "5 CR-1 cache-report is a command of the bin",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "  if (cmd === 'cache-report') return cacheReport(rest);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CR-1 ' packages/engine/test/checks-cli.test.mjs",
+    "testFile": "packages/engine/test/checks-cli.test.mjs",
+    "testName": "CR-1 "
+  },
+  "INFRA-77a/M2": {
+    "kind": "patch",
+    "protects": "5 DS-2 docs-stale without docs exits 2 with the not-configured line",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "  if (!GATE.docs) {",
+    "replace": "  if (false) {",
+    "test": "node --test --test-name-pattern='^DS-2 ' packages/engine/test/checks-cli.test.mjs",
+    "testFile": "packages/engine/test/checks-cli.test.mjs",
+    "testName": "DS-2 "
+  },
+  "INFRA-77a/M3": {
+    "kind": "patch",
+    "protects": "5 RA-2 --all runs only ratchets of group check",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "  const list = Object.entries(GATE.ratchets ?? {}).filter(([, e]) => e.group === 'check');",
+    "replace": "  const list = Object.entries(GATE.ratchets ?? {}).filter(() => true);",
+    "test": "node --test --test-name-pattern='^RA-2 ' packages/engine/test/ratchet-all.test.mjs",
+    "testFile": "packages/engine/test/ratchet-all.test.mjs",
+    "testName": "RA-2 "
+  },
+  "INFRA-77a/M4": {
+    "kind": "patch",
+    "protects": "5 RA-3 the worst ratchet code reaches the exit status",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "    worst = Math.max(worst, code);",
+    "replace": "    worst = code;",
+    "test": "node --test --test-name-pattern='^RA-3 ' packages/engine/test/ratchet-all.test.mjs",
+    "testFile": "packages/engine/test/ratchet-all.test.mjs",
+    "testName": "RA-3 "
+  },
+  "INFRA-77a/M5": {
+    "kind": "patch",
+    "protects": "5 RA-6 --all with no check ratchet exits 2",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "  if (list.length === 0) {",
+    "replace": "  if (false) {",
+    "test": "node --test --test-name-pattern='^RA-6 ' packages/engine/test/ratchet-all.test.mjs",
+    "testFile": "packages/engine/test/ratchet-all.test.mjs",
+    "testName": "RA-6 "
+  },
+  "INFRA-77a/M6": {
+    "kind": "patch",
+    "protects": "5 RA-4 a throwing ratchet names its message",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "      warn(`ratchet ${name}: exit 2 (threw: ${e.message})`);",
+    "replace": "      warn(`ratchet ${name}: exit 2 (threw)`);",
+    "test": "node --test --test-name-pattern='^RA-4 ' packages/engine/test/ratchet-all.test.mjs",
+    "testFile": "packages/engine/test/ratchet-all.test.mjs",
+    "testName": "RA-4 "
+  },
+  "INFRA-77a/M9": {
+    "kind": "patch",
+    "protects": "5 PC-1 a pack command runs from the bin",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "  const own = GATE.packCommands[cmd];",
+    "replace": "  const own = undefined;",
+    "test": "node --test --test-name-pattern='^PC-1 ' packages/engine/test/pack-commands.test.mjs",
+    "testFile": "packages/engine/test/pack-commands.test.mjs",
+    "testName": "PC-1 "
   }
 }
