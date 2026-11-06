@@ -10,7 +10,9 @@
 //   nightly    { line(nowMs), read() }       the dry-run's nightly status line; `read()` is the
 //              nightly record `{ latest, history }` the engine's nightly units plan from
 //   sqlRanges  { H1_REASON, migrationFacts, migrationReadRanges }   migration read ranges
+//   packCommands  { 'stack-preflight', 'db-schema' }   CLI commands, each only when its option is given
 // It also carries `e2eWhen` for gate.config.mjs's e2e step.
+import { packCommandsFor } from './commands.mjs';
 import { bindTools, tools } from './tools.mjs';
 import {
   mutationHarnesses,
@@ -24,7 +26,7 @@ import {
 } from './sql-ranges.mjs';
 import { e2eWhen } from './step-defaults.mjs';
 
-export function supabaseNext({ tools: project, mutations, sql } = {}) {
+export function supabaseNext({ tools: project, mutations, sql, stackPreflight, dbSchema } = {}) {
   bindTools(project);
   return {
     name: 'supabase-next',
@@ -40,6 +42,7 @@ export function supabaseNext({ tools: project, mutations, sql } = {}) {
       read: () => tools.nightly.readNightly(tools.nightly.nightlyDir()),
     },
     sqlRanges: { H1_REASON, migrationFacts, migrationReadRanges },
+    packCommands: packCommandsFor({ stackPreflight, dbSchema }),
     e2eWhen,
   };
 }
