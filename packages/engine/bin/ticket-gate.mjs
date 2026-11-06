@@ -21,6 +21,8 @@ const USAGE = `usage: ticket-gate <command> [args]
                               prove a ticket's registry guards bite (needs mutations in gate.config.mjs)
   mutations check [--fix]     validate (and repair) the mutation registry
   mutations select [--affected --paths=]   list the registry entries a diff selects
+  select [--test-list | --replay=REV --count=N | --for=FILES | --drift=REPORT | --load-time] | select check
+                              pick the e2e specs a diff reaches, or check the spec headers (needs selection in gate.config.mjs)
   score --base=REF [--files= --report= --base-report=]   judge a mutation report (needs score in gate.config.mjs)`;
 
 const say = (s) => console.log(s);
@@ -46,6 +48,26 @@ async function score(args) {
   }
   const { runScore } = await import('../score/cli.mjs');
   return runScore(args, GATE.score, ROOT);
+}
+
+async function select(args) {
+  const { GATE, ROOT } = await import('../project.mjs');
+  if (!GATE.selection) {
+    warn('select: FAIL selection is not configured: add a selection key to gate.config.mjs');
+    return 2;
+  }
+  if (args[0] === 'check') {
+    const { checkE2eAreas } = await import('../selection/check.mjs');
+    const problems = checkE2eAreas(ROOT, GATE.selection);
+    if (problems.length > 0) {
+      warn(`${problems.join('\n')}\n\nselect check: fix each line above.`);
+      return 1;
+    }
+    say(`select check: ${problems.counts.specs} specs, ${problems.counts.entries} entries ok`);
+    return 0;
+  }
+  const { main } = await import('../selection/cli.mjs');
+  return main(args, GATE.selection);
 }
 
 async function fu(args) {
@@ -126,6 +148,7 @@ export async function run(argv) {
     return mutation(`mutations ${sub}`, rest.slice(1));
   }
   if (cmd === 'score') return score(rest);
+  if (cmd === 'select') return select(rest);
   if (cmd === 'hook') return hook(rest[0]);
   if (cmd === 'fu') return fu(rest);
   if (cmd === 'ratchet') return ratchet(rest[0], rest.slice(1));

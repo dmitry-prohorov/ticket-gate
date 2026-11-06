@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ROOT } from './root.mjs';
 import { scoreOf, validateScore } from './score-config.mjs';
+import { selectionOf } from './selection-config.mjs';
 
 export const GATE_KEYS = Object.freeze([
   'steps',
@@ -28,6 +29,7 @@ export const GATE_KEYS = Object.freeze([
   'commands',
   'mutations',
   'score',
+  'selection',
 ]);
 
 /**
@@ -209,6 +211,11 @@ export function defineGate(config) {
       fail(at, 'units.reaches must be a function');
   });
 
+  const nightly = steps.filter((s) => s.units?.nightly);
+  if (nightly.length > 1) {
+    fail('steps', `only one step may carry nightly units: ${nightly[0].id}, ${nightly[1].id}`);
+  }
+
   const known = (where, id) => {
     if (!seen.has(id)) fail(where, `unknown step id "${id}"`);
   };
@@ -281,6 +288,9 @@ export function defineGate(config) {
     packs,
     precheck,
     ...(config.score !== undefined ? { score: scoreOf(config.score) } : {}),
+    ...(config.selection !== undefined
+      ? { selection: selectionOf(config, fail) }
+      : {}),
   });
 }
 
