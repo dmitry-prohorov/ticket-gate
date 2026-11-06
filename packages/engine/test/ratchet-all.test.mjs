@@ -104,3 +104,16 @@ test('RA-7 ratchet --all --update passes update true to every check', () => {
   const plain = all(dir);
   assert.equal(plain.stdout.match(/update=false/g)?.length, 2);
 });
+
+test('RA-8 a ratchet whose code is not an integer counts as exit 2, in --all and alone', () => {
+  const dir = project(
+    `{ a: { group: 'check', check: async () => ({ code: undefined, lines: ['a odd'] }) }, b: { group: 'check', check: ${ok('b')} } }`,
+  );
+  const r = all(dir);
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /exit 2 \(code not an integer\)/);
+  assert.match(r.stdout, /ratchet b: ok/);
+  const one = spawnSync(process.execPath, [BIN, 'ratchet', 'a'], { cwd: dir, encoding: 'utf8' });
+  assert.equal(one.status, 2);
+  assert.match(one.stderr, /exit 2 \(code not an integer\)/);
+});

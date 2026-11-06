@@ -72,6 +72,19 @@ test('CR-2 cache-report on a missing transcript exits 1 with the no-transcript l
   assert.equal(r.stdout, '');
 });
 
+test('CR-3 cache-report with no transcripts for the repo exits 1 with a single stderr line', () => {
+  const dir = scratch();
+  const home = scratch();
+  const r = spawnSync(process.execPath, [BIN, 'cache-report'], {
+    cwd: dir,
+    encoding: 'utf8',
+    env: { ...process.env, HOME: home, USERPROFILE: home },
+  });
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /^cache-report: [^\n]+\n$/);
+  assert.equal(r.stdout, '');
+});
+
 const withDocs = (body) => {
   const dir = scratch();
   writeFileSync(

@@ -3,7 +3,7 @@
     "kind": "patch",
     "protects": "INFRA-45 3-13 CL-2 a ratchet failing code reaches the exit status",
     "file": "packages/engine/bin/ticket-gate.mjs",
-    "find": "process.exitCode = result.code;",
+    "find": "process.exitCode = code;",
     "replace": "process.exitCode = 0;",
     "test": "node --test --test-name-pattern='^CL-2 ' packages/engine/test/cli.test.mjs",
     "testFile": "packages/engine/test/cli.test.mjs",
@@ -12,6 +12,10 @@
       {
         "by": "INFRA-58a",
         "why": "re-registered in the public repo (D6): tools/gate/bin/ticket-gate.mjs -> packages/engine/bin/ticket-gate.mjs; test tools/gate/test/cli.test.mjs -> packages/engine/test/cli.test.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "guard line renamed: the exit status is the normalised code, not result.code"
       }
     ]
   },
@@ -119,10 +123,16 @@
     "kind": "patch",
     "protects": "5 PC-1 a pack command runs from the bin",
     "file": "packages/engine/bin/ticket-gate.mjs",
-    "find": "  const own = GATE.packCommands[cmd];",
+    "find": "  const own = Object.hasOwn(GATE.packCommands, cmd) ? GATE.packCommands[cmd] : undefined;",
     "replace": "  const own = undefined;",
     "test": "node --test --test-name-pattern='^PC-1 ' packages/engine/test/pack-commands.test.mjs",
     "testFile": "packages/engine/test/pack-commands.test.mjs",
-    "testName": "PC-1 "
+    "testName": "PC-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "guard line now reads own keys only (Object.hasOwn)"
+      }
+    ]
   }
 }

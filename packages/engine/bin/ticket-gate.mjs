@@ -117,8 +117,10 @@ async function ratchet(name, args) {
     update: args.includes('--update'),
     baseline,
   });
-  (result.code === 0 ? say : warn)(result.lines.join('\n'));
-  process.exitCode = result.code;
+  const code = Number.isInteger(result.code) ? result.code : 2;
+  (code === 0 ? say : warn)(result.lines.join('\n'));
+  if (code !== result.code) warn(`ratchet ${name}: exit 2 (code not an integer)`);
+  process.exitCode = code;
   return Number(process.exitCode);
 }
 
@@ -141,7 +143,8 @@ async function ratchetAll(args) {
         update: args.includes('--update'),
         baseline: entry.baseline ?? null,
       });
-      code = result.code;
+      code = Number.isInteger(result.code) ? result.code : 2;
+      if (code !== result.code) result.lines = [...(result.lines ?? []), 'exit 2 (code not an integer)'];
       (code === 0 ? say : warn)(result.lines.join('\n'));
       (code === 0 ? say : warn)(`ratchet ${name}: ${code === 0 ? 'ok' : `exit ${code}`}`);
     } catch (e) {
@@ -159,7 +162,13 @@ async function ratchetAll(args) {
 async function cacheReport(args) {
   const { ROOT } = await import('../root.mjs');
   const { runCacheReport } = await import('../checks/cache-report.mjs');
-  const result = runCacheReport({ root: ROOT, args });
+  let result;
+  try {
+    result = runCacheReport({ root: ROOT, args });
+  } catch (e) {
+    warn(`cache-report: ${e.message}`);
+    return 1;
+  }
   (result.code === 0 ? say : warn)(result.lines.join('\n'));
   return result.code;
 }
@@ -220,10 +229,11 @@ export async function run(argv) {
   if (cmd === 'docs-stale') return docsStale(rest);
   // No gate.config.mjs means no pack commands: fall through to the unknown-command line.
   const { GATE, ROOT: root } = await import('../project.mjs').catch((e) => {
-    if (e?.code !== 'ERR_MODULE_NOT_FOUND') throw e;
+    // Only a missing gate.config.mjs means "no pack commands"; a missing import inside it is the user's error.
+    if (e?.code !== 'ERR_MODULE_NOT_FOUND' || !e.url?.endsWith('/gate.config.mjs')) throw e;
     return { GATE: { packCommands: {} }, ROOT: process.cwd() };
   });
-  const own = GATE.packCommands[cmd];
+  const own = Object.hasOwn(GATE.packCommands, cmd) ? GATE.packCommands[cmd] : undefined;
   if (own) return Number((await own.run(rest, { root, gate: GATE })) ?? 0);
   warn(`ticket-gate: unknown command ${cmd}\n${USAGE}`);
   return 2;

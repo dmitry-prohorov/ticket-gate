@@ -86,3 +86,29 @@ test('PC-5 a non-function packCommands value is a config error; no pack gives an
   assert.deepEqual(gate().packCommands, {});
   assert.deepEqual(Object.keys(gate({ name: 'plain', version: '1' }).packCommands), []);
 });
+
+test('PC-6 a command named like an Object.prototype key is unknown; a pack may name one constructor', () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'gate-pc-')));
+  dirs.push(dir);
+  writeFileSync(
+    join(dir, 'gate.config.mjs'),
+    `import { defineGate } from ${JSON.stringify(CONFIG_URL)};\nexport default defineGate({ steps: [], packs: [] });\n`,
+  );
+  const r = spawnSync(process.execPath, [BIN, 'constructor'], { cwd: dir, encoding: 'utf8' });
+  assert.equal(r.status, 2, r.stderr);
+  assert.match(r.stderr, /unknown command constructor/);
+  assert.deepEqual(Object.keys(gate(pack('alpha', { constructor() {} })).packCommands), ['constructor']);
+});
+
+test('PC-7 a gate.config importing a missing package reports that import, not an unknown command', () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'gate-pc-')));
+  dirs.push(dir);
+  writeFileSync(
+    join(dir, 'gate.config.mjs'),
+    `import 'not-installed-pkg';\nimport { defineGate } from ${JSON.stringify(CONFIG_URL)};\nexport default defineGate({ steps: [], packs: [] });\n`,
+  );
+  const r = spawnSync(process.execPath, [BIN, 'hello'], { cwd: dir, encoding: 'utf8' });
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /not-installed/);
+  assert.doesNotMatch(r.stderr, /unknown command/);
+});

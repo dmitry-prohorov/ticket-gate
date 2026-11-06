@@ -1929,11 +1929,17 @@
     "kind": "patch",
     "protects": "5 PC-2 two packs naming one command is a config error",
     "file": "packages/engine/commands-config.mjs",
-    "find": "      if (out[name]) fail('packs', `command \"${name}\" is given by ${out[name].by} and ${by}`);",
+    "find": "      if (Object.hasOwn(out, name)) fail('packs', `command \"${name}\" is given by ${out[name].by} and ${by}`);",
     "replace": "      if (false) fail('packs', `command \"${name}\" is given by ${out[name].by} and ${by}`);",
     "test": "node --test --test-name-pattern='^PC-2 ' packages/engine/test/pack-commands.test.mjs",
     "testFile": "packages/engine/test/pack-commands.test.mjs",
-    "testName": "PC-2 "
+    "testName": "PC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "guard line now tests own keys (Object.hasOwn) so a pack command named constructor is not a duplicate"
+      }
+    ]
   },
   "INFRA-77a/M8": {
     "kind": "patch",

@@ -31,7 +31,7 @@ export function packCommandsOf(config, fail) {
       if (!NAME.test(name) || typeof run !== 'function')
         fail('packs', `${by}: packCommands.${name} must be a function named /^[a-z][a-z0-9-]*$/`);
       if (ENGINE_COMMANDS.includes(name)) fail('packs', `${by} names the engine command "${name}"`);
-      if (out[name]) fail('packs', `command "${name}" is given by ${out[name].by} and ${by}`);
+      if (Object.hasOwn(out, name)) fail('packs', `command "${name}" is given by ${out[name].by} and ${by}`);
       out[name] = { by, run };
     }
   }
