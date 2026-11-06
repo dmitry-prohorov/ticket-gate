@@ -42,6 +42,8 @@ unreviewed. Update by editing the version yourself.
 | `mutate <ID>` / `mutate --registry (--ids=\|--all\|--changed)` | Prove each registered guard bites: apply its patch, run its test, expect a failure, restore the file. Needs `mutations` in the config. |
 | `mutate --rotate --ledger=<dir> [--budget-min=<n>] [--batch=<n>] [--deadline=<ISO>] [--sha=<sha>]` | One budgeted rotation over the live registry: batches of `mutate --registry --ids=`, never-run keys first then the oldest proof, results appended to `<dir>/mutations.jsonl`. Without `--deadline` the budget is soft: the batch in flight at its end finishes. Takes the stack lock; exit 1 when a guard survived. Needs `mutations` in the config. |
 | `mutations check [--fix]` / `mutations select [--affected --paths=]` | Validate (and repair) the mutation registry; list the entries a diff selects. |
+| `select [--test-list \| --replay=REV --count=N \| --for=FILES \| --drift=REPORT \| --load-time]` | Pick the end-to-end specs a diff reaches from the import graph and the spec headers. Needs `selection` in the config. |
+| `select check` | Validate the spec headers against the selection (every spec has its areas, every area is reached). Exit 1 with one line per problem. Needs `selection` in the config. |
 | `score --base=REF [--files= --report= --base-report=]` | Judge a mutation-testing report against the base: no open mutant on a changed line, a new file at the floor, no regression. Exit 0 pass, 1 a file failed, 2 the tool, report or install failed. Needs `score` in the config. |
 
 ## A minimal `gate.config.mjs`
@@ -108,6 +110,43 @@ score: {
 Optional keys: `extra`, `excluded`, `survivors`, `worktreeDir`, `handoff`, `commands.score` and `noTargets` (the line printed when
 no file in the scope changed). The gate reads only the fields of the mutation-testing-report-schema it needs; a report that
 cannot be read, or whose `schemaVersion` is not a 1.x or 2.x version, exits 2 with a `mutation: FAIL` line.
+
+## Affected-spec selection
+
+`ticket-gate select` decides which end-to-end specs a diff needs, so a branch runs the affected set and the nightly runs the rest.
+The `selection` key of `defineGate` turns it on; it is validated on load and a bad value throws `gate.config: selection: <what>`.
+Required: `specs: { dir, match, header }` and at least one graph source. Optional: `label`, `root`, `areas`, `triggers`, `ignored`,
+`outside`, `unreachedOk`, `checks`, `locale`, `drift: { map(navigation, headers) }`, `replayPaths`, `commands` and `runner`.
+
+Graph sources, rules and test runners are items with a string `name`, given inline (`selection.graphs`, `selection.rules`) or by a pack
+through the `selectionGraphs`, `selectionRules` and `testRunners` hooks. They are collected with `packHooksAll`: the config's own items
+first, then each pack in `packs` order. A name given twice is a config error naming both sources. `runner` may be a runner object or the
+name of one a pack provides. `@ticket-gate/supabase-next` ships `supabaseFunctions`, `nextAppRoutes` and `workspaceExports` as
+building blocks for those items; the Playwright runner is at `@ticket-gate/engine/runners/playwright.mjs`.
+
+```js
+import { nightlyUnits } from '@ticket-gate/engine/selection/units.mjs';
+
+selection: { specs: { dir: 'e2e', match: /\.spec\.ts$/, header: /^\/\/ e2e-areas:/ }, graphs: [/* ... */], runner: 'playwright' },
+steps: [
+  step({
+    id: 'e2e',
+    when: ['src/**', 'e2e/**'],
+    cmd: 'npx playwright test',
+    units: nightlyUnits({ selection, suite: 'e2e', full: 'npx playwright test', runFrom: '.' }),
+  }),
+],
+```
+
+`nightlyUnits({ selection, suite, full, runFrom })` is the `units` of the step that runs the suite (it carries the `nightly` slot). `suite` names the
+suite in the nightly record, `full` is the command of a full run, and `runFrom` is the path from the runner's working directory to the
+repository root (default `.`). `selection` defaults to the config's own. It plans an affected run from the selection, the newest
+nightly record and the spec ledger, and falls back to a full run (`full (nightly missing)`) when there is no usable record. It reads
+the record through the `read()` function of the pack's `nightly` hook (`{ latest, history }`); without that hook the plan is full.
+At most one step carries nightly units, and the engine finds it by `units.nightly`, not by a step id.
+
+The Stop hook judges every unit result that carries a `mode` by the affected-mode rules, whatever the step is called. The pack `e2e`
+hook of earlier release candidates is removed: a pack that provided one now provides `nightly.read()` and the selection hooks.
 
 ## What the hooks do and do not do
 
