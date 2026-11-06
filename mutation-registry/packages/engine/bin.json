@@ -134,5 +134,46 @@
         "why": "guard line now reads own keys only (Object.hasOwn)"
       }
     ]
+  },
+  "INFRA-77a/M14": {
+    "kind": "patch",
+    "protects": "5 PC-7 a missing gate.config import is reported, not hidden as an unknown command",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "    if (e?.code !== 'ERR_MODULE_NOT_FOUND' || !e.url?.endsWith('/gate.config.mjs')) throw e;",
+    "replace": "    if (e?.code !== 'ERR_MODULE_NOT_FOUND') throw e;",
+    "test": "node --test --test-name-pattern='^PC-7 ' packages/engine/test/pack-commands.test.mjs",
+    "testFile": "packages/engine/test/pack-commands.test.mjs",
+    "testName": "PC-7 "
+  },
+  "INFRA-77a/M15": {
+    "kind": "patch",
+    "protects": "5 RA-8 ratchet --all counts a non-integer code as exit 2",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "      code = Number.isInteger(result.code) ? result.code : 2;",
+    "replace": "      code = result.code;",
+    "test": "node --test --test-name-pattern='^RA-8 ' packages/engine/test/ratchet-all.test.mjs",
+    "testFile": "packages/engine/test/ratchet-all.test.mjs",
+    "testName": "RA-8 ",
+    "within": "async function ratchetAll(args) {"
+  },
+  "INFRA-77a/M16": {
+    "kind": "patch",
+    "protects": "5 RA-8 a single ratchet counts a non-integer code as exit 2",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "  const code = Number.isInteger(result.code) ? result.code : 2;",
+    "replace": "  const code = result.code;",
+    "test": "node --test --test-name-pattern='^RA-8 ' packages/engine/test/ratchet-all.test.mjs",
+    "testFile": "packages/engine/test/ratchet-all.test.mjs",
+    "testName": "RA-8 "
+  },
+  "INFRA-77a/M17": {
+    "kind": "patch",
+    "protects": "5 CR-3 cache-report with no transcripts exits 1 with one line",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "    warn(`cache-report: ${e.message}`);",
+    "replace": "    throw e;",
+    "test": "node --test --test-name-pattern='^CR-3 ' packages/engine/test/checks-cli.test.mjs",
+    "testFile": "packages/engine/test/checks-cli.test.mjs",
+    "testName": "CR-3 "
   }
 }
