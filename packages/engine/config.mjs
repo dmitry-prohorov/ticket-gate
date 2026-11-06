@@ -4,6 +4,7 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { docsOf, packCommandsOf } from './commands-config.mjs';
 import { ROOT } from './root.mjs';
 import { scoreOf, validateScore } from './score-config.mjs';
 import { selectionOf } from './selection-config.mjs';
@@ -30,6 +31,7 @@ export const GATE_KEYS = Object.freeze([
   'mutations',
   'score',
   'selection',
+  'docs',
 ]);
 
 /**
@@ -286,7 +288,9 @@ export function defineGate(config) {
     toolPrefixes: config.toolPrefixes ?? [],
     commands: commandsOf(config),
     packs,
+    packCommands: packCommandsOf(config, fail),
     precheck,
+    ...(config.docs !== undefined ? { docs: docsOf(config.docs, fail) } : {}),
     ...(config.score !== undefined ? { score: scoreOf(config.score) } : {}),
     ...(config.selection !== undefined
       ? { selection: selectionOf(config, fail) }
@@ -466,6 +470,8 @@ function validateRatchets(ratchets) {
     if (!isObject(entry)) fail(at, 'must be an object');
     if (typeof entry.check !== 'function')
       throw new Error(`gate.config: ${at}.check must be a function`);
+    if (entry.group !== undefined && entry.group !== 'check')
+      fail(`${at}.group`, "must be 'check'");
     if (entry.baseline !== undefined && typeof entry.baseline !== 'string')
       fail(`${at}.baseline`, 'must be a string');
   }
@@ -575,9 +581,11 @@ export async function loadGateConfig(root = ROOT) {
   } catch (err) {
     fail('gate.config.mjs', `does not load: ${err?.message ?? err}`);
   }
-  const config = mod.default;
-  if (!config || typeof config !== 'object')
+  const exported = mod.default;
+  if (!exported || typeof exported !== 'object')
     fail('gate.config.mjs', 'must default-export defineGate({...})');
+  // packCommands is derived from packs by defineGate, so a frozen gate carries it back in.
+  const { packCommands: _derived, ...config } = exported;
   for (const key of REQUIRED_KEYS)
     if (config[key] === undefined) fail(key, 'missing');
   if (!Array.isArray(config.steps) || config.steps.length === 0)
