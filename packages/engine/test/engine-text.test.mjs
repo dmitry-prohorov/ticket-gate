@@ -23,30 +23,33 @@ const PACK_DIR = [
   join(GATE_DIR, '..', 'supabase-next'),
 ].find((d) => d && existsSync(d));
 
-// Comments included, no allowlist: the engine and the pack are published, so no ticket id,
+// Comments included, no allowlist: the engine, the pack and the react package are published, so no ticket id,
 // planning-doc path or project name may appear anywhere in their text.
 const PRIVATE_RE =
   /\b(INFRA|FU)-?\d+|\bP\d-\d+|docs\/tasks/i;
 
+// Every non-test .mjs under a package folder; test/ and node_modules/ are skipped.
 function mjsUnder(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
     e.isDirectory()
-      ? mjsUnder(join(dir, e.name))
+      ? e.name === 'test' || e.name === 'node_modules'
+        ? []
+        : mjsUnder(join(dir, e.name))
       : e.name.endsWith('.mjs')
         ? [join(dir, e.name)]
         : [],
   );
 }
 
-export function scanText(gateDir, packDir) {
+export function scanText(
+  gateDir,
+  packDir,
+  reactDir = join(gateDir, '..', 'react'),
+) {
   const files = [
-    ...readdirSync(gateDir, { withFileTypes: true })
-      .filter((e) => e.isFile() && e.name.endsWith('.mjs'))
-      .map((e) => join(gateDir, e.name)),
-    ...['hooks', 'bin']
-      .filter((d) => existsSync(join(gateDir, d)))
-      .flatMap((d) => mjsUnder(join(gateDir, d))),
+    ...mjsUnder(gateDir),
     ...(packDir ? mjsUnder(packDir) : []),
+    ...(existsSync(reactDir) ? mjsUnder(reactDir) : []),
   ];
   const hits = [];
   for (const file of files)
@@ -96,6 +99,32 @@ test('ET-2 a planted line in a copy of the engine or the pack is reported', () =
         writeFileSync(p, before);
       }
     assert.deepEqual(scanText(gate, pack), []);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('ET-3 a planted ticket id in checks/ and in packages/react is reported', () => {
+  const root = mkdtempSync(join(tmpdir(), 'engine-text-'));
+  try {
+    const gate = join(root, 'gate');
+    const react = join(root, 'react');
+    cpSync(GATE_DIR, gate, { recursive: true });
+    cpSync(join(GATE_DIR, '..', 'react'), react, { recursive: true });
+    for (const [dir, rel] of [
+      [gate, join('checks', 'surface.mjs')],
+      [react, 'compiler.mjs'],
+    ])
+      for (const text of ['// INFRA-99: a ticket id', '// docs/tasks/x.md']) {
+        const p = join(dir, rel);
+        const before = readFileSync(p, 'utf8');
+        writeFileSync(p, `${before}\n${text}\n`);
+        const hits = scanText(gate, undefined, react);
+        assert.equal(hits.length, 1, `${rel} + ${text}: ${hits.join('; ')}`);
+        assert.ok(hits[0].includes(rel), hits[0]);
+        writeFileSync(p, before);
+      }
+    assert.deepEqual(scanText(gate, undefined, react), []);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

@@ -12,7 +12,7 @@ import { REPO, repoFiles } from './repo-files.mjs';
 
 const ALLOWED = [
   /^(package\.json|package-lock\.json|\.gitignore|LICENSE|README\.md|CHANGELOG\.md)$/,
-  /^packages\/(engine|supabase-next)\/.+/,
+  /^packages\/(engine|supabase-next|react)\/.+/,
   /^scripts\/[^/]+\.mjs$/,
   /^mutation-registry\/.+\.json$/,
   /^test\/[^/]+\.mjs$/,

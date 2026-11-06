@@ -72,7 +72,7 @@ export function publishProblems(src) {
   if (!/^\s*-\s*run:\s*npm ci\s*$/m.test(c)) problems.push('no npm ci');
   if (!/^\s*-\s*run:\s*npm test\s*$/m.test(c)) problems.push('no npm test');
   const publishes = c.split('\n').filter((l) => l.includes(PUBLISH));
-  if (publishes.length !== 2) problems.push(`expected 2 publish lines, found ${publishes.length}`);
+  if (publishes.length !== 3) problems.push(`expected 3 publish lines, found ${publishes.length}`);
   for (const l of publishes) {
     if (!l.includes('--provenance')) problems.push(`publish without --provenance: ${l.trim()}`);
     if (!/--tag "\$DIST_TAG"/.test(l)) problems.push(`publish without the dist-tag: ${l.trim()}`);
@@ -81,7 +81,9 @@ export function publishProblems(src) {
   if (!publishes.some((l) => l.includes('packages/engine'))) problems.push('engine is not published');
   const enginePos = c.indexOf('packages/engine --provenance');
   const packPos = c.indexOf('packages/supabase-next --provenance');
+  const reactPos = c.indexOf('packages/react --provenance');
   if (enginePos === -1 || packPos === -1 || enginePos > packPos) problems.push('the engine must publish before the pack');
+  if (reactPos === -1 || reactPos < packPos) problems.push('the react package must publish after the pack');
   return problems;
 }
 
@@ -127,4 +129,13 @@ test('INFRA-47 5-10d prerelease goes to next with provenance', () => {
   assert.notDeepEqual(publishProblems(good.replace(/(actions\/checkout)@[0-9a-f]{40}/, '$1@v4')), []);
   assert.notDeepEqual(publishProblems(good.replace('persist-credentials: false', 'persist-credentials: true')), []);
   assert.notDeepEqual(publishProblems(good.replace('--verify-tag', '--noop')), []);
+  assert.notDeepEqual(
+    publishProblems(
+      good
+        .replace('packages/react --provenance', 'packages/XX --provenance')
+        .replace('packages/supabase-next --provenance', 'packages/react --provenance')
+        .replace('packages/XX --provenance', 'packages/supabase-next --provenance'),
+    ),
+    [],
+  );
 });

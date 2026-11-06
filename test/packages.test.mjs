@@ -10,7 +10,7 @@ import { test } from 'node:test';
 import { REPO, repoFiles } from './repo-files.mjs';
 
 const VERSION = '0.1.0-rc.1';
-const PACKAGES = ['engine', 'supabase-next'];
+const PACKAGES = ['engine', 'supabase-next', 'react'];
 // Built from parts: this file is a tracked .mjs, and 5-4a forbids the scope there.
 const SCOPE = '@ticket-' + 'gate/';
 
@@ -42,14 +42,22 @@ test('INFRA-47 5-3 manifests pin 0.1.0-rc.1 under Apache-2.0', () => {
   }
   const engine = manifest('engine');
   const pack = manifest('supabase-next');
-  assert.equal(pack.dependencies?.[engine.name], VERSION, 'engine dependency must be an exact pin');
-  assert.equal(pack.imports?.['#engine/*'], `${engine.name}/*`);
+  const react = manifest('react');
+  for (const dependent of [pack, react]) {
+    assert.equal(dependent.dependencies?.[engine.name], VERSION, `${dependent.name}: engine dependency must be an exact pin`);
+    assert.equal(dependent.imports?.['#engine/*'], `${engine.name}/*`);
+  }
   assert.deepEqual(engine.bin, { 'ticket-gate': 'bin/ticket-gate.mjs' });
   assert.equal(engine.dependencies, undefined, 'the engine has zero runtime dependencies');
   assert.deepEqual(
     Object.keys(pack.dependencies ?? {}),
     [engine.name],
     'the pack depends on the engine only',
+  );
+  assert.deepEqual(
+    Object.keys(react.dependencies ?? {}),
+    [engine.name],
+    'the react package depends on the engine only (@babel/core, the plugin and jscpd are resolved from the project)',
   );
 });
 
@@ -100,6 +108,7 @@ test('INFRA-47 5-5 tarballs ship no tests', () => {
   const required = {
     engine: ['LICENSE', 'README.md', 'package.json', 'bin/ticket-gate.mjs', 'config.mjs'],
     'supabase-next': ['LICENSE', 'README.md', 'package.json', 'index.mjs'],
+    react: ['LICENSE', 'README.md', 'package.json', 'compiler.mjs'],
   };
   for (const name of PACKAGES) {
     const files = packList(name);
