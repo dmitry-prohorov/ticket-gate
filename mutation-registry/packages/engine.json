@@ -1802,12 +1802,18 @@
   "INFRA-58a/M5": {
     "kind": "patch",
     "protects": "5 PH-1 packHooksAll collects each pack hook in packs order",
-    "file": "packages/engine/pack-hooks.mjs",
+    "file": "packages/engine/pack-hooks-all.mjs",
     "find": "out.push({ by: pack.name, value: pack[name] });",
     "replace": "",
     "test": "node --test --test-name-pattern='^PH-1 ' packages/engine/test/mutations/pack-hooks.test.mjs",
     "testFile": "packages/engine/test/mutations/pack-hooks.test.mjs",
-    "testName": "PH-1 "
+    "testName": "PH-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "packHooksAll moved to a no-import module so config.mjs can read pack hooks without loading the project config: packages/engine/pack-hooks.mjs -> packages/engine/pack-hooks-all.mjs; test unchanged"
+      }
+    ]
   },
   "INFRA-62b/M6": {
     "kind": "patch",
