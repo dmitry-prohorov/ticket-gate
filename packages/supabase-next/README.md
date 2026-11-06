@@ -22,6 +22,21 @@ the services of the gate's `stacks.supabase`. `dbSchema: { header, ... }` adds `
 `TypeError` when the factory runs. The check modules are importable on their own: `checks/db-schema.mjs`,
 `checks/stack-preflight.mjs`, `checks/stack.mjs`, `checks/kill-group.mjs` and `checks/env-keys.mjs`.
 
+## Checks
+
+Each check module takes every project value as an option and returns `{ code, out, err }` (or the checker) without printing
+or exiting, so a project can bind it in its own CLI:
+
+```js
+import { supabaseStack } from '<pack>/checks/stack.mjs';            // ({ services, cmd, waits, reset }) -> stack descriptor
+import { stackPreflight } from '<pack>/checks/stack-preflight.mjs'; // ({ services, root, cli, webEnv, anonKey, usage }) -> checker
+import { dbSchema } from '<pack>/checks/db-schema.mjs';             // ({ root, out, header, tool, name, usage, start, reset }) -> { run, buildSnapshot, renderCron }
+import { checkEnvExampleKeys } from '<pack>/checks/env-keys.mjs';   // ({ root, targets, label, fix }) -> { code, out, err }
+import { killGroup, safeKillGroup } from '<pack>/checks/kill-group.mjs'; // (pid, signal): signal a whole process group
+```
+
+`<pack>` is this package's name.
+
 A pack is optional. The engine reaches it only through the `packs` key of a project's `gate.config.mjs`; the
 project supplies the project-specific tools the pack calls. This package depends on the engine at the same exact
 version.
