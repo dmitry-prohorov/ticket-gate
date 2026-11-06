@@ -125,9 +125,16 @@ name of one a pack provides. `@ticket-gate/supabase-next` ships `supabaseFunctio
 building blocks for those items; the Playwright runner is at `@ticket-gate/engine/runners/playwright.mjs`.
 
 ```js
+import { playwright } from '@ticket-gate/engine/runners/playwright.mjs';
 import { nightlyUnits } from '@ticket-gate/engine/selection/units.mjs';
 
-selection: { specs: { dir: 'e2e', match: /\.spec\.ts$/, header: /^\/\/ e2e-areas:/ }, graphs: [/* ... */], runner: 'playwright' },
+const selection = {
+  specs: { dir: 'e2e', match: /\.spec\.ts$/, header: /^\/\/ e2e-areas:/ },
+  graphs: [/* ... */],
+  runner: playwright({ cmd: ['npx', 'playwright', 'test'], specPrefix: 'e2e/' }),
+};
+
+selection,
 steps: [
   step({
     id: 'e2e',

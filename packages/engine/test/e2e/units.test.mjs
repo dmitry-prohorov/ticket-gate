@@ -359,6 +359,23 @@ test("NU-4 units.cmd falls back to the full command", () => {
   );
 });
 
+test("NU-8 finishShadow with a null plan returns null, even when the selection has no runner", async () => {
+  const units = nightlyUnits({
+    selection: defineSelection({
+      specs: { dir: "e2e", match: /\.spec\.ts$/, header: /^\/\/ e2e-areas:/ },
+      graphs: [{ name: "none", graph: () => ({ reach: () => ({ areas: [] }) }) }],
+    }),
+    suite: "web",
+    full: "run all",
+  });
+  assert.equal(
+    await units.nightly.finishShadow(null, [{ id: "e2e", status: "pass" }], {
+      id: "e2e",
+    }),
+    null,
+  );
+});
+
 test("NU-5 affectedListLines always lists the configured setup files and never a knownRed file", () => {
   const lines = affectedListLines(LIST, {
     run: ["home.spec.ts"],

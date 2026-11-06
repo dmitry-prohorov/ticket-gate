@@ -632,11 +632,14 @@ export function nightlyUnits({ selection, suite, full, runFrom = '.' } = {}) {
       parseFlag: parseE2eFlag,
       dryLine: e2eDryLine,
       finish: finishE2e,
+      // A null plan (no affected run) needs no selection; resolving it first would throw on a runner-less config.
       finishShadow: async (plan, results, o) =>
-        finishShadow(plan, results, {
-          selection: (await optsOf()).selection,
-          ...o,
-        }),
+        plan
+          ? finishShadow(plan, results, {
+              selection: (await optsOf()).selection,
+              ...o,
+            })
+          : null,
       shadowLine,
     },
   };
