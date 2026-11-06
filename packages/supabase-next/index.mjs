@@ -7,12 +7,10 @@
 // without one is a pack that does not do that:
 //   mutationKinds     { sql }                      the mutation kinds this pack contributes
 //   mutationHarnesses [nextServed(opts)] or []     the served-test harness, when `mutations` is given
-//   nightly    { line(nowMs) }                                  the dry-run's nightly status line
-//   e2e        () => Promise<{ reportPath, parseFlag(args), dryLine(plan), finish(result, ctx),
-//                finishShadow(plan, results), shadowLine(shadow) }>   loaded lazily: it reads
-//              the digest, which imports gate.config.mjs
+//   nightly    { line(nowMs), read() }       the dry-run's nightly status line; `read()` is the
+//              nightly record `{ latest, history }` the engine's nightly units plan from
 //   sqlRanges  { H1_REASON, migrationFacts, migrationReadRanges }   migration read ranges
-// It also carries `e2eWhen` and `e2eUnits` for gate.config.mjs's e2e step.
+// It also carries `e2eWhen` for gate.config.mjs's e2e step.
 import { bindTools, tools } from './tools.mjs';
 import {
   mutationHarnesses,
@@ -25,7 +23,6 @@ import {
   migrationReadRanges,
 } from './sql-ranges.mjs';
 import { e2eWhen } from './step-defaults.mjs';
-import { e2eUnits } from './units.mjs';
 
 export function supabaseNext({ tools: project, mutations, sql } = {}) {
   bindTools(project);
@@ -40,20 +37,9 @@ export function supabaseNext({ tools: project, mutations, sql } = {}) {
         const { latest, history } = readNightly(nightlyDir());
         return statusLines({ latest, history, queued: 0 }, nowMs)[0];
       },
-    },
-    e2e: async () => {
-      const m = await import('./e2e-units.mjs');
-      return {
-        reportPath: m.E2E_REPORT,
-        parseFlag: m.parseE2eFlag,
-        dryLine: m.e2eDryLine,
-        finish: m.finishE2e,
-        finishShadow: m.finishShadow,
-        shadowLine: m.shadowLine,
-      };
+      read: () => tools.nightly.readNightly(tools.nightly.nightlyDir()),
     },
     sqlRanges: { H1_REASON, migrationFacts, migrationReadRanges },
     e2eWhen,
-    e2eUnits,
   };
 }

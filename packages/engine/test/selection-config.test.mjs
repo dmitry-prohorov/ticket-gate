@@ -1,7 +1,7 @@
 // The selection key of a gate config: defaults, freezing, and how graph sources, rules and test
 // runners merge from the config and from packs.
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
@@ -10,6 +10,7 @@ import { defineGate } from "../config.mjs";
 import { ROOT } from "../root.mjs";
 import { defineSelection } from "../selection/define.mjs";
 import { select } from "../selection/select.mjs";
+import { CONFIG_URL } from "./scratch-project.mjs";
 
 const mkStep = (id, extra = {}) => ({
   id,
@@ -159,4 +160,22 @@ test("SL-8 two steps with nightly units throw naming both ids", () => {
     [],
     [mkStep("a", { units: units(true) }), mkStep("b", { units: units(false) })],
   );
+});
+
+test("CW-1 nightlyStepOf finds the nightly-units step whatever its id", async () => {
+  // plan.mjs loads the project config at import: point it at a throwaway project
+  const dir = mkdtempSync(join(tmpdir(), "cw-1-"));
+  dirs.push(dir);
+  writeFileSync(
+    join(dir, "gate.config.mjs"),
+    `import { defineGate, step } from '${CONFIG_URL}';\nexport default defineGate({ steps: [step({ id: 'a', when: true, cmd: 'x', reuse: false })] });\n`,
+  );
+  process.env.TICKET_GATE_CONFIG_DIR = dir;
+  const { nightlyStepOf } = await import("../plan.mjs");
+  delete process.env.TICKET_GATE_CONFIG_DIR;
+  const units = { select() {}, cmd() {}, nightly: { suite: "s" } };
+  const g = gate(undefined, [], [mkStep("e2e"), mkStep("apex", { units })]);
+  assert.equal(nightlyStepOf(g).id, "apex");
+  // control: no step carries nightly units, whatever it is called
+  assert.equal(nightlyStepOf(gate(undefined, [], [mkStep("e2e")])), null);
 });

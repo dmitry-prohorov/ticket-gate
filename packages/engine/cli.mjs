@@ -31,8 +31,8 @@ import { baseRef, changedPaths, treeHash } from './tree.mjs';
 import { STEP_IDS, STEP_LIMITS, buildResults, runInShell } from './run.mjs';
 import { commandsOf } from './config.mjs';
 import { GATE } from './project.mjs';
-import { planCtx, planSteps, selectUnits } from './plan.mjs';
-import { packHook, packHookAsync } from './pack-hooks.mjs';
+import { nightlyStepOf, planCtx, planSteps, selectUnits } from './plan.mjs';
+import { packHook } from './pack-hooks.mjs';
 import { registryHooks } from './mutations/gate.mjs';
 import { runPrecheck } from './precheck.mjs';
 
@@ -91,7 +91,10 @@ export async function main(args = process.argv.slice(2)) {
   }
   const machine = mapArg === 'full' ? 'full' : 'count';
   // Pack hooks (pack-hooks.mjs): a missing one means no pack does that.
-  const e2eHook = (await packHookAsync('e2e')) ?? {};
+  // The step that carries nightly units, found by its units, never by its id.
+  const nightlyStep = nightlyStepOf(GATE);
+  const nightlyId = nightlyStep?.id;
+  const e2eHook = nightlyStep?.units.nightly ?? {};
   const registryHook = registryHooks(GATE) ?? {};
   const nightlyHook = packHook('nightly');
   const e2eFlag = e2eHook.parseFlag?.(args) ?? {};
@@ -133,7 +136,7 @@ export async function main(args = process.argv.slice(2)) {
     ...planCtx(paths, { base: baseSha }),
     run: { e2eFlag: e2eFlag.flag, nowMs: Date.now(), fresh, state },
   });
-  const e2ePlan = units.e2e?.plan ?? null;
+  const e2ePlan = units[nightlyId]?.plan ?? null;
   const registry = registryHook.plan?.(baseSha) ?? {
     when: false,
     keys: [],
@@ -178,7 +181,7 @@ export async function main(args = process.argv.slice(2)) {
       const note = s.mode === 'reuse' ? `reused from ${s.reusedFrom}` : s.why;
       console.log(`  ${mode}  ${s.cmd}   (${note})`);
     }
-    if (e2ePlan && e2eHook.dryLine && steps.some((s) => s.id === 'e2e'))
+    if (e2ePlan && e2eHook.dryLine && steps.some((s) => s.id === nightlyId))
       console.log(e2eHook.dryLine(e2ePlan));
     if (registryHook.dryLine) console.log(registryHook.dryLine(registry));
     printNotSelected();
@@ -196,7 +199,7 @@ export async function main(args = process.argv.slice(2)) {
     ? gateLock({ commands: commandsOf(GATE) })
     : null;
   // R1: the e2e step writes its JSON report next to the list output.
-  const e2eRuns = steps.some((s) => s.id === 'e2e' && s.mode === 'run');
+  const e2eRuns = steps.some((s) => s.id === nightlyId && s.mode === 'run');
   if (e2eRuns && e2eHook.reportPath) {
     rmSync(e2eHook.reportPath, { force: true });
     process.env.FP_E2E_JSON = e2eHook.reportPath;
@@ -209,7 +212,7 @@ export async function main(args = process.argv.slice(2)) {
   // G2: the e2e result carries its mode, selection, per-spec results and knownRed.
   let report = null;
   const e2eAt = results.findIndex(
-    (r) => r.id === 'e2e' && ['pass', 'fail'].includes(r.status),
+    (r) => r.id === nightlyId && ['pass', 'fail'].includes(r.status),
   );
   if (e2ePlan && e2eRuns && e2eAt >= 0 && e2eHook.finish) {
     try {
@@ -220,7 +223,7 @@ export async function main(args = process.argv.slice(2)) {
     const done = e2eHook.finish(results[e2eAt], { ...e2ePlan, report });
     if (done.status !== results[e2eAt].status)
       failures.push({
-        id: 'e2e',
+        id: nightlyId,
         cmd: done.cmd,
         why: 'a spec failed or never ran',
         out: `${done.summary}\nRerun: ${commandsOf(GATE).verify} --e2e=full\n`,
@@ -239,6 +242,7 @@ export async function main(args = process.argv.slice(2)) {
         : { selection: e2ePlan.selection }
       : null,
     results,
+    { id: nightlyId },
   );
 
   // A failed proof is recorded as null and never changes `ok`.
@@ -282,7 +286,7 @@ export async function main(args = process.argv.slice(2)) {
         );
     appendLedger(LEDGER, lines);
     const e2eRes = results.find(
-      (r) => r.id === 'e2e' && Array.isArray(r.specs),
+      (r) => r.id === nightlyId && Array.isArray(r.specs),
     );
     if (e2ePlan && e2eRes)
       appendSpecLedger(

@@ -1,29 +1,40 @@
-import { execFileSync } from 'node:child_process';
+// The nightly-backed units step: plans a partial (affected) run of a test suite from the selection
+// engine, the newest nightly record and the spec ledger, and judges its result. `nightlyUnits`
+// is the `units` slot of the step that runs the suite. gate.config.mjs imports this file, and the
+// digest, the ledger and the pack hooks all reach gate.config.mjs, so they load lazily inside the
+// async planner and never at import.
+import { execFileSync, execSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { tools } from './tools.mjs';
-import { E2E_FULL_CMD } from './step-defaults.mjs';
-import { SPEC_LEDGER, readLedger } from '#engine/ledger.mjs';
-import {
-  AFFECTED_NIGHTLY,
-  NIGHTLY_MAX_AGE_MS,
-  specDigest,
-} from '#engine/digest.mjs';
-import { ROOT } from '#engine/root.mjs';
 
-// The e2e step's Playwright JSON, read only by the shadow.
+import { AFFECTED_NIGHTLY, NIGHTLY_MAX_AGE_MS } from '../nightly-window.mjs';
+import { ROOT } from '../root.mjs';
+import { shadowOf, walkReport } from '../runners/playwright.mjs';
+
+// The suite's Playwright JSON, read only by the shadow.
 export const E2E_REPORT = join(ROOT, '.turbo', 'e2e-report.json');
 
-// R6: written by the e2e step's `prepare`, after the stack lock is held.
+// Written by the step's `prepare`, after the stack lock is held.
 export const E2E_LIST = join(ROOT, '.turbo', 'e2e-selection.txt');
 
 export const E2E_KNOWN_RED = join(ROOT, '.turbo', 'e2e-known-red.txt');
 
-const PLAYWRIGHT = 'pnpm -F web exec playwright test';
+// A nightly record counts for known red only when its run reached the browser tests.
+const REACHED = (r) => r.reachedPlaywright === true;
+const byRanAtDesc = (a, b) => Date.parse(b.ranAt) - Date.parse(a.ranAt);
 
-const SETUP_RE = /^seed-integrity\./;
+// An affected run always also runs the smoke tests and the setup specs (affectedListLines), so it
+// never has zero units.
+const SMOKE = { id: '@smoke+setup', inputs: [] };
 
-export { e2eWhen } from './step-defaults.mjs';
+/**
+ * One nightly record for one suite: a v2 record keeps each suite's result under `suites[suite]`
+ * (the run's sha and ranAt apply to every suite); a v1 record is the suite itself.
+ */
+export const recordOf = (run, suite) =>
+  run.suites?.[suite]
+    ? { sha: run.sha, ranAt: run.ranAt, ...run.suites[suite] }
+    : run;
 
 /** `--e2e=full` is the only value; no flag is `auto`. */
 export function parseE2eFlag(args) {
@@ -59,11 +70,8 @@ export function chooseE2eMode({ selection, nightly, flag, nowMs }) {
 export function knownRedOf({ runs, baseSha, isAncestor, branch, selected }) {
   if (/^fix\/nightly-/.test(branch)) return [];
   const newest = runs
-    .filter(
-      (r) =>
-        tools.nightly.REACHED(r) && typeof r.sha === 'string' && r.sha !== '',
-    )
-    .sort(tools.nightly.byRanAtDesc)
+    .filter((r) => REACHED(r) && typeof r.sha === 'string' && r.sha !== '')
+    .sort(byRanAtDesc)
     .find((r) => r.sha === baseSha || isAncestor(r.sha));
   if (newest?.status !== 'red') return [];
   return [...(newest.redSpecs ?? [])]
@@ -152,12 +160,12 @@ function listedTests(listJson) {
 
 const unique = (lines) => [...new Set(lines)];
 
-/** `--test-list` lines for an affected run: the run specs, smoke tests and the seed-integrity setup, never a knownRed file. */
-export function affectedListLines(listJson, { run, knownRed }) {
+/** `--test-list` lines for an affected run: the run specs, smoke tests and the `setup` files, never a knownRed file. */
+export function affectedListLines(listJson, { run, knownRed, setup }) {
   return unique(
     listedTests(listJson)
       .filter((t) => !knownRed.includes(t.file))
-      .filter((t) => run.includes(t.file) || t.smoke || SETUP_RE.test(t.file))
+      .filter((t) => run.includes(t.file) || t.smoke || setup.has(t.file))
       .map((t) => t.line),
   );
 }
@@ -183,13 +191,13 @@ export function fullListLines(listJson, knownRed) {
 /**
  * G2: one entry per spec. `unexpected` is a fail; `expected`, `flaky` and
  * `skipped` pass. A run spec absent from the report fails. In `full` every
- * spec file of the report is an entry (setup files are not).
+ * spec file of the report is an entry (`setup` files are not).
  */
-export function specResults(report, { mode, run, reused, digests }) {
+export function specResults(report, { mode, run, reused, digests, setup }) {
   const seen = new Map();
-  tools.nightly.walkReport(report?.suites, (spec, t) => {
+  walkReport(report?.suites, (spec, t) => {
     const file = spec.file ?? '';
-    if (SETUP_RE.test(file)) return;
+    if (setup.has(file)) return;
     const cur = seen.get(file) ?? { fail: false, ms: 0 };
     if (t.status === 'unexpected') cur.fail = true;
     cur.ms += (t.results ?? []).reduce((a, r) => a + (r.duration ?? 0), 0);
@@ -220,7 +228,7 @@ export function specResults(report, { mode, run, reused, digests }) {
 }
 
 /**
- * The e2e result of the receipt (G2): buildResults' result plus mode, why,
+ * The suite's result of the receipt (G2): buildResults' result plus mode, why,
  * selected, specs, nightly and knownRed. A spec that failed or never ran turns
  * a passing step into a fail.
  */
@@ -259,12 +267,15 @@ export function finishE2e(result, ctx) {
 let selectorMemo = null;
 
 /**
- * e2e-select imports typescript, so it loads only when e2e can run. One graph
- * and one base reader are shared by the selection and the per-path inputs.
+ * The selector loads only when the suite can run (it parses TypeScript). One graph and one base
+ * reader are shared by the selection and the per-path inputs; the memo is keyed on the base and
+ * the selection.
  */
-async function loadSelector(baseSha) {
-  if (selectorMemo?.baseSha === baseSha) return selectorMemo;
-  const { select, buildGraph, specHeaders } = await tools.e2eSelect();
+async function loadSelector(baseSha, selection) {
+  if (selectorMemo?.baseSha === baseSha && selectorMemo.selection === selection)
+    return selectorMemo;
+  const { select, specHeaders } = await import('./select.mjs');
+  const { buildGraph } = await import('../graph/js.mjs');
   const readBase = (p) => {
     try {
       return execFileSync('git', ['show', `${baseSha}:${p}`], {
@@ -279,27 +290,34 @@ async function loadSelector(baseSha) {
   };
   selectorMemo = {
     baseSha,
+    selection,
     select,
     readBase,
-    specs: () => [...specHeaders(ROOT).keys()],
-    graph: buildGraph(ROOT),
+    specs: () => [...specHeaders(ROOT, selection).keys()],
+    graph: buildGraph(ROOT, selection),
   };
   return selectorMemo;
 }
 
-/** R4 (e): a non-test tools/ path the e2e harness imports. A selector that cannot run counts as yes. */
-export async function toolsReachE2e(paths, baseSha) {
+/**
+ * R4 (e): a changed path that is part of the test harness (`selection.outside.reach`, minus test
+ * files) which the suite imports. A selector that cannot run counts as yes.
+ */
+export async function reachesHarness(paths, baseSha, { selection }) {
+  const { reach, testFile } = selection.outside;
   const changed = paths.filter(
-    (p) => p.startsWith('tools/') && !tools.e2eAreas.TEST_FILE_RE.test(p),
+    (p) =>
+      reach.some((x) => p.startsWith(x)) && !(testFile?.test(p) ?? false),
   );
   if (changed.length === 0) return false;
   try {
-    const sel = await loadSelector(baseSha);
+    const sel = await loadSelector(baseSha, selection);
     const got = sel.select({
       root: ROOT,
       changed,
       readBase: sel.readBase,
       graph: sel.graph,
+      config: selection,
     });
     return got.mode === 'full' || got.specs.length > 0;
   } catch {
@@ -324,6 +342,7 @@ const branchName = () => {
     return execFileSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
       cwd: ROOT,
       encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
     }).trim();
   } catch {
     return '';
@@ -335,23 +354,13 @@ const writeList = (path, lines) => {
   writeFileSync(path, `${lines.join('\n')}\n`);
 };
 
-/** `playwright test --list --reporter=json`, run once the stack lock is held. */
-const listE2e = () =>
-  JSON.parse(
-    execFileSync(
-      'pnpm',
-      ['-F', 'web', 'exec', 'playwright', 'test', '--list', '--reporter=json'],
-      { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 },
-    ),
-  );
-
-const supportsInvert = () => {
+/** Whether the runner takes its invert flag; a runner that cannot say counts as yes. */
+const supportsInvert = (runner) => {
   try {
-    return execFileSync(
-      'pnpm',
-      ['-F', 'web', 'exec', 'playwright', 'test', '--help'],
-      { cwd: ROOT, encoding: 'utf8' },
-    ).includes('--test-list-invert');
+    return execSync(`${runner.command} --help`, {
+      cwd: ROOT,
+      encoding: 'utf8',
+    }).includes(runner.invertFlag);
   } catch {
     return true;
   }
@@ -369,31 +378,52 @@ export function onDisk(selected, specNames) {
 }
 
 /**
- * Everything the e2e step needs to be planned and judged. Any
- * failure of the selector is data: the mode falls back to `full` with the
- * reason, never an error.
+ * The newest nightly record and every record, read through the pack's `nightly` hook
+ * (`read() -> { latest, history }`). No hook, or a hook that throws, is no record.
  */
-export async function planE2e(paths, baseSha, { flag, nowMs, fresh, state }) {
-  let nightly = null;
-  let runs = [];
+async function nightlyRecords(suite, gate) {
   try {
-    const got = tools.nightly.readNightly(tools.nightly.nightlyDir());
-    nightly = got.latest ?? null;
-    runs = [...got.history, ...(got.latest ? [got.latest] : [])];
+    const { packHook } = await import('../pack-hooks.mjs');
+    const got = await packHook('nightly', gate)?.read?.();
+    if (!got) return { nightly: null, runs: [] };
+    const nightly = got.latest ? recordOf(got.latest, suite) : null;
+    const runs = [
+      ...(got.history ?? []).map((r) => recordOf(r, suite)),
+      ...(nightly ? [nightly] : []),
+    ];
+    return { nightly, runs };
   } catch {
-    nightly = null;
+    return { nightly: null, runs: [] };
   }
+}
+
+/**
+ * Everything the step needs to be planned and judged. Any failure of the selector is data: the
+ * mode falls back to `full` with the reason, never an error. `opts` = { selection, suite, full,
+ * runFrom, gate? } (`gate` replaces the project gate when looking up the nightly hook).
+ */
+export async function planE2e(
+  paths,
+  baseSha,
+  { flag, nowMs, fresh, state },
+  opts,
+) {
+  const { selection: config, suite, full, runFrom } = opts;
+  const { runner } = config;
+  const setup = config.specs.setup;
+  const { nightly, runs } = await nightlyRecords(suite, opts.gate);
   let selection;
   let selectorError = null;
   let sel = null;
   try {
-    sel = await loadSelector(baseSha);
+    sel = await loadSelector(baseSha, config);
     selection = sel.select({
       root: ROOT,
       changed: paths,
       readBase: sel.readBase,
       nightly,
       graph: sel.graph,
+      config,
     });
   } catch (e) {
     selectorError = `selector: ${e.message}`;
@@ -414,6 +444,7 @@ export async function planE2e(paths, baseSha, { flag, nowMs, fresh, state }) {
             changed: [p],
             readBase: sel.readBase,
             graph: sel.graph,
+            config,
           }),
       });
     } catch {
@@ -432,6 +463,8 @@ export async function planE2e(paths, baseSha, { flag, nowMs, fresh, state }) {
     branch: branchName(),
     selected,
   });
+  const { specDigest } = await import('../digest.mjs');
+  const { SPEC_LEDGER, readLedger } = await import('../ledger.mjs');
   const digestOf = (file, inp) => specDigest(file, inp, { state });
   const alwaysRun = new Set(
     nightly?.status === 'amber' ? (nightly.flakySpecs ?? []) : [],
@@ -450,21 +483,24 @@ export async function planE2e(paths, baseSha, { flag, nowMs, fresh, state }) {
       : specNames.filter((f) => !knownRed.includes(f));
   const reused = mode === 'affected' ? planned.reused : [];
 
-  let cmd = E2E_FULL_CMD;
+  let cmd = full;
   let prepare;
   if (mode === 'affected') {
-    cmd = `${PLAYWRIGHT} --test-list ../../.turbo/e2e-selection.txt`;
+    cmd = `${runner.command} --test-list ${runFrom}/.turbo/e2e-selection.txt`;
     prepare = () =>
-      writeList(E2E_LIST, affectedListLines(listE2e(), { run, knownRed }));
+      writeList(
+        E2E_LIST,
+        affectedListLines(runner.list(ROOT), { run, knownRed, setup }),
+      );
   } else if (knownRed.length > 0) {
-    const invert = supportsInvert();
+    const invert = supportsInvert(runner);
     cmd = invert
-      ? `${PLAYWRIGHT} --test-list-invert ../../.turbo/e2e-known-red.txt`
-      : `${PLAYWRIGHT} --test-list ../../.turbo/e2e-selection.txt`;
+      ? `${runner.command} --test-list-invert ${runFrom}/.turbo/e2e-known-red.txt`
+      : `${runner.command} --test-list ${runFrom}/.turbo/e2e-selection.txt`;
     prepare = () =>
       invert
-        ? writeList(E2E_KNOWN_RED, knownRedLines(listE2e(), knownRed))
-        : writeList(E2E_LIST, fullListLines(listE2e(), knownRed));
+        ? writeList(E2E_KNOWN_RED, knownRedLines(runner.list(ROOT), knownRed))
+        : writeList(E2E_LIST, fullListLines(runner.list(ROOT), knownRed));
   }
   return {
     mode,
@@ -480,6 +516,7 @@ export async function planE2e(paths, baseSha, { flag, nowMs, fresh, state }) {
     inputs,
     cmd,
     prepare,
+    setup,
     checkedAt: new Date(nowMs).toISOString(),
   };
 }
@@ -487,9 +524,12 @@ export async function planE2e(paths, baseSha, { flag, nowMs, fresh, state }) {
 export const e2eDryLine = (p) =>
   `e2e: ${p.mode} (${p.why}); run ${p.mode === 'affected' ? p.run.length : 'all'}, reuse ${p.reused.length}, known red ${p.knownRed.length}`;
 
-/** The receipt's `shadow`: null unless e2e ran, else shadowOf(selection, report). */
-export async function finishShadow(plan, results) {
-  const e2e = results.find((r) => r.id === 'e2e');
+/**
+ * The receipt's `shadow`: null unless the step (`opts.id`) ran, else
+ * shadowOf(selection, report, opts.selection).
+ */
+export async function finishShadow(plan, results, opts) {
+  const e2e = results.find((r) => r.id === opts.id);
   if (!plan || !e2e || !['pass', 'fail'].includes(e2e.status)) return null;
   if (plan.error)
     return {
@@ -500,14 +540,13 @@ export async function finishShadow(plan, results) {
       error: plan.error,
     };
   try {
-    const { shadowOf } = await tools.e2eSelect();
     let report = null;
     try {
       report = JSON.parse(readFileSync(E2E_REPORT, 'utf8'));
     } catch {
       report = null;
     }
-    return shadowOf(plan.selection, report);
+    return shadowOf(plan.selection, report, opts.selection);
   } catch (e) {
     return {
       mode: plan.selection.mode,
@@ -526,4 +565,79 @@ export function shadowLine(sh) {
       ? 'none'
       : sh.missed.join(', ');
   return `e2e shadow: ${sh.mode} (${sh.why}); selected ${sh.selected.length} specs; missed: ${missed}`;
+}
+
+/**
+ * The `units` slot of the step that runs `suite`: `selection` (omitted: the gate's `selection`,
+ * read at call time) says what a changed path selects; `full` is the command of a full run;
+ * `runFrom` is the path from the runner's working directory to the repo root. `ctx.run` =
+ * { e2eFlag, nowMs, fresh, state } is what the CLI adds to the plan ctx. Sel.plan is the full
+ * plan (finishE2e, the spec ledger and the shadow read it); the engine reads mode, why, units,
+ * cmd, prepare and knownRedCount.
+ */
+export function nightlyUnits({ selection, suite, full, runFrom = '.' } = {}) {
+  if (
+    typeof suite !== 'string' ||
+    suite === '' ||
+    typeof full !== 'string' ||
+    full === ''
+  )
+    throw new Error('nightlyUnits: suite and full are required');
+  const optsOf = async () => {
+    const config =
+      selection ?? (await import('../project.mjs')).GATE.selection;
+    if (!config?.runner)
+      throw new Error('nightlyUnits: the selection has no test runner');
+    return { selection: config, suite, full, runFrom };
+  };
+  return {
+    reaches: async (ctx) =>
+      reachesHarness(ctx.paths, ctx.base, await optsOf()),
+    select: async (ctx) => {
+      const run = ctx.run ?? {};
+      const plan = await planE2e(
+        ctx.paths,
+        ctx.base,
+        {
+          flag: run.e2eFlag,
+          nowMs: run.nowMs ?? Date.now(),
+          fresh: run.fresh ?? false,
+          state: run.state,
+        },
+        await optsOf(),
+      );
+      return {
+        mode: plan.mode,
+        why: plan.why,
+        units:
+          plan.mode === 'affected'
+            ? [
+                ...plan.selected.map((id) => ({
+                  id,
+                  inputs: plan.inputs.get(id) ?? [],
+                })),
+                SMOKE,
+              ]
+            : [],
+        cmd: plan.cmd,
+        prepare: plan.prepare,
+        knownRedCount: plan.knownRed.length,
+        plan,
+      };
+    },
+    cmd: (_units, sel) => sel.cmd ?? full,
+    nightly: {
+      suite,
+      reportPath: E2E_REPORT,
+      parseFlag: parseE2eFlag,
+      dryLine: e2eDryLine,
+      finish: finishE2e,
+      finishShadow: async (plan, results, o) =>
+        finishShadow(plan, results, {
+          selection: (await optsOf()).selection,
+          ...o,
+        }),
+      shadowLine,
+    },
+  };
 }

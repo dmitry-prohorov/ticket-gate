@@ -168,9 +168,7 @@ export function stepDigest(id, cmd, { base, versions, state } = {}) {
   return h.digest('hex');
 }
 
-/** D4: the newest nightly an affected run may lean on; equals nightly-status FRESH_MS. */
-export const NIGHTLY_MAX_AGE_MS = 36 * 3600 * 1000;
-export const AFFECTED_NIGHTLY = Object.freeze(['green', 'amber']);
+export { AFFECTED_NIGHTLY, NIGHTLY_MAX_AGE_MS } from './nightly-window.mjs';
 
 /**
  * sha256 hex of what one e2e spec's result depends on: the file,
