@@ -1,0 +1,22 @@
+{
+  "INFRA-23a/M6": {
+    "kind": "patch",
+    "protects": "5 E-10 shadow missed (R6)",
+    "file": "packages/engine/runners/playwright.mjs",
+    "find": "const missed = failedFiles.filter((f) => !selected.has(f));",
+    "replace": "const missed = [];",
+    "test": "node --test --test-name-pattern='^E-10 ' packages/engine/test/e2e/runners/playwright.test.mjs",
+    "testFile": "packages/engine/test/e2e/runners/playwright.test.mjs",
+    "testName": "E-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/runners/playwright.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/runners/playwright.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/runners/playwright.mjs -> packages/engine/runners/playwright.mjs; test tools/e2e/engine/runners/playwright.test.mjs -> packages/engine/test/e2e/runners/playwright.test.mjs"
+      }
+    ]
+  }
+}

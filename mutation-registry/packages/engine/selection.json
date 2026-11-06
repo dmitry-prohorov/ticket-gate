@@ -1,4 +1,172 @@
 {
+  "INFRA-23a/M1": {
+    "kind": "patch",
+    "protects": "5 E-1 full triggers",
+    "file": "packages/engine/selection/select.mjs",
+    "find": "if (startsAny(path, cfg.triggers)) return full(path, 'trigger');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^E-1 ' packages/engine/test/e2e/selection/select.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/select.test.mjs",
+    "testName": "E-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/select.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/select.test.mjs"
+      },
+      {
+        "by": "INFRA-65",
+        "why": "tools/e2e/engine/selection/select.mjs \"if (isFullTrigger(path)) return full(path, 'trigger');\" -> tools/e2e/engine/selection/select.mjs \"if (startsAny(path, cfg.triggers)) return full(path, 'trigger');\""
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/select.mjs -> packages/engine/selection/select.mjs; test tools/e2e/engine/selection/select.test.mjs -> packages/engine/test/e2e/selection/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-23a/M2": {
+    "kind": "patch",
+    "protects": "5 E-3 shell entries force full (R3)",
+    "file": "packages/engine/selection/select.mjs",
+    "find": "if (areas.has('*')) return full(path, 'shell');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^E-3 ' packages/engine/test/e2e/selection/select.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/select.test.mjs",
+    "testName": "E-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/select.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/select.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/select.mjs -> packages/engine/selection/select.mjs; test tools/e2e/engine/selection/select.test.mjs -> packages/engine/test/e2e/selection/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-23a/M3": {
+    "kind": "patch",
+    "protects": "5 E-8 unknown apps/web path forces full",
+    "file": "packages/engine/selection/select.mjs",
+    "find": "return full(path, 'unknown');",
+    "replace": "continue;",
+    "test": "node --test --test-name-pattern='^E-8 ' packages/engine/test/e2e/selection/select.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/select.test.mjs",
+    "testName": "E-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/select.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/select.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/select.mjs -> packages/engine/selection/select.mjs; test tools/e2e/engine/selection/select.test.mjs -> packages/engine/test/e2e/selection/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-23a/M4": {
+    "kind": "patch",
+    "protects": "5 E-5 i18n value rule (R4)",
+    "file": "packages/engine/selection/value-rules.mjs",
+    "find": "return { specs: tableSpecs(path, ctx) };",
+    "replace": "return { specs: [] };",
+    "test": "node --test --test-name-pattern='^E-5 ' packages/engine/test/e2e/selection/select.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/select.test.mjs",
+    "testName": "E-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/select.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/select.test.mjs"
+      },
+      {
+        "by": "INFRA-65",
+        "why": "tools/e2e/engine/selection/select.mjs \"for (const s of i18nSpecs(path, readBase)) specs.add(s);\" -> tools/e2e/engine/selection/value-rules.mjs \"return { specs: tableSpecs(path, ctx) };\""
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/value-rules.mjs -> packages/engine/selection/value-rules.mjs; test tools/e2e/engine/selection/select.test.mjs -> packages/engine/test/e2e/selection/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-23a/M7": {
+    "kind": "patch",
+    "protects": "5 C-1 missing header",
+    "file": "packages/engine/selection/check.mjs",
+    "find": "problems.push(`missing-header ${name}`);",
+    "replace": "void 0;",
+    "test": "node --test --test-name-pattern='^C-1 ' packages/engine/test/e2e/selection/check.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/check.test.mjs",
+    "testName": "C-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "find re-aimed: ${spec} became ${name}"
+      },
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/check-e2e-areas.mjs -> tools/e2e/engine/selection/check.mjs; test tools/check-e2e-areas.test.mjs -> tools/e2e/engine/selection/check.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/check.mjs -> packages/engine/selection/check.mjs; test tools/e2e/engine/selection/check.test.mjs -> packages/engine/test/e2e/selection/check.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "replace \"\" -> \"void 0;\": the statement-removal mutant left a dangling else (does not parse; RP-1)"
+      }
+    ]
+  },
+  "INFRA-23a/M8": {
+    "kind": "patch",
+    "protects": "5 C-2 unknown area",
+    "file": "packages/engine/selection/check.mjs",
+    "find": "problems.push(`unknown-area ${name} ${id}`);",
+    "replace": "void 0;",
+    "test": "node --test --test-name-pattern='^C-2 ' packages/engine/test/e2e/selection/check.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/check.test.mjs",
+    "testName": "C-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "find re-aimed: ${spec} became ${name}"
+      },
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/check-e2e-areas.mjs -> tools/e2e/engine/selection/check.mjs; test tools/check-e2e-areas.test.mjs -> tools/e2e/engine/selection/check.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/check.mjs -> packages/engine/selection/check.mjs; test tools/e2e/engine/selection/check.test.mjs -> packages/engine/test/e2e/selection/check.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "replace \"\" -> \"void 0;\": the statement-removal mutant left a dangling else (does not parse; RP-1)"
+      }
+    ]
+  },
+  "INFRA-23a/M10": {
+    "kind": "patch",
+    "protects": "5 C-4 new ticket-named spec (R11)",
+    "file": "packages/engine/selection/check.mjs",
+    "find": "problems.push(`ticket-named ${name}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^C-4 ' packages/engine/test/e2e/selection/check.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/check.test.mjs",
+    "testName": "C-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "find re-aimed: ${spec} became ${name}"
+      },
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/check-e2e-areas.mjs -> tools/e2e/engine/selection/check.mjs; test tools/check-e2e-areas.test.mjs -> tools/e2e/engine/selection/check.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/check.mjs -> packages/engine/selection/check.mjs; test tools/e2e/engine/selection/check.test.mjs -> packages/engine/test/e2e/selection/check.test.mjs"
+      }
+    ]
+  },
   "INFRA-23b/M3": {
     "kind": "patch",
     "protects": "VE-3a a stale nightly forces a full run",
@@ -159,6 +327,166 @@
       }
     ]
   },
+  "INFRA-32/M1": {
+    "kind": "patch",
+    "protects": "INFRA-32 5 F-2 over budget applies the locator filter (fact 3)",
+    "file": "packages/engine/selection/for.mjs",
+    "find": "const overBudget = tests > budget;",
+    "replace": "const overBudget = false;",
+    "test": "node --test --test-name-pattern='^F-2 ' packages/engine/test/e2e/selection/for.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/for.test.mjs",
+    "testName": "F-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/for.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/for.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/for.mjs -> packages/engine/selection/for.mjs; test tools/e2e/engine/selection/for.test.mjs -> packages/engine/test/e2e/selection/for.test.mjs"
+      }
+    ]
+  },
+  "INFRA-32/M2": {
+    "kind": "patch",
+    "protects": "INFRA-32 5 F-2 under budget lists every reached spec unfiltered (fact 3)",
+    "file": "packages/engine/selection/for.mjs",
+    "find": "const overBudget = tests > budget;",
+    "replace": "const overBudget = true;",
+    "test": "node --test --test-name-pattern='^F-2 ' packages/engine/test/e2e/selection/for.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/for.test.mjs",
+    "testName": "F-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/for.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/for.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/for.mjs -> packages/engine/selection/for.mjs; test tools/e2e/engine/selection/for.test.mjs -> packages/engine/test/e2e/selection/for.test.mjs"
+      }
+    ]
+  },
+  "INFRA-32/M3": {
+    "kind": "patch",
+    "protects": "INFRA-32 5 F-1 areas listed smallest first (fact 2)",
+    "file": "packages/engine/selection/for.mjs",
+    "find": "groups.sort((a, b) => a.tests - b.tests || a.area.localeCompare(b.area));",
+    "replace": "groups.sort((a, b) => a.area.localeCompare(b.area));",
+    "test": "node --test --test-name-pattern='^F-1 ' packages/engine/test/e2e/selection/for.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/for.test.mjs",
+    "testName": "F-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/for.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/for.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/for.mjs -> packages/engine/selection/for.mjs; test tools/e2e/engine/selection/for.test.mjs -> packages/engine/test/e2e/selection/for.test.mjs"
+      }
+    ]
+  },
+  "INFRA-32/M4": {
+    "kind": "patch",
+    "protects": "INFRA-32 5 F-1 a shell file prints use the gate and adds no specs (fact 2)",
+    "file": "packages/engine/selection/for.mjs",
+    "find": "if (one.mode === 'full') {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^F-1 ' packages/engine/test/e2e/selection/for.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/for.test.mjs",
+    "testName": "F-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/for.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/for.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/for.mjs -> packages/engine/selection/for.mjs; test tools/e2e/engine/selection/for.test.mjs -> packages/engine/test/e2e/selection/for.test.mjs"
+      }
+    ]
+  },
+  "INFRA-32/M5": {
+    "kind": "patch",
+    "protects": "INFRA-32 5 F-2 removed role aria-label data-testid data-slot values are locators (fact 3)",
+    "file": "packages/engine/selection/for.mjs",
+    "find": "const LOCATOR_ATTRS = ['role', 'aria-label', 'data-testid', 'data-slot'];",
+    "replace": "const LOCATOR_ATTRS = [];",
+    "test": "node --test --test-name-pattern='^F-2 ' packages/engine/test/e2e/selection/for.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/for.test.mjs",
+    "testName": "F-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/for.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/for.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/for.mjs -> packages/engine/selection/for.mjs; test tools/e2e/engine/selection/for.test.mjs -> packages/engine/test/e2e/selection/for.test.mjs"
+      }
+    ]
+  },
+  "INFRA-32/M6": {
+    "kind": "patch",
+    "protects": "INFRA-32 5 F-2 a removed t() key contributes its en value (fact 3)",
+    "file": "packages/engine/selection/for.mjs",
+    "find": "if (typeof enValue === 'string') removed.add(enValue);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^F-2 ' packages/engine/test/e2e/selection/for.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/for.test.mjs",
+    "testName": "F-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/for.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/for.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/for.mjs -> packages/engine/selection/for.mjs; test tools/e2e/engine/selection/for.test.mjs -> packages/engine/test/e2e/selection/for.test.mjs"
+      }
+    ]
+  },
+  "INFRA-39/M1": {
+    "kind": "patch",
+    "protects": "INFRA-39 5 E-L1 E-L2 a changed load-time statement in an evaluated file gives full (fact 3)",
+    "file": "packages/engine/selection/select.mjs",
+    "find": "if (loadTimeChanged(readBase(path), readText(root, path), path)) return full(path, 'load-time');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^E-L1 ' packages/engine/test/e2e/graph/js.test.mjs",
+    "testFile": "packages/engine/test/e2e/graph/js.test.mjs",
+    "testName": "E-L1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/select.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/graph/js.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/select.mjs -> packages/engine/selection/select.mjs; test tools/e2e/engine/graph/js.test.mjs -> packages/engine/test/e2e/graph/js.test.mjs"
+      }
+    ]
+  },
+  "INFRA-39/M2": {
+    "kind": "patch",
+    "protects": "INFRA-39 5 E-L3 an added import newly evaluating load-time code gives full (fact 3)",
+    "file": "packages/engine/selection/select.mjs",
+    "find": "if (g.newlyEvaluatedLoadTime(changed, readBase).has(path)) return full(path, 'load-time');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^E-L3 ' packages/engine/test/e2e/graph/js.test.mjs",
+    "testFile": "packages/engine/test/e2e/graph/js.test.mjs",
+    "testName": "E-L3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/select.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/graph/js.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/select.mjs -> packages/engine/selection/select.mjs; test tools/e2e/engine/graph/js.test.mjs -> packages/engine/test/e2e/graph/js.test.mjs"
+      }
+    ]
+  },
   "INFRA-44a/M5": {
     "kind": "patch",
     "protects": "INFRA-44a 5 EI-5 units are ledgered per unit and reused only on an identical unit digest",
@@ -178,5 +506,145 @@
         "why": "move: packages/supabase-next/e2e-units.mjs -> packages/engine/selection/units.mjs; test packages/supabase-next/test/e2e-unit-reuse.test.mjs -> packages/engine/test/e2e/unit-reuse.test.mjs"
       }
     ]
+  },
+  "INFRA-65/M1": {
+    "kind": "patch",
+    "protects": "INFRA-65 5 G-1 G-2 every graph source contributes to reach; without the union loop a second source's areas and its '*' are lost",
+    "file": "packages/engine/selection/graphs.mjs",
+    "find": "for (const g of graphs) for (const p of paths) merge(g.reach(p));",
+    "replace": "for (const g of graphs.slice(0, 1)) for (const p of paths) merge(g.reach(p));",
+    "test": "node --test --test-name-pattern='^G-1 ' packages/engine/test/e2e/selection/seam.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/seam.test.mjs",
+    "testName": "G-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/graphs.mjs -> packages/engine/selection/graphs.mjs; test tools/e2e/engine/selection/seam.test.mjs -> packages/engine/test/e2e/selection/seam.test.mjs"
+      }
+    ]
+  },
+  "INFRA-65/M2": {
+    "kind": "patch",
+    "protects": "INFRA-65 5 G-3 an expand source turns a changed path into its callers before reach; without it a changed callee selects nothing",
+    "file": "packages/engine/selection/graphs.mjs",
+    "find": "const paths = [path, ...graphs.flatMap((g) => g.expand?.(path) ?? [])];",
+    "replace": "const paths = [path];",
+    "test": "node --test --test-name-pattern='^G-3 ' packages/engine/test/e2e/selection/seam.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/seam.test.mjs",
+    "testName": "G-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/graphs.mjs -> packages/engine/selection/graphs.mjs; test tools/e2e/engine/selection/seam.test.mjs -> packages/engine/test/e2e/selection/seam.test.mjs"
+      }
+    ]
+  },
+  "INFRA-65/M5": {
+    "kind": "patch",
+    "protects": "INFRA-65 5 G-6 after-triggers rules run after FULL_TRIGGERS; without the stage split supabase/functions/deno.json reports function, not trigger (replay identity)",
+    "file": "packages/engine/selection/select.mjs",
+    "find": "const before = cfg.rules.filter((r) => r.stage !== 'after-triggers');",
+    "replace": "const before = cfg.rules;",
+    "test": "node --test --test-name-pattern='^G-6 ' packages/engine/test/e2e/selection/seam.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/seam.test.mjs",
+    "testName": "G-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/select.mjs -> packages/engine/selection/select.mjs; test tools/e2e/engine/selection/seam.test.mjs -> packages/engine/test/e2e/selection/seam.test.mjs"
+      }
+    ]
+  },
+  "INFRA-65/M6": {
+    "kind": "patch",
+    "protects": "INFRA-65 5 G-7 defineSelection rejects a config with no graph source as a SelectionConfigError naming selection.graphs",
+    "file": "packages/engine/selection/define.mjs",
+    "find": "if (!Array.isArray(out.graphs) || out.graphs.length === 0) throw missing('graphs');",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^G-7 ' packages/engine/test/e2e/selection/seam.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/seam.test.mjs",
+    "testName": "G-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/define.mjs -> packages/engine/selection/define.mjs; test tools/e2e/engine/selection/seam.test.mjs -> packages/engine/test/e2e/selection/seam.test.mjs"
+      }
+    ]
+  },
+  "INFRA-65/M7": {
+    "kind": "patch",
+    "protects": "INFRA-65 5 BT-1 the engine half carries no project literal; a planted supabase literal must fail the boundary test",
+    "file": "packages/engine/selection/select.mjs",
+    "find": "export function full(path, rule) {",
+    "replace": "const PLANTED = 'supabase/functions/';\nexport function full(path, rule) {",
+    "test": "node --test --test-name-pattern='^BT-1 ' packages/engine/test/engine-boundary.test.mjs",
+    "testFile": "packages/engine/test/engine-boundary.test.mjs",
+    "testName": "BT-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/selection/select.mjs -> packages/engine/selection/select.mjs; test tools/e2e/engine/boundary.test.mjs -> packages/engine/test/engine-boundary.test.mjs"
+      }
+    ]
+  },
+  "INFRA-66/M1": {
+    "kind": "patch",
+    "protects": "DR-1 --drift without selection.drift fails naming the key",
+    "file": "packages/engine/selection/cli.mjs",
+    "find": "if (!cfg.drift)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^DR-1 ' packages/engine/test/e2e/selection/drift.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/drift.test.mjs",
+    "testName": "DR-1 "
+  },
+  "INFRA-66/M2": {
+    "kind": "patch",
+    "protects": "PJ-1 an engine entry called without a config throws SelectionConfigError",
+    "file": "packages/engine/selection/project.mjs",
+    "find": "throw new SelectionConfigError(\n    'no selection config: pass one (define it under `selection` in gate.config.mjs)',\n  );",
+    "replace": "return undefined;",
+    "test": "node --test --test-name-pattern='^PJ-1 ' packages/engine/test/e2e/project.test.mjs",
+    "testFile": "packages/engine/test/e2e/project.test.mjs",
+    "testName": "PJ-1 "
+  },
+  "INFRA-66/M10": {
+    "kind": "patch",
+    "protects": "NU-3 recordOf picks suites[suite]",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "run.suites?.[suite]",
+    "replace": "undefined",
+    "test": "node --test --test-name-pattern='^NU-3 ' packages/engine/test/e2e/units.test.mjs",
+    "testFile": "packages/engine/test/e2e/units.test.mjs",
+    "testName": "NU-3 "
+  },
+  "INFRA-66/M11": {
+    "kind": "patch",
+    "protects": "NU-4 units.cmd falls back to the full command",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "sel.cmd ?? full",
+    "replace": "sel.cmd",
+    "test": "node --test --test-name-pattern='^NU-4 ' packages/engine/test/e2e/units.test.mjs",
+    "testFile": "packages/engine/test/e2e/units.test.mjs",
+    "testName": "NU-4 "
+  },
+  "INFRA-66/M12": {
+    "kind": "patch",
+    "protects": "NU-6 reachesHarness ignores a test file under outside.reach",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "!(testFile?.test(p) ?? false)",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^NU-6 ' packages/engine/test/e2e/units.test.mjs",
+    "testFile": "packages/engine/test/e2e/units.test.mjs",
+    "testName": "NU-6 "
+  },
+  "INFRA-66/M13": {
+    "kind": "patch",
+    "protects": "NU-5 affectedListLines always lists the setup files",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "t.smoke || setup.has(t.file)",
+    "replace": "t.smoke || false && setup.has(t.file)",
+    "test": "node --test --test-name-pattern='^NU-5 ' packages/engine/test/e2e/units.test.mjs",
+    "testFile": "packages/engine/test/e2e/units.test.mjs",
+    "testName": "NU-5 "
   }
 }

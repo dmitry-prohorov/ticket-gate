@@ -34,5 +34,25 @@
     "test": "node --test --test-name-pattern='^SC-8 ' packages/engine/test/score/synthetic-project.test.mjs",
     "testFile": "packages/engine/test/score/synthetic-project.test.mjs",
     "testName": "SC-8 "
+  },
+  "INFRA-66/M8": {
+    "kind": "patch",
+    "protects": "SP-1 ticket-gate select dispatches to the selection engine",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "if (cmd === 'select') return select(rest);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SP-1 ' packages/engine/test/e2e/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/e2e/synthetic-project.test.mjs",
+    "testName": "SP-1 "
+  },
+  "INFRA-66/M9": {
+    "kind": "patch",
+    "protects": "SP-4 a gate without selection exits 2 with the not-configured line",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "if (!GATE.selection) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^SP-4 ' packages/engine/test/e2e/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/e2e/synthetic-project.test.mjs",
+    "testName": "SP-4 "
   }
 }

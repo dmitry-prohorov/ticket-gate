@@ -1,0 +1,134 @@
+{
+  "INFRA-39/M3": {
+    "kind": "patch",
+    "protects": "INFRA-39 5 L-1 a statement not proved inert is load-time code (fact 2)",
+    "file": "packages/engine/graph/load-time.mjs",
+    "find": "return true; // fact 2: a statement not proved inert is load-time code",
+    "replace": "return false;",
+    "test": "node --test --test-name-pattern='^L-1 ' packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testFile": "packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testName": "L-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-load-time.mjs -> tools/e2e/engine/graph/load-time.mjs; test tools/e2e-load-time.test.mjs -> tools/e2e/engine/graph/load-time.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/graph/load-time.mjs -> packages/engine/graph/load-time.mjs; test tools/e2e/engine/graph/load-time.test.mjs -> packages/engine/test/e2e/graph/load-time.test.mjs"
+      }
+    ]
+  },
+  "INFRA-39/M4": {
+    "kind": "patch",
+    "protects": "INFRA-39 5 L-2 a reorder in a file with load-time code is a change (fact 3)",
+    "file": "packages/engine/graph/load-time.mjs",
+    "find": "if (anyLoadTime && orderChanged(b, h)) return true;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^L-2 ' packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testFile": "packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testName": "L-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-load-time.mjs -> tools/e2e/engine/graph/load-time.mjs; test tools/e2e-load-time.test.mjs -> tools/e2e/engine/graph/load-time.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/graph/load-time.mjs -> packages/engine/graph/load-time.mjs; test tools/e2e/engine/graph/load-time.test.mjs -> packages/engine/test/e2e/graph/load-time.test.mjs"
+      }
+    ]
+  },
+  "INFRA-39/M5": {
+    "kind": "patch",
+    "protects": "INFRA-39 5 L-2 a comment-only edit is not a change (fact 3)",
+    "file": "packages/engine/graph/load-time.mjs",
+    "find": "removeComments: true",
+    "replace": "removeComments: false",
+    "test": "node --test --test-name-pattern='^L-2 ' packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testFile": "packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testName": "L-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-load-time.mjs -> tools/e2e/engine/graph/load-time.mjs; test tools/e2e-load-time.test.mjs -> tools/e2e/engine/graph/load-time.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/graph/load-time.mjs -> packages/engine/graph/load-time.mjs; test tools/e2e/engine/graph/load-time.test.mjs -> packages/engine/test/e2e/graph/load-time.test.mjs"
+      }
+    ]
+  },
+  "INFRA-39/M6": {
+    "kind": "patch",
+    "protects": "INFRA-39 5 L-3 a type-only import adds no evaluation edge (fact 1)",
+    "file": "packages/engine/graph/load-time.mjs",
+    "find": "if (isTypeOnlyStatement(st)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^L-3 ' packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testFile": "packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testName": "L-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-load-time.mjs -> tools/e2e/engine/graph/load-time.mjs; test tools/e2e-load-time.test.mjs -> tools/e2e/engine/graph/load-time.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/graph/load-time.mjs -> packages/engine/graph/load-time.mjs; test tools/e2e/engine/graph/load-time.test.mjs -> packages/engine/test/e2e/graph/load-time.test.mjs"
+      }
+    ]
+  },
+  "INFRA-39/M7": {
+    "kind": "patch",
+    "protects": "INFRA-39 5 L-1 an initialiser not proved inert is load-time code (fact 2)",
+    "file": "packages/engine/graph/load-time.mjs",
+    "find": "return false; // fact 2: an expression not proved inert",
+    "replace": "return true;",
+    "test": "node --test --test-name-pattern='^L-1 ' packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testFile": "packages/engine/test/e2e/graph/load-time.test.mjs",
+    "testName": "L-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-load-time.mjs -> tools/e2e/engine/graph/load-time.mjs; test tools/e2e-load-time.test.mjs -> tools/e2e/engine/graph/load-time.test.mjs"
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/graph/load-time.mjs -> packages/engine/graph/load-time.mjs; test tools/e2e/engine/graph/load-time.test.mjs -> packages/engine/test/e2e/graph/load-time.test.mjs"
+      }
+    ]
+  },
+  "INFRA-65/M3": {
+    "kind": "patch",
+    "protects": "INFRA-65 5 G-4 a resolver leaf is a graph node that is never parsed; parsing it turns its unresolvable text into full: unresolved",
+    "file": "packages/engine/graph/js.mjs",
+    "find": "if (leaves.has(file)) return null;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^G-4 ' packages/engine/test/e2e/selection/seam.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/seam.test.mjs",
+    "testName": "G-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/graph/js.mjs -> packages/engine/graph/js.mjs; test tools/e2e/engine/selection/seam.test.mjs -> packages/engine/test/e2e/selection/seam.test.mjs"
+      }
+    ]
+  },
+  "INFRA-65/M4": {
+    "kind": "patch",
+    "protects": "INFRA-65 5 G-5 typescript resolves from the project (D10); resolving it from the engine location hides a missing install",
+    "file": "packages/engine/graph/typescript.mjs",
+    "find": "mod = createRequire(join(from, 'package.json'))('typescript');",
+    "replace": "mod = createRequire(import.meta.url)('typescript');",
+    "test": "node --test --test-name-pattern='^G-5a ' packages/engine/test/e2e/graph/typescript.test.mjs",
+    "testFile": "packages/engine/test/e2e/graph/typescript.test.mjs",
+    "testName": "G-5a ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/engine/graph/typescript.mjs -> packages/engine/graph/typescript.mjs; test tools/e2e/engine/graph/typescript.test.mjs -> packages/engine/test/e2e/graph/typescript.test.mjs"
+      }
+    ]
+  }
+}
