@@ -172,5 +172,75 @@
     "test": "node --test --test-name-pattern='^PK-1 ' packages/supabase-next/test/pack-selection.test.mjs",
     "testFile": "packages/supabase-next/test/pack-selection.test.mjs",
     "testName": "PK-1 "
+  },
+  "INFRA-77b/M1": {
+    "kind": "patch",
+    "protects": "5 SNC-2 the pack adds db-schema and stack-preflight commands through packCommands",
+    "file": "packages/supabase-next/index.mjs",
+    "find": "    packCommands: packCommandsFor({ stackPreflight, dbSchema }),",
+    "replace": "    packCommands: {},",
+    "test": "node --test --test-name-pattern='^SNC-2 ' packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testName": "SNC-2 "
+  },
+  "INFRA-77b/M2": {
+    "kind": "patch",
+    "protects": "5 SNC-3 stack-preflight is registered only when its option is given",
+    "file": "packages/supabase-next/commands.mjs",
+    "find": "  if (preflight !== undefined) {",
+    "replace": "  if (false) {",
+    "test": "node --test --test-name-pattern='^SNC-3 ' packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testName": "SNC-3 "
+  },
+  "INFRA-77b/M3": {
+    "kind": "patch",
+    "protects": "5 SNC-3 stack-preflight reads the gate services for its unknown-step message",
+    "file": "packages/supabase-next/commands.mjs",
+    "find": "      const services = gate.stacks?.supabase?.services ?? {};",
+    "replace": "      const services = {};",
+    "test": "node --test --test-name-pattern='^SNC-3 ' packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testName": "SNC-3 "
+  },
+  "INFRA-77b/M4": {
+    "kind": "patch",
+    "protects": "5 SNC-2 a failing db-schema run exits with its code",
+    "file": "packages/supabase-next/commands.mjs",
+    "find": "      return r.code;",
+    "replace": "      return 0;",
+    "test": "node --test --test-name-pattern='^SNC-2 ' packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testName": "SNC-2 "
+  },
+  "INFRA-77b/M5": {
+    "kind": "patch",
+    "protects": "5 SNC-2 a failing db-schema run prints its error lines",
+    "file": "packages/supabase-next/commands.mjs",
+    "find": "      for (const l of r.err) console.error(l);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SNC-2 ' packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testName": "SNC-2 "
+  },
+  "INFRA-77b/M6": {
+    "kind": "patch",
+    "protects": "5 SNC-4 dbSchema without a header throws at factory time",
+    "file": "packages/supabase-next/commands.mjs",
+    "find": "    if (!isText(schema.header))",
+    "replace": "    if (false)",
+    "test": "node --test --test-name-pattern='^SNC-4 ' packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testName": "SNC-4 "
+  },
+  "INFRA-77b/M7": {
+    "kind": "patch",
+    "protects": "5 SNC-4 stackPreflight without webEnv or anonKey throws at factory time",
+    "file": "packages/supabase-next/commands.mjs",
+    "find": "    if (!PREFLIGHT_KEYS.every(([k, f]) => isText(preflight[k]?.[f])))",
+    "replace": "    if (false)",
+    "test": "node --test --test-name-pattern='^SNC-4 ' packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/pack-commands.test.mjs",
+    "testName": "SNC-4 "
   }
 }
