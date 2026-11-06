@@ -12,7 +12,7 @@ This is a pre-release (`0.1.0-rc.1`). The configuration surface may still change
 |---|---|
 | `@ticket-gate/engine` | The CLI (`ticket-gate`), the configuration API, the hooks, the receipt and ledger code. No runtime dependencies. |
 | `@ticket-gate/react` | The React Compiler bailout ratchet: `reactCompiler(options)` in `compiler.mjs`. It depends on the engine; `@babel/core` and `babel-plugin-react-compiler` resolve from your project. |
-| `@ticket-gate/supabase-next` | A pack for projects built on Supabase and Next.js: stack handling, SQL and end-to-end test selection, ratchets. It depends on the engine. |
+| `@ticket-gate/supabase-next` | A pack for projects built on Supabase and Next.js: stack handling and preflight, the schema snapshot, SQL and end-to-end test selection, ratchets. It depends on the engine. |
 
 All require Node.js 22 or newer.
 

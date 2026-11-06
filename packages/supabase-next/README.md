@@ -13,6 +13,15 @@ The `e2e` hook and `e2eUnits()` of earlier release candidates are removed: the s
 exports building blocks for the engine's selection hooks (`selection/supabase-rules.mjs`, `selection/next-routes.mjs`,
 `selection/workspace-exports.mjs`).
 
+The pack also adds two CLI commands through the engine's `packCommands` hook, each only when its option is given to
+`supabaseNext`. `stackPreflight: { webEnv: { file, missing }, anonKey: { file, name } }` adds `ticket-gate stack-preflight
+--steps=<ids> [--wait=<sec>]`, which checks that the local Supabase stack answers before a step that needs it; its step ids are
+the services of the gate's `stacks.supabase`. `dbSchema: { header, ... }` adds `ticket-gate db-schema [--dump=PATH]
+[--cron=PATH] [--out=DIR]`, which writes the deterministic per-object schema snapshot of a dump; `out`, `tool`, `name`, `usage`,
+`start` and `reset` default to `DB_SCHEMA_DEFAULTS` (`commands.mjs`) and can be overridden. A missing required key throws a
+`TypeError` when the factory runs. The check modules are importable on their own: `checks/db-schema.mjs`,
+`checks/stack-preflight.mjs`, `checks/stack.mjs`, `checks/kill-group.mjs` and `checks/env-keys.mjs`.
+
 A pack is optional. The engine reaches it only through the `packs` key of a project's `gate.config.mjs`; the
 project supplies the project-specific tools the pack calls. This package depends on the engine at the same exact
 version.
