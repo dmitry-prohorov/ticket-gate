@@ -89,6 +89,28 @@ function moveRepo(files) {
 
 const add = (text, line = 1, path = "a.mjs") => ({ path, line, text });
 
+test("P81 MC-2 a pure move between two files reports 0 unmatched lines and names its base, a bare export statement being exempt", () => {
+  const { dir, base } = moveRepo({
+    "a.mjs":
+      "import { z } from './z.mjs';\nexport function f() {\n  return z();\n}\n",
+  });
+  put(
+    dir,
+    "a.mjs",
+    "import { z } from './z.mjs';\nimport { f } from './b.mjs';\n",
+  );
+  // `export { f };` is a re-export statement (exempt); `export function f` -> `function f` by normalise
+  put(
+    dir,
+    "b.mjs",
+    "import { z } from './z.mjs';\n\nfunction f() {\n    return z();\n}\n\nexport { f };\n",
+  );
+  const proof = moveProof(base, dir);
+  assert.deepEqual(proof.lines, []);
+  assert.equal(proof.unmatched, 0);
+  assert.equal(proof.base, base);
+});
+
 test("P81 MC-5 export and whitespace normalise, export default does not", () => {
   assert.equal(normalise("export const a = 1;"), normalise("  const a = 1;  "));
   assert.equal(normalise("\t const a = 1; "), "const a = 1;");
@@ -250,6 +272,84 @@ const LIST_FILES = () => ({
   "FU26-T-6.md": fx("FU26 (T-6)", "open", { owner: "Z owner" }),
   "FU9.md": fx("FU9", "done"),
   "README.md": "# readme\n",
+});
+
+test("P81 L-1 frontmatter values round trip, keys keep the file order, and a severity with a comma is written unquoted", () => {
+  const values = [
+    "plain value",
+    "a: b",
+    "has #hash",
+    " ## lead",
+    '"quoted"',
+    "'single'",
+    "`tick`",
+    "ends with:",
+    "true",
+    "Yes",
+    "null",
+    "n",
+    "1st",
+    "zażółć",
+    "tail ",
+    "a\nb",
+    "a\\nb",
+    "a\u2028b",
+    "a\u2029b",
+  ];
+  for (const v of values) {
+    const text = serialiseFile({
+      id: "FU1",
+      status: "open",
+      owner: v,
+      body: "b.",
+    });
+    const p = parseFile(text);
+    assert.equal(p.data.owner, v, JSON.stringify(v));
+    assert.equal(p.body, "b.");
+    const raw = text
+      .split("\n")
+      .find((l) => l.startsWith("owner: "))
+      ?.slice("owner: ".length);
+    assert.equal(
+      raw?.startsWith('"'),
+      raw === JSON.stringify(v),
+      `${JSON.stringify(v)}: quoted iff JSON.stringify`,
+    );
+  }
+  const text = serialiseFile({
+    id: "FU26 (T-6)",
+    status: "open",
+    severity: "MED, bug + UX, web; ticket",
+    owner: "a: b",
+    body: "b.",
+  });
+  assert.match(text, /^id: FU26 \(T-6\)$/m);
+  assert.match(text, /^severity: MED, bug \+ UX, web; ticket$/m);
+  assert.match(text, /^owner: "a: b"$/m);
+  assert.deepEqual(parseFile(text).keys, ["id", "status", "severity", "owner"]);
+});
+
+test("P81 L-4 a row whose Owner or Fixed in is not trailing is refused naming the id, and a line that is not a row is refused", () => {
+  const bad = [
+    "- [x] **FU5** Body. Fixed in: A (b). Owner: C.",
+    "- [ ] **FU6** Body. Owner: A. More. Owner: B.",
+    "- [ ] **FU7** Body Owner: A.",
+    "- [x] **FU8** Body. Fixed in: A (b). Fixed in: C (d).",
+  ];
+  for (const row of bad) {
+    const id = /\*\*(FU\d+)\*\*/.exec(row)[1];
+    assert.throws(
+      () => parseRow(row),
+      new RegExp(`${id}: Owner/Fixed in not`),
+      row,
+    );
+  }
+  assert.throws(() => parseRow("not a row"), /not a row/);
+  // control: a trailing Owner then Fixed in parses
+  assert.equal(
+    parseRow("- [x] **FU9** Body. Owner: A. Fixed in: B (c)").owner,
+    "A.",
+  );
 });
 
 test("P81 L-2 parseFile throws on each malformed form", () => {
@@ -487,6 +587,30 @@ const check = (files, over = {}) =>
     ...over,
   });
 
+test("P81 clean folder FU10 next to FU10a and a done FU11 is not a duplicate", () => {
+  assert.deepEqual(
+    check([file("FU10"), file("FU10a"), file("FU11", { status: "done" })]),
+    [],
+  );
+  // control: the same id twice is a duplicate
+  assert.equal(
+    check([file("FU10"), file("FU10", { name: "FU10b.md" })]).some((e) =>
+      /duplicates FU10/.test(e),
+    ),
+    true,
+  );
+});
+
+test("P81 K-7 numbers named in the README collision sentence are exempt, a range included", () => {
+  const pair = [file("FU7"), file("FU7 (X)")];
+  assert.deepEqual(check(pair), []);
+  const e = check(pair, { readme: README.replace("FU7", "FU9") });
+  assert.equal(e.length, 1);
+  assert.match(e[0], /duplicates/);
+  // FU2 is inside the FU1-FU3 range of the sentence
+  assert.deepEqual(check([file("FU2"), file("FU2 (Y)")]), []);
+});
+
 test("P81 K-1 b an id that does not parse fails", () => {
   const bad = check([file("FU12 [x]", { name: "FU12.md" })]);
   assert.equal(bad.length, 1);
@@ -585,6 +709,25 @@ test("P81 MS-5 countLines counts physical lines", () => {
   assert.equal(countLines("a\nb"), 2);
   assert.equal(countLines("a\nb\n"), 2);
   assert.equal(countLines("a\n\n"), 2);
+});
+
+test("P81 MS-6 a an untracked file and a .ts file under a measured root are not measured", () => {
+  const r = sizeRun(
+    sizeRepo(
+      {
+        "src/u.mjs": 50,
+        "src/x.ts": 50,
+        "lib/y.ts": 50,
+        "src/ok.mjs": 3,
+      },
+      { baseline: {}, untracked: ["src/u.mjs"] },
+    ),
+  );
+  assert.equal(r.code, 0, r.lines.join("\n"));
+  assert.match(
+    r.lines.at(-1),
+    /^chk:size: 1 files measured, 0 baselined, none grew$/,
+  );
 });
 
 test("P81 MS-6 b files outside the roots are not measured", () => {

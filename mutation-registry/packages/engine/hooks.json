@@ -654,5 +654,25 @@
     "test": "node --test --test-name-pattern='^P81 BG-FC-2 b ' packages/engine/test/stop-hook-cases.test.mjs",
     "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
     "testName": "P81 BG-FC-2 b "
+  },
+  "INFRA-81a/M176": {
+    "kind": "patch",
+    "protects": "5 P81-skipped-result a skipped result blocks even with ok true",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "(r) => !VERIFIED_STATUSES.includes(r.status),",
+    "replace": "(r) => !VERIFIED_STATUSES.includes(r.status) && r.status !== 'skipped',",
+    "test": "node --test --test-name-pattern='^P81 skipped result ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 skipped result "
+  },
+  "INFRA-81a/M177": {
+    "kind": "patch",
+    "protects": "5 P81-GR-6 an approving reused receipt writes nothing in the repo",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "sameInputs(r);\n  } catch {",
+    "replace": "sameInputs(r);\n    if (match)\n      (await import('node:fs')).writeFileSync(join(ROOT, '.turbo/reuse-cache.txt'), 'x');\n  } catch {",
+    "test": "node --test --test-name-pattern='^P81 GR-6 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GR-6 "
   }
 }

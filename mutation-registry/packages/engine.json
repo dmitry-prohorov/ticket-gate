@@ -3521,6 +3521,166 @@
     "testFile": "packages/engine/test/lock-cases.test.mjs",
     "testName": "P81 S-3 "
   },
+  "INFRA-81a/M167": {
+    "kind": "patch",
+    "protects": "5 P81-VE-9 the option cmd reaches the planned step",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (o?.cmd) s.cmd = o.cmd;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VE-9 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-9 "
+  },
+  "INFRA-81a/M168": {
+    "kind": "patch",
+    "protects": "5 P81-VE-9 the option prepare reaches the planned step",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (o?.prepare) s.prepare = o.prepare;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VE-9 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-9 "
+  },
+  "INFRA-81a/M169": {
+    "kind": "patch",
+    "protects": "5 P81-VE-10a the warning names more than one largest spec",
+    "file": "packages/engine/ledger.mjs",
+    "find": ".slice(0, 5)",
+    "replace": ".slice(0, 1)",
+    "test": "node --test --test-name-pattern='^P81 VE-10 a ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-10 a "
+  },
+  "INFRA-81a/M170": {
+    "kind": "patch",
+    "protects": "5 P81-VE-10a no largest specs text without spec lines",
+    "file": "packages/engine/ledger.mjs",
+    "find": "${top.length ? `; largest specs: ${top.join(', ')}` : ''}",
+    "replace": "; largest specs: ${top.join(', ')}",
+    "test": "node --test --test-name-pattern='^P81 VE-10 a ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-10 a "
+  },
+  "INFRA-81a/M173": {
+    "kind": "patch",
+    "protects": "5 P81-VE-11 a throwing prepare never reaches the runner",
+    "file": "packages/engine/run.mjs",
+    "find": "continue;\n        }\n      }\n      const limitS = limits[step.id] ?? step.limitS;",
+    "replace": "}\n      }\n      const limitS = limits[step.id] ?? step.limitS;",
+    "test": "node --test --test-name-pattern='^P81 VE-11 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-11 "
+  },
+  "INFRA-81a/M174": {
+    "kind": "patch",
+    "protects": "5 P81-sorted treeEntries sorts tracked and untracked paths together",
+    "file": "packages/engine/tree.mjs",
+    "find": "return [...new Set([...tracked, ...untrackedFiles()])].sort();\n}\n\nconst blobId = (bytes) =>\n  createHash('sha1')\n    .update(`blob ${bytes.length}\\0`)\n    .update(bytes)\n    .digest('hex');\n\nfunction stateOf(path) {\n  let st;\n  try {\n    st = lstatSync(join(ROOT, path));\n  } catch (err) {\n    if (err.code === 'ENOENT' || err.code === 'ENOTDIR') return '-';\n    throw err;\n  }\n  if (st.isSymbolicLink())\n    return `120000 ${blobId(Buffer.from(readlinkSync(join(ROOT, path))))}`;\n  if (st.isDirectory()) return 'd';\n  const mode = st.mode & 0o111 ? '100755' : '100644';\n  return `${mode} ${blobId(readFileSync(join(ROOT, path)))}`;\n}\n\n/**\n * Sorted (path, state) for every changed path outside the ticket docs. `base`\n * overrides the merge-base; `exclude` is a list of path prefixes ending `/`\n * that are left out as well (a project's registry data).\n */\nexport function treeEntries(base = baseRef(), { exclude = [] } = {}) {\n  return changedPaths(base)\n    .filter((p) => !excluded(p) && !exclude.some((x) => p.startsWith(x)))\n    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))",
+    "replace": "return [...new Set([...tracked, ...untrackedFiles()])];\n}\n\nconst blobId = (bytes) =>\n  createHash('sha1')\n    .update(`blob ${bytes.length}\\0`)\n    .update(bytes)\n    .digest('hex');\n\nfunction stateOf(path) {\n  let st;\n  try {\n    st = lstatSync(join(ROOT, path));\n  } catch (err) {\n    if (err.code === 'ENOENT' || err.code === 'ENOTDIR') return '-';\n    throw err;\n  }\n  if (st.isSymbolicLink())\n    return `120000 ${blobId(Buffer.from(readlinkSync(join(ROOT, path))))}`;\n  if (st.isDirectory()) return 'd';\n  const mode = st.mode & 0o111 ? '100755' : '100644';\n  return `${mode} ${blobId(readFileSync(join(ROOT, path)))}`;\n}\n\n/**\n * Sorted (path, state) for every changed path outside the ticket docs. `base`\n * overrides the merge-base; `exclude` is a list of path prefixes ending `/`\n * that are left out as well (a project's registry data).\n */\nexport function treeEntries(base = baseRef(), { exclude = [] } = {}) {\n  return changedPaths(base)\n    .filter((p) => !excluded(p) && !exclude.some((x) => p.startsWith(x)))\n    ",
+    "test": "node --test --test-name-pattern='^P81 sorted ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 sorted "
+  },
+  "INFRA-81a/M175": {
+    "kind": "patch",
+    "protects": "5 P81-FV-13 a green write with no file present returns null",
+    "file": "packages/engine/failures.mjs",
+    "find": "rmSync(path, { force: true });",
+    "replace": "rmSync(path);",
+    "test": "node --test --test-name-pattern='^P81 FV-13 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-13 "
+  },
+  "INFRA-81a/M178": {
+    "kind": "patch",
+    "protects": "5 P81-MC-2 a bare export statement is exempt",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "|export\\s*(?:type\\s+)?[{*])",
+    "replace": ")",
+    "test": "node --test --test-name-pattern='^P81 MC-2 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-2 "
+  },
+  "INFRA-81a/M179": {
+    "kind": "patch",
+    "protects": "5 P81-MC-2 moveProof returns its base",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "return { unmatched: lines.length, base, lines };",
+    "replace": "return { unmatched: lines.length, lines };",
+    "test": "node --test --test-name-pattern='^P81 MC-2 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-2 "
+  },
+  "INFRA-81a/M180": {
+    "kind": "patch",
+    "protects": "5 P81-L-1 a value with a line separator round trips",
+    "file": "packages/engine/fu.mjs",
+    "find": "/^([a-z][a-z-]*): (.+)$/s",
+    "replace": "/^([a-z][a-z-]*): (.+)$/",
+    "test": "node --test --test-name-pattern='^P81 L-1 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 L-1 "
+  },
+  "INFRA-81a/M181": {
+    "kind": "patch",
+    "protects": "5 P81-L-1 parseFile keeps keys in file order",
+    "file": "packages/engine/fu.mjs",
+    "find": "keys.push(m[1]);",
+    "replace": "keys.unshift(m[1]);",
+    "test": "node --test --test-name-pattern='^P81 L-1 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 L-1 "
+  },
+  "INFRA-81a/M182": {
+    "kind": "patch",
+    "protects": "5 P81-L-1 a severity with a comma is unquoted",
+    "file": "packages/engine/fu.mjs",
+    "find": "value.includes(': ') ||",
+    "replace": "value.includes(': ') ||\n    value.includes(', ') ||",
+    "test": "node --test --test-name-pattern='^P81 L-1 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 L-1 "
+  },
+  "INFRA-81a/M183": {
+    "kind": "patch",
+    "protects": "5 P81-L-4 parseRow refuses a line that is not a row",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (!m) throw new Error(`not a row: ${line.slice(0, 60)}`);",
+    "replace": "if (!m) return null;",
+    "test": "node --test --test-name-pattern='^P81 L-4 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 L-4 "
+  },
+  "INFRA-81a/M184": {
+    "kind": "patch",
+    "protects": "5 P81-clean-folder FU10 next to FU10a is no duplicate",
+    "file": "packages/engine/fu.mjs",
+    "find": "o.id.replace(/ \\(.*\\)$/, '') === id.replace(/ \\(.*\\)$/, '')",
+    "replace": "o.id.replace(/ \\(.*\\)$|[a-z]$/, '') === id.replace(/ \\(.*\\)$|[a-z]$/, '')",
+    "test": "node --test --test-name-pattern='^P81 clean folder ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 clean folder "
+  },
+  "INFRA-81a/M185": {
+    "kind": "patch",
+    "protects": "5 P81-K-7 a range in the README sentence exempts its numbers",
+    "file": "packages/engine/fu.mjs",
+    "find": "const hi = m[2] ? Number(m[2]) : lo;",
+    "replace": "const hi = lo;",
+    "test": "node --test --test-name-pattern='^P81 K-7 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 K-7 "
+  },
+  "INFRA-81a/M186": {
+    "kind": "patch",
+    "protects": "5 P81-MS-6a a ts file under a measured root is not measured",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "/\\.m?js$/.test(f)",
+    "replace": "/\\.m?[jt]s$/.test(f)",
+    "test": "node --test --test-name-pattern='^P81 MS-6 a ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MS-6 a "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",

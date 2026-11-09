@@ -271,16 +271,18 @@ test("P81 odd names changedPaths returns spaces and non-ASCII verbatim", () => {
   assert.ok(tree.changedPaths().includes(odd), "committed");
 });
 
-test("P81 sorted treeEntries is sorted and excludes the excluded dir", () => {
-  fresh();
-  put("z.txt");
+test("P81 sorted treeEntries lists tracked and untracked changes in one sorted order and leaves out the excluded dir", () => {
+  // sort-z.txt is a tracked edit (git lists it first), sort-a.txt an untracked add (listed after)
+  fresh({ "sort-z.txt": "base\n" });
+  put("sort-z.txt", "edited\n");
+  put("sort-a.txt");
   put("B.txt");
   put("a/b.txt");
   put("notes/new.md");
   put("notes/x.md", "edited\n");
   assert.deepEqual(
     tree.treeEntries().map(([p]) => p),
-    ["B.txt", "a/b.txt", "z.txt"],
+    ["B.txt", "a/b.txt", "sort-a.txt", "sort-z.txt"],
   );
 });
 

@@ -50,6 +50,21 @@ test("P81 ok false a receipt with ok false blocks although every result passed",
   assert.match(out.reason, /did not verify every required step/);
 });
 
+test("P81 skipped result a receipt with a skipped result blocks and names it as SKIPPED even when ok is true", () => {
+  const r = stopHookProject();
+  r.put("src/new.txt", "hello\n");
+  r.receipt({
+    ok: true,
+    results: [
+      { id: "check", cmd: "run check", status: "pass" },
+      { id: "coverage", cmd: "run coverage", status: "skipped", summary: "s" },
+    ],
+  });
+  const out = r.gate();
+  assert.equal(out?.decision, "block");
+  assert.match(out.reason, /\[SKIPPED\] run coverage/);
+});
+
 // --- the oversize waiver ---
 
 test("P81 GT-2 an oversize-accepted line in section 1 approves", () => {
@@ -274,6 +289,42 @@ test("P81 GR-5 a reused result without a digest, or a receipt without a base, bl
   out = r.gate();
   assert.equal(out?.decision, "block");
   assert.match(out.reason, REUSE_MSG);
+});
+
+test("P81 GR-6 a gate run that approves a reused receipt writes nothing in the repo", () => {
+  const r = stopHookProject();
+  r.put("src/new.txt", "hello\n");
+  r.put(".env.local", "A=1\n");
+  const base = r.git("rev-parse", "main").toString().trim();
+  r.receipt({
+    base,
+    results: [
+      { id: "check", cmd: "run check", status: "pass" },
+      {
+        id: "coverage",
+        cmd: COVERAGE,
+        status: "reused",
+        summary: "reused from earlier",
+        digest: r.digestOf("coverage", COVERAGE, base),
+      },
+    ],
+  });
+  const snap = () => {
+    const out = {};
+    const walk = (d) => {
+      for (const e of readdirSync(d, { withFileTypes: true })) {
+        if (e.name === ".git") continue;
+        const f = join(d, e.name);
+        if (e.isDirectory()) walk(f);
+        else out[f] = `${statSync(f).mtimeMs}:${statSync(f).size}`;
+      }
+    };
+    walk(r.dir);
+    return out;
+  };
+  const before = snap();
+  assert.equal(r.gate(), null, "control: the receipt approves");
+  assert.deepEqual(snap(), before);
 });
 
 test("P81 GE-7 a result carrying an unknown mode blocks and names the step and the mode", () => {

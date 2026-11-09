@@ -5,15 +5,27 @@
 // against the working directory, so the file runs inside a private throwaway project made by
 // enterScratchProject (its own mkdtemp dir, removed afterwards).
 import assert from "node:assert/strict";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { after, test } from "node:test";
 
 import { enterScratchProject } from "./scratch-project.mjs";
 
 const leave = enterScratchProject();
-after(leave);
+const tmpDirs = [];
+after(() => {
+  leave();
+  for (const d of tmpDirs) rmSync(d, { recursive: true, force: true });
+});
 
-const { MAX_ENTRIES, cleanLines, parseFailures, renderFailures } =
-  await import("../failures.mjs");
+const {
+  MAX_ENTRIES,
+  cleanLines,
+  parseFailures,
+  renderFailures,
+  writeFailures,
+} = await import("../failures.mjs");
 
 const VITEST = `
  RUN  v3.2.7 /repo/packages/lib
@@ -409,10 +421,38 @@ test("P81 FV-12 b the summary has a header, one section per failed step in order
   assert.match(md, /^Hint: rerun idle$/m);
   const checkSection = md.slice(md.indexOf("## check"), md.indexOf("## e2e"));
   const listed = checkSection.split("\n").filter((l) => l.startsWith("- ["));
-  assert.ok(listed.length > 3 && listed.length <= MAX_ENTRIES, `${listed.length}`);
+  assert.ok(
+    listed.length > 3 && listed.length <= MAX_ENTRIES,
+    `${listed.length}`,
+  );
   assert.ok(
     Buffer.byteLength(md) <
       (Buffer.byteLength(check) + Buffer.byteLength(e2e)) / 4,
     `${Buffer.byteLength(md)} bytes`,
+  );
+});
+
+test("P81 FV-13 a red call writes the summary, a green call deletes it, and a green call with no file present returns null without throwing", () => {
+  const dir = mkdtempSync(join(tmpdir(), "gate-failures-"));
+  tmpDirs.push(dir);
+  const path = join(dir, ".turbo", "failures.md");
+  const red = {
+    treeHash: "h1",
+    ranAt: "t1",
+    failures: [
+      { id: "check", cmd: "run check", why: "w", out: "boom: it broke\n" },
+    ],
+  };
+  const green = (n) => ({ treeHash: `h${n}`, ranAt: `t${n}`, failures: [] });
+  assert.equal(writeFailures(path, red), path);
+  assert.match(readFileSync(path, "utf8"), /treeHash: h1 {3}ranAt: t1/);
+  assert.equal(writeFailures(path, green(2)), null);
+  assert.equal(existsSync(path), false);
+  // a second green call finds nothing to delete: still null, no throw
+  assert.equal(writeFailures(path, green(3)), null);
+  // and a green call on a directory that never existed
+  assert.equal(
+    writeFailures(join(dir, "never", "failures.md"), green(4)),
+    null,
   );
 });

@@ -37,6 +37,8 @@ const {
   specLedgerLines,
 } = await import("../ledger.mjs");
 const {
+  affectedListLines,
+  chooseE2eMode,
   finishE2e,
   knownRedLines,
   knownRedOf,
@@ -161,6 +163,86 @@ test("P81 VE-6 b known red lines list every test of a known red file, smoke test
   assert.deepEqual(knownRedLines(LIST, []), []);
 });
 
+const AFFECTED = { mode: "affected", why: "affected: 1 areas, 1 specs" };
+const NOW = Date.parse("2026-11-02T12:00:00Z");
+const nightlyAt = (status, agoMs = 0) => ({
+  sha: "n1",
+  status,
+  ranAt: new Date(NOW - agoMs).toISOString(),
+});
+
+test("P81 VE-3 a nightly that is stale, red, errored, missing, without a usable ranAt, or the --e2e=full flag each force the full suite and never throw", () => {
+  const choose = (nightly, flag = "auto") =>
+    chooseE2eMode({ selection: AFFECTED, nightly, flag, nowMs: NOW });
+  // control: a fresh green nightly keeps the affected mode
+  assert.deepEqual(choose(nightlyAt("green", 1000)), {
+    mode: "affected",
+    why: AFFECTED.why,
+  });
+  assert.deepEqual(choose(nightlyAt("green", NIGHTLY_MAX_AGE_MS + 1)), {
+    mode: "full",
+    why: "nightly stale",
+  });
+  assert.deepEqual(choose(nightlyAt("red")), {
+    mode: "full",
+    why: "nightly red",
+  });
+  assert.deepEqual(choose(nightlyAt("error")), {
+    mode: "full",
+    why: "nightly error",
+  });
+  for (const none of [null, undefined])
+    assert.deepEqual(choose(none), { mode: "full", why: "nightly missing" });
+  assert.deepEqual(choose({ ...nightlyAt("green"), ranAt: "garbage" }), {
+    mode: "full",
+    why: "nightly stale",
+  });
+  // a record with no ranAt at all has no age: stale, not fresh
+  assert.deepEqual(choose({ status: "green" }), {
+    mode: "full",
+    why: "nightly stale",
+  });
+  // the flag beats a perfect nightly
+  assert.deepEqual(choose(nightlyAt("green"), "full"), {
+    mode: "full",
+    why: "--e2e=full",
+  });
+});
+
+test("P81 VE-6 a a test marked smoke only by a tag is listed for an affected run, and an untagged test of a file that did not run is not", () => {
+  const list = {
+    suites: [
+      {
+        title: "b.spec.ts",
+        file: "b.spec.ts",
+        specs: [
+          {
+            title: "boots",
+            file: "b.spec.ts",
+            tags: ["@smoke"],
+            tests: [{ projectName: "chromium" }],
+          },
+          {
+            title: "test tagged",
+            file: "b.spec.ts",
+            tests: [{ projectName: "chromium", tags: ["smoke"] }],
+          },
+          {
+            title: "plain",
+            file: "b.spec.ts",
+            tags: ["@slow"],
+            tests: [{ projectName: "chromium" }],
+          },
+        ],
+      },
+    ],
+  };
+  assert.deepEqual(
+    affectedListLines(list, { run: [], knownRed: [], setup: new Set() }),
+    ["b.spec.ts › boots", "b.spec.ts › test tagged"],
+  );
+});
+
 // A spec's digest here is a function of the file and of the state of its own inputs only, so the
 // planner needs no git.
 const ALL_SPECS = ["calendar.spec.ts", "settings.spec.ts", "timetable.spec.ts"];
@@ -239,6 +321,50 @@ test("P81 VE-8 an amber flaky spec and a fresh run are never reused", () => {
   assert.deepEqual(fresh.reused, []);
 });
 
+test("P81 VE-8b an amber flaky spec that is not in the selection is never planned to run", () => {
+  const planned = plannerFor(STATE, [], {
+    selected: ["settings.spec.ts"],
+    alwaysRun: new Set(["gone.spec.ts"]),
+  });
+  assert.deepEqual(planned.run, ["settings.spec.ts"]);
+  assert.deepEqual(planned.reused, []);
+});
+
+test("P81 VE-9 the option the caller passes for a step reaches the planned step: its command and its prepare hook", () => {
+  const config = defineGate({
+    steps: [
+      step({
+        id: "suite",
+        when: ["web/**"],
+        cmd: "run all",
+        reuse: false,
+        option: "suite",
+      }),
+    ],
+  });
+  const prepare = () => {};
+  const planned = (suite) =>
+    byId(
+      planFor(config, ["web/x"], {
+        exists: () => true,
+        base: "HEAD",
+        ...(suite ? { suite } : {}),
+      }).steps,
+      "suite",
+    );
+  // control: no option leaves the step as the config states it
+  assert.equal(planned().cmd, "run all");
+  assert.equal(planned().prepare, undefined);
+  const over = planned({
+    when: true,
+    mode: "affected",
+    cmd: "run some",
+    prepare,
+  });
+  assert.equal(over.cmd, "run some");
+  assert.equal(over.prepare, prepare);
+});
+
 const min = (m) => m * 60 * 1000;
 const e2eLine = (ms, ranAt, over = {}) => ({
   id: "e2e",
@@ -248,6 +374,32 @@ const e2eLine = (ms, ranAt, over = {}) => ({
   ranAt,
   ms,
   ...over,
+});
+
+test("P81 VE-10 a over 20 minutes the warning names the largest specs of the newest run, and without spec lines it names none", () => {
+  const slow = [20, 21, 21, 22, 23].map((m, i) => e2eLine(min(m), `T${i}`));
+  const specs = [
+    { id: "e2e-spec", file: "big.spec.ts", ranAt: "T4", ms: min(5) },
+    { id: "e2e-spec", file: "mid.spec.ts", ranAt: "T4", ms: min(2) },
+    { id: "e2e-spec", file: "old.spec.ts", ranAt: "T0", ms: min(9) },
+  ];
+  const warned = fullMedianLine(slow, specs);
+  assert.equal(warned.warn, true);
+  assert.match(
+    warned.line,
+    /^e2e full median: .*21m.* over the last 5 full runs\n/,
+  );
+  assert.match(
+    warned.line,
+    /WARNING: over the 20 min budget \(D10\); largest specs: big\.spec\.ts .*5m.*, mid\.spec\.ts .*2m.*$/,
+  );
+  assert.doesNotMatch(warned.line, /old\.spec/);
+  // no spec line of the newest run: the warning stands without a list
+  const bare = fullMedianLine(slow, [specs[2]]);
+  assert.equal(bare.warn, true);
+  assert.match(bare.line, /WARNING: over the 20 min budget/);
+  assert.doesNotMatch(bare.line, /largest specs/);
+  assert.equal(fullMedianLine(slow, []).line.includes("largest specs"), false);
 });
 
 test("P81 VE-10 b only the newest five full runs count; a failed line and a line without ms are not runs", () => {

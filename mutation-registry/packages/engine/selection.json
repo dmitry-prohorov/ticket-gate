@@ -706,5 +706,55 @@
     "test": "node --test --test-name-pattern='^P81 VE-13 ' packages/engine/test/e2e-unit-cases.test.mjs",
     "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
     "testName": "P81 VE-13 "
+  },
+  "INFRA-81a/M164": {
+    "kind": "patch",
+    "protects": "5 P81-VE-3 a nightly with no ranAt is stale",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "if (!(nowMs - Date.parse(nightly.ranAt) <= NIGHTLY_MAX_AGE_MS))",
+    "replace": "if (nightly.ranAt && !(nowMs - Date.parse(nightly.ranAt) <= NIGHTLY_MAX_AGE_MS))",
+    "test": "node --test --test-name-pattern='^P81 VE-3 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-3 "
+  },
+  "INFRA-81a/M165": {
+    "kind": "patch",
+    "protects": "5 P81-VE-6a a test marked smoke by tag only is listed",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "[...(spec.tags ?? []), ...(t.tags ?? [])].some(",
+    "replace": "[].some(",
+    "test": "node --test --test-name-pattern='^P81 VE-6 a ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-6 a "
+  },
+  "INFRA-81a/M166": {
+    "kind": "patch",
+    "protects": "5 P81-VE-8b planSpecs never runs an alwaysRun spec outside the selection",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "for (const file of selected) {",
+    "replace": "for (const file of new Set([...selected, ...alwaysRun])) {",
+    "test": "node --test --test-name-pattern='^P81 VE-8b ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-8b "
+  },
+  "INFRA-81a/M171": {
+    "kind": "patch",
+    "protects": "5 P81-VE-11 a flaky spec passes",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "if (t.status === 'unexpected') cur.fail = true;",
+    "replace": "if (t.status === 'unexpected' || t.status === 'flaky') cur.fail = true;",
+    "test": "node --test --test-name-pattern='^P81 VE-11 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-11 "
+  },
+  "INFRA-81a/M172": {
+    "kind": "patch",
+    "protects": "5 P81-VE-11 a setup spec is not an entry",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "if (setup.has(file)) return;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VE-11 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-11 "
   }
 }
