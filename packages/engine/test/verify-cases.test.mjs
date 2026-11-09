@@ -83,9 +83,7 @@ const {
 } = await import("../ledger.mjs");
 const { bindSetup } = await import("../mutations/project.mjs");
 const { resolveSetup } = await import("../mutations/kinds.mjs");
-const { registryDryLine, registryPlan } = await import(
-  "../mutations/gate.mjs"
-);
+const { registryDryLine, registryPlan } = await import("../mutations/gate.mjs");
 
 const dirs = [];
 after(() => dirs.forEach((d) => rmSync(d, { recursive: true, force: true })));
@@ -192,7 +190,9 @@ const plan = (config, paths, opts = {}) =>
 
 // A project for the spawned cases: `a` always runs, `web` only for a web/ path; a web/ file is
 // MACHINE in the review map.
-const spawnConfig = (aCmd = "echo ok-a") => `import { defineGate, step } from ${JSON.stringify(CONFIG_URL)};
+const spawnConfig = (
+  aCmd = "echo ok-a",
+) => `import { defineGate, step } from ${JSON.stringify(CONFIG_URL)};
 export default defineGate({
   steps: [
     step({ id: 'a', when: true, cmd: ${JSON.stringify(aCmd)}, reuse: { deny: [] } }),
@@ -230,7 +230,12 @@ test("P81 --skip human step a skipped human step keeps mode human", () => {
   const config = defineGate({
     steps: [
       step({ id: "check", when: true, cmd: "run check", reuse: false }),
-      step({ id: "manual", when: true, cmd: "do it by hand", human: "by hand" }),
+      step({
+        id: "manual",
+        when: true,
+        cmd: "do it by hand",
+        human: "by hand",
+      }),
     ],
   });
   const got = plan(config, ["src/x"], { skip: ["manual"] });
@@ -474,9 +479,19 @@ const reuseGate = () =>
   defineGate({
     steps: [
       step({ id: "check", when: true, cmd: "run check", reuse: false }),
-      step({ id: "coverage", when: true, cmd: "run coverage", reuse: { deny: [] } }),
+      step({
+        id: "coverage",
+        when: true,
+        cmd: "run coverage",
+        reuse: { deny: [] },
+      }),
       step({ id: "perf", when: true, cmd: "run perf", reuse: { deny: [] } }),
-      step({ id: "manual", when: true, cmd: "do it by hand", human: "by hand" }),
+      step({
+        id: "manual",
+        when: true,
+        cmd: "do it by hand",
+        human: "by hand",
+      }),
     ],
   });
 const COVERAGE = "run coverage";
@@ -652,21 +667,17 @@ test("P81 VT-R1 b a stack step gets ready for the stack steps that run after it,
 test("P81 VT-T1b a stack step that times out names the stack check in its failure entry", () => {
   const timedOut = () => ({ status: 124, out: "", timedOut: true });
   const stack = quiet(() =>
-    buildResults(
-      { steps: [runStep("e2e")], notSelected: [] },
-      timedOut,
-      { limits: { e2e: 7 } },
-    ),
+    buildResults({ steps: [runStep("e2e")], notSelected: [] }, timedOut, {
+      limits: { e2e: 7 },
+    }),
   );
   assert.match(stack.failures[0].out, /TIMEOUT after 7 s \(limit e2e: 7 s\)/);
   assert.match(stack.failures[0].out, /Check the stack with: echo e2e/);
   // control: a step off the stack is told to rerun itself
   const plainStep = quiet(() =>
-    buildResults(
-      { steps: [runStep("check")], notSelected: [] },
-      timedOut,
-      { limits: { check: 7 } },
-    ),
+    buildResults({ steps: [runStep("check")], notSelected: [] }, timedOut, {
+      limits: { check: 7 },
+    }),
   );
   assert.match(plainStep.failures[0].out, /Rerun this step alone: cmd-check/);
   assert.doesNotMatch(plainStep.failures[0].out, /Check the stack with/);
@@ -989,7 +1000,10 @@ test("P81 INFRA-43 GC-1 reviewMap rejects a duplicate rule id, a bad tier or mat
   );
   const bad = (over, re) =>
     throws(baseConfig({ reviewMap: reviewMapOf(over) }), re);
-  bad({ rules: [rule("H0"), rule("H0")] }, /reviewMap\.rules.*duplicate rule id/);
+  bad(
+    { rules: [rule("H0"), rule("H0")] },
+    /reviewMap\.rules.*duplicate rule id/,
+  );
   bad({ rules: [rule("H0", { tier: "WHATEVER" })] }, /reviewMap\.rules.*tier/);
   bad({ rules: [rule("H0", { match: "x" })] }, /reviewMap\.rules.*match/);
   bad({ sizeExcluded: ["ZZ"] }, /reviewMap\.sizeExcluded.*"ZZ"/);
@@ -1049,7 +1063,10 @@ test("P81 INFRA-43 GC-5 loadGateConfig rejects an invalid, a missing and a throw
     () => loadGateConfig(project("export default {};\n")),
     /gate\.config: /,
   );
-  await assert.rejects(() => loadGateConfig(project(null)), /gate\.config\.mjs/);
+  await assert.rejects(
+    () => loadGateConfig(project(null)),
+    /gate\.config\.mjs/,
+  );
   await assert.rejects(
     () => loadGateConfig(project('throw new Error("boom");\n')),
     /boom/,
