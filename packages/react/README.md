@@ -24,7 +24,7 @@ when the command runs. `viteProfiling({ cmd, preview })` describes the build and
 guards, which fail the run with the fix instead of printing zeros. For Next.js use
 `{ ...nextProfiling({ app: 'web' }) }` from `@ticket-gate/supabase-next/profile-build.mjs`, and the Supabase reset and login hooks
 from `@ticket-gate/supabase-next/profile-hooks.mjs`. `lock: false` skips the stack lock for a caller that already holds it. Playwright
-comes from the project (`playwrightFrom` names the `package.json` that depends on it), never from this package.
+comes from the project (`playwrightFrom` names the `package.json` that depends on it), never from this package, so it must be installed in the project at `playwrightFrom`.
 
 `profile.config.mjs`:
 
@@ -52,7 +52,7 @@ export default {
   messages: { expected: 'Card, List' },
   preflight: { portInUse: 'port 4173 is in use', noApp: 'nothing on :4173: run with --build', noWebEnv: 'no app env' },
   services: [],
-  probe: async () => true,
+  probe: (url) => fetch(url).then(() => true, () => false),
   hasEnv: () => true,
 };
 ```

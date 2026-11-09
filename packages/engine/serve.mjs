@@ -70,26 +70,40 @@ export async function startWebServer(opts, onSpawn) {
 export const portBusy = (port) =>
   `port ${port} is already in use: a stale server would serve old code. Stop it (lsof -i :${port}), then re-run.`;
 
-// Not detached, unlike the server: a terminal Ctrl-C must reach the build.
+// Detached, in its own process group, so the timeout can kill the whole build (a compound
+// command forks, and a surviving worker holds the pipes open). A terminal Ctrl-C no longer
+// reaches it, so a SIGINT forwarder does, and is removed when the build ends.
 function runBuild(build, env) {
   return new Promise((resolve) => {
     const c = spawn('bash', ['-lc', build], {
       cwd: ROOT,
       env: { ...process.env, ...env },
+      detached: true,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     let out = '';
-    const timer = setTimeout(() => c.kill('SIGKILL'), LIMITS.webBuild * 1000);
+    let settled = false;
+    const forward = () => {
+      safeKillGroup(c.pid, 'SIGINT');
+      // Our listener replaced the default exit; keep it when nobody else handles the signal.
+      if (process.listenerCount('SIGINT') === 1) process.exit(130);
+    };
+    const done = (r) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      process.removeListener('SIGINT', forward);
+      resolve(r);
+    };
+    process.on('SIGINT', forward);
+    const timer = setTimeout(() => {
+      safeKillGroup(c.pid, 'SIGKILL');
+      done({ code: 124, out: `${out}timed out after ${LIMITS.webBuild} s` });
+    }, LIMITS.webBuild * 1000);
     c.stdout.on('data', (d) => (out += d));
     c.stderr.on('data', (d) => (out += d));
-    c.on('error', (err) => {
-      clearTimeout(timer);
-      resolve({ code: 1, out: String(err) });
-    });
-    c.on('close', (code) => {
-      clearTimeout(timer);
-      resolve({ code: code ?? 1, out });
-    });
+    c.on('error', (err) => done({ code: 1, out: String(err) }));
+    c.on('close', (code) => done({ code: code ?? 1, out }));
   });
 }
 

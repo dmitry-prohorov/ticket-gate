@@ -2220,5 +2220,25 @@
     "test": "node --test --test-name-pattern='^SV-5 ' packages/engine/test/serve.test.mjs",
     "testFile": "packages/engine/test/serve.test.mjs",
     "testName": "SV-5 "
+  },
+  "INFRA-85/M14": {
+    "kind": "patch",
+    "protects": "INFRA-85 SV-6 a build past its limit is killed as a group, not only its shell",
+    "file": "packages/engine/serve.mjs",
+    "find": "safeKillGroup(c.pid, 'SIGKILL');\n      done({ code: 124",
+    "replace": "c.kill('SIGKILL');\n      done({ code: 124",
+    "test": "node --test --test-name-pattern='^SV-6 ' packages/engine/test/serve.test.mjs",
+    "testFile": "packages/engine/test/serve.test.mjs",
+    "testName": "SV-6 "
+  },
+  "INFRA-85/M15": {
+    "kind": "patch",
+    "protects": "INFRA-85 SV-5 the handed stop is the real stop, not a no-op",
+    "file": "packages/engine/serve.mjs",
+    "find": "onSpawn?.(stop);",
+    "replace": "onSpawn?.(() => {});",
+    "test": "node --test --test-name-pattern='^SV-5 ' packages/engine/test/serve.test.mjs",
+    "testFile": "packages/engine/test/serve.test.mjs",
+    "testName": "SV-5 "
   }
 }

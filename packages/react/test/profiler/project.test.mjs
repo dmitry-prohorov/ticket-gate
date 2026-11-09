@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, readdirSync } from 'node:fs';
-import { createServer } from 'node:net';
+import { connect, createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, test } from 'node:test';
@@ -27,6 +27,13 @@ const freePort = () =>
       const { port } = s.address();
       s.close(() => resolve(port));
     });
+  });
+
+const portUp = (port) =>
+  new Promise((resolve) => {
+    const s = connect({ host: '127.0.0.1', port });
+    s.once('connect', () => (s.destroy(), resolve(true)));
+    s.once('error', () => (s.destroy(), resolve(false)));
   });
 
 /** A live holder of the stack lock at a scratch path; returns the env that points a child at it. */
@@ -136,13 +143,61 @@ function readmeBlocks() {
   return [...section.matchAll(/```js\n([\s\S]*?)```/g)].map((m) => m[1]);
 }
 
-test('RM-1 the README example runs and fails on a noCommit trace', () => {
+/** The README blocks written into a scratch project, the example port swapped for `port`. */
+function readmeProject(port, scripts = {}) {
   const [profileConfig, gateConfig] = readmeBlocks();
   assert.ok(profileConfig && gateConfig, 'the README holds both example blocks');
   const { dir, write } = makeProject({ trace: traces.noCommit, links: true });
-  write('profile.config.mjs', profileConfig);
+  // viteProfiling fixes the preview port at 4173; the scratch run moves it to a free one.
+  const viteCall = /viteProfiling\(\{[^}]*\}\)/.exec(profileConfig)?.[0];
+  assert.ok(viteCall, 'the README example calls viteProfiling');
+  write(
+    'profile.config.mjs',
+    profileConfig
+      .replace(viteCall, `{ ...${viteCall}, port: ${port} }`)
+      .replaceAll('4173', String(port)),
+  );
   write('gate.config.mjs', gateConfig);
+  write(
+    'package.json',
+    JSON.stringify({ name: 'scratch', private: true, type: 'module', scripts }),
+  );
+  return { dir, write };
+}
+
+test('RM-1 the README example runs and fails on a noCommit trace', async () => {
+  const port = await freePort();
+  const { dir } = readmeProject(port);
+  // A child process answers: runProfile blocks this one's event loop.
+  const app = spawn(
+    process.execPath,
+    [
+      '-e',
+      `require('node:http').createServer((_q, r) => r.end('ok')).listen(${port}, '127.0.0.1')`,
+    ],
+    { stdio: 'ignore' },
+  );
+  kids.push(app);
+  while (!(await portUp(port))) await new Promise((r) => setTimeout(r, 50));
   const r = runProfile(dir, ['profile', '--runs=1'], {}, [BIN]);
   assert.equal(r.status, 1, r.out);
   assert.match(r.stderr, /no React Commit/);
+});
+
+test('RM-2 the README example with --build reaches the build', async () => {
+  const port = await freePort();
+  const { dir, write } = readmeProject(port, {
+    build: 'node build.mjs',
+    preview: 'node server.mjs',
+  });
+  write('build.mjs', "import { writeFileSync } from 'node:fs';\nwriteFileSync('built', 'x');\n");
+  write(
+    'server.mjs',
+    `import { createServer } from 'node:http';
+createServer((_q, r) => r.end('ok')).listen(${port}, '127.0.0.1');
+`,
+  );
+  const r = runProfile(dir, ['profile', '--build', '--runs=1'], {}, [BIN]);
+  assert.doesNotMatch(r.stderr, /in use/, r.out);
+  assert.ok(existsSync(join(dir, 'built')), `the build ran: ${r.out}`);
 });

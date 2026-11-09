@@ -1,13 +1,14 @@
 // serve(): refuse a busy port, build, start, wait until the port answers. Real `node` servers on
 // ephemeral ports in a scratch directory; no network beyond loopback.
 import assert from 'node:assert/strict';
-import { existsSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { createServer as netServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 
+import { LIMITS } from '../mutations/verdict.mjs';
 import { portInUse, serve } from '../serve.mjs';
 
 const dir = mkdtempSync(join(tmpdir(), 'serve-test-'));
@@ -111,9 +112,51 @@ test('SV-5 onSpawn hands over stop before the port answers', async () => {
     assert.equal(typeof handed, 'function', 'onSpawn ran before serve resolved');
     assert.equal(answeredAtSpawn, false, 'the port did not answer when onSpawn ran');
     assert.equal(await portInUse(port), true);
+    // The handed stop itself frees the port; the returned one is only idempotent cleanup, so a
+    // failing handed stop cannot leak the detached server.
+    await handed();
+    assert.equal(await portInUse(port), false, 'the handed stop frees the port');
   } finally {
     await stop();
   }
-  await handed();
-  assert.equal(await portInUse(port), false, 'the handed stop frees the port');
+});
+
+const alive = (pid) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+test('SV-6 a build past its limit rejects at the limit', async () => {
+  const port = await freePort();
+  const pidFile = join(dir, 'sv6.pid');
+  const hang = join(dir, 'sv6-hang.cjs');
+  writeFileSync(
+    hang,
+    `require('node:fs').writeFileSync(${JSON.stringify(pidFile)}, String(process.pid));
+setInterval(() => {}, 1000);
+`,
+  );
+  const was = LIMITS.webBuild;
+  LIMITS.webBuild = 1;
+  const t0 = Date.now();
+  try {
+    // A compound command: bash cannot exec the worker, so killing bash alone would not stop it.
+    await assert.rejects(
+      serve({ build: `(node ${q(hang)}); true`, start: 'true', port }),
+      /timed out after 1 s/,
+    );
+    assert.ok(Date.now() - t0 < 3000, `rejected at the limit, took ${Date.now() - t0} ms`);
+  } finally {
+    LIMITS.webBuild = was;
+  }
+  const pid = Number(readFileSync(pidFile, 'utf8'));
+  for (let i = 0; i < 20 && alive(pid); i++) await new Promise((r) => setTimeout(r, 100));
+  const gone = !alive(pid);
+  // A survivor would keep this process alive for good: reap it before asserting.
+  if (!gone) process.kill(pid, 'SIGKILL');
+  assert.equal(gone, true, 'the build worker is gone');
 });
