@@ -2731,6 +2731,236 @@
     "testFile": "packages/engine/test/lock-cases.test.mjs",
     "testName": "P81 VL-5 "
   },
+  "INFRA-81a/M63": {
+    "kind": "patch",
+    "protects": "5 P81-SI-1 the digest is keyed on the base sha, not on HEAD, so a commit leaves it unchanged",
+    "file": "packages/engine/digest.mjs",
+    "find": "const sha = gitOut(['rev-parse', base ?? baseRef()]).trim();",
+    "replace": "const sha = gitOut(['rev-parse', 'HEAD']).trim();",
+    "test": "node --test --test-name-pattern='^P81 SI-1 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-1 "
+  },
+  "INFRA-81a/M64": {
+    "kind": "patch",
+    "protects": "5 P81-SI-3 the base sha moves every step digest",
+    "file": "packages/engine/digest.mjs",
+    "find": "add(cmd);\n  add(s.base);",
+    "replace": "add(cmd);",
+    "test": "node --test --test-name-pattern='^P81 SI-3 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-3 "
+  },
+  "INFRA-81a/M65": {
+    "kind": "patch",
+    "protects": "5 P81-SI-4 the step command moves its digest",
+    "file": "packages/engine/digest.mjs",
+    "find": "add(id);\n  add(cmd);",
+    "replace": "add(id);",
+    "test": "node --test --test-name-pattern='^P81 SI-4 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-4 "
+  },
+  "INFRA-81a/M66": {
+    "kind": "patch",
+    "protects": "5 P81-SI-5 the deno version moves only the steps that need deno",
+    "file": "packages/engine/digest.mjs",
+    "find": "if (NEEDS_DENO.includes(id)) add(",
+    "replace": "if (true) add(",
+    "test": "node --test --test-name-pattern='^P81 SI-5 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-5 "
+  },
+  "INFRA-81a/M67": {
+    "kind": "patch",
+    "protects": "5 P81-SI-6 b an env file under a denied prefix still moves the digest",
+    "file": "packages/engine/digest.mjs",
+    "find": "for (const [p, blob] of s.env) add(`${p}\\0${blob}`);\n  s.entries\n    .filter(([p]) => !isDenied(id, p))",
+    "replace": "for (const [p, blob] of s.env.filter(([p]) => !isDenied(id, p))) add(`${p}\\0${blob}`);\n  s.entries\n    .filter(([p]) => !isDenied(id, p))",
+    "test": "node --test --test-name-pattern='^P81 SI-6 b ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-6 b "
+  },
+  "INFRA-81a/M68": {
+    "kind": "patch",
+    "protects": "5 P81-SI-6b an env file inside node_modules is not a digest input",
+    "file": "packages/engine/digest.mjs",
+    "find": "        !p.endsWith('/') &&\n        basename(p).startsWith('.env') &&\n        !p.split('/').includes('node_modules'),",
+    "replace": "        !p.endsWith('/') &&\n        basename(p).startsWith('.env'),",
+    "test": "node --test --test-name-pattern='^P81 SI-6b ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-6b "
+  },
+  "INFRA-81a/M69": {
+    "kind": "patch",
+    "protects": "5 P81-SI-9 b stepDigest of an unknown step must throw",
+    "file": "packages/engine/digest.mjs",
+    "find": "if (!(id in STEP_INPUTS)) throw",
+    "replace": "if (false) throw",
+    "test": "node --test --test-name-pattern='^P81 SI-9 b ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-9 b "
+  },
+  "INFRA-81a/M70": {
+    "kind": "patch",
+    "protects": "5 P81-SI-10 VERIFIED_STATUSES names pass, human and reused",
+    "file": "packages/engine/digest.mjs",
+    "find": "Object.freeze(['pass', 'human', 'reused'])",
+    "replace": "Object.freeze(['pass', 'human'])",
+    "test": "node --test --test-name-pattern='^P81 SI-10 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-10 "
+  },
+  "INFRA-81a/M71": {
+    "kind": "patch",
+    "protects": "5 P81-SI-G1 the gate config file is denied for no step",
+    "file": "packages/engine/digest.mjs",
+    "find": "return (STEP_INPUTS[id]?.deny ?? []).some((d) => matches(d, path));",
+    "replace": "return (STEP_INPUTS[id]?.deny ?? []).some((d) => matches(d, path)) || path === 'gate.config.mjs';",
+    "test": "node --test --test-name-pattern='^P81 SI-G1 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 SI-G1 "
+  },
+  "INFRA-81a/M72": {
+    "kind": "patch",
+    "protects": "5 P81-same bytes same bytes hash the same untracked, staged and committed",
+    "file": "packages/engine/tree.mjs",
+    "find": ".map((p) => [p, stateOf(p)]);",
+    "replace": ".map((p) => [p, untrackedFiles().includes(p) ? 'u' : stateOf(p)]);",
+    "test": "node --test --test-name-pattern='^P81 same bytes ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 same bytes "
+  },
+  "INFRA-81a/M73": {
+    "kind": "patch",
+    "protects": "5 P81-untracked byte an untracked byte moves the tree hash",
+    "file": "packages/engine/tree.mjs",
+    "find": "return nul('git ls-files -z --others --exclude-standard');",
+    "replace": "return [];",
+    "test": "node --test --test-name-pattern='^P81 untracked byte ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 untracked byte "
+  },
+  "INFRA-81a/M74": {
+    "kind": "patch",
+    "protects": "5 P81-deleted a deletion moves the tree hash and lists a dash entry",
+    "file": "packages/engine/tree.mjs",
+    "find": "&& !exclude.some((x) => p.startsWith(x)))",
+    "replace": "&& !exclude.some((x) => p.startsWith(x)) && existsSync(join(ROOT, p)))",
+    "test": "node --test --test-name-pattern='^P81 deleted ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 deleted "
+  },
+  "INFRA-81a/M75": {
+    "kind": "patch",
+    "protects": "5 P81-rename a rename lists both its old and new path",
+    "file": "packages/engine/tree.mjs",
+    "find": "git diff -z --name-only --no-renames ${ref}",
+    "replace": "git diff -z --name-only ${ref}",
+    "test": "node --test --test-name-pattern='^P81 rename ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 rename "
+  },
+  "INFRA-81a/M76": {
+    "kind": "patch",
+    "protects": "5 P81-exec bit an execute bit change moves the tree hash",
+    "file": "packages/engine/tree.mjs",
+    "find": "const mode = st.mode & 0o111 ? '100755' : '100644';",
+    "replace": "const mode = '100644';",
+    "test": "node --test --test-name-pattern='^P81 exec bit ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 exec bit "
+  },
+  "INFRA-81a/M77": {
+    "kind": "patch",
+    "protects": "5 P81-odd names paths with spaces and non-ASCII come back verbatim",
+    "file": "packages/engine/tree.mjs",
+    "find": "nul(`git diff -z --name-only",
+    "replace": "nul(`git diff --name-only",
+    "test": "node --test --test-name-pattern='^P81 odd names ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 odd names "
+  },
+  "INFRA-81a/M78": {
+    "kind": "patch",
+    "protects": "5 P81-sorted treeEntries leaves out the excluded directory",
+    "file": "packages/engine/tree.mjs",
+    "find": "!excluded(p) && !exclude.some",
+    "replace": "!exclude.some",
+    "test": "node --test --test-name-pattern='^P81 sorted ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 sorted "
+  },
+  "INFRA-81a/M79": {
+    "kind": "patch",
+    "protects": "5 P81-2 MiB the tree hash survives names past 2 MiB",
+    "file": "packages/engine/tree.mjs",
+    "find": "// The default 1 MiB overflows (ENOBUFS) on a large unrelated diff.\n    maxBuffer: 512 * 1024 * 1024,",
+    "replace": "// The default 1 MiB overflows (ENOBUFS) on a large unrelated diff.\n    maxBuffer: 1024 * 1024,",
+    "test": "node --test --test-name-pattern='^P81 2 MiB ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 2 MiB "
+  },
+  "INFRA-81a/M80": {
+    "kind": "patch",
+    "protects": "5 P81-TH-1 treeHashAt reads the same state strings as treeHash",
+    "file": "packages/engine/tree.mjs",
+    "find": "type === 'blob' ? `${mode} ${oid}` : 'd'",
+    "replace": "type === 'blob' ? oid : 'd'",
+    "test": "node --test --test-name-pattern='^P81 TH-1 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 TH-1 "
+  },
+  "INFRA-81a/M81": {
+    "kind": "patch",
+    "protects": "5 P81-TH-2 treeHashAt reads its states from the given commit",
+    "file": "packages/engine/tree.mjs",
+    "find": "gitZ(['ls-tree', '-r', '-t', '-z', commit])",
+    "replace": "gitZ(['ls-tree', '-r', '-t', '-z', 'HEAD'])",
+    "test": "node --test --test-name-pattern='^P81 TH-2 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 TH-2 "
+  },
+  "INFRA-81a/M82": {
+    "kind": "patch",
+    "protects": "5 P81-TH-4 an uncommitted edit leaves treeHashAt unchanged",
+    "file": "packages/engine/tree.mjs",
+    "find": "return digest(treeEntriesAt(commit, base));",
+    "replace": "return digest(treeEntries(base));",
+    "test": "node --test --test-name-pattern='^P81 TH-4 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 TH-4 "
+  },
+  "INFRA-81a/M83": {
+    "kind": "patch",
+    "protects": "5 P81-TH-6 readHistory skips a line whose hash is not a string",
+    "file": "packages/engine/tree.mjs",
+    "find": "if (entry && typeof entry.treeHash === 'string') out.push(entry);",
+    "replace": "if (entry) out.push(entry);",
+    "test": "node --test --test-name-pattern='^P81 TH-6 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 TH-6 "
+  },
+  "INFRA-81a/M84": {
+    "kind": "patch",
+    "protects": "5 P81-TH-7 treeEntriesAt rejects an empty or dash-led ref",
+    "file": "packages/engine/tree.mjs",
+    "find": "ref === '' || ref.startsWith('-'))",
+    "replace": "false)",
+    "test": "node --test --test-name-pattern='^P81 TH-7 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 TH-7 "
+  },
+  "INFRA-81a/M85": {
+    "kind": "patch",
+    "protects": "5 P81-TH-B1 treeEntries lists the changes since the given base",
+    "file": "packages/engine/tree.mjs",
+    "find": "return changedPaths(base)\n    .filter(",
+    "replace": "return changedPaths()\n    .filter(",
+    "test": "node --test --test-name-pattern='^P81 TH-B1 ' packages/engine/test/digest-tree-cases.test.mjs",
+    "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
+    "testName": "P81 TH-B1 "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",

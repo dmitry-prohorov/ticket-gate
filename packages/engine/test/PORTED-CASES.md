@@ -165,3 +165,45 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket-lock | @327 VL-5 | port | P81 VL-5 (INFRA-81a/M62) | killed 5928928 |
 | verify-ticket-lock | @388 VL-6 | counterpart | `mutations/lock` LK-1 | |
 | verify-ticket-lock | @440 VL-7 | project config | guard INFRA-86/M1 on the project's packs (engine: `react/profiler/project` PF-5) | |
+| step-inputs | @117 SI-1 | port | P81 SI-1 (INFRA-81a/M63) | killed 471f03d |
+| step-inputs | @127 SI-2 | counterpart | `engine-inputs` EI-1 | |
+| step-inputs | @135 SI-3 | port | P81 SI-3 (INFRA-81a/M64) | killed 471f03d |
+| step-inputs | @145 SI-4 | port | P81 SI-4 (INFRA-81a/M65) | killed 471f03d |
+| step-inputs | @151 SI-5 | port | P81 SI-5 (INFRA-81a/M66) | killed 471f03d |
+| step-inputs | @166 SI-6 a | counterpart | `step-inputs` SI-6 | |
+| step-inputs | @166 SI-6 b | port | P81 SI-6 b (INFRA-81a/M67) | killed 471f03d |
+| step-inputs | @187 SI-6b | port | P81 SI-6b (INFRA-81a/M68) | killed 471f03d |
+| step-inputs | @202 SI-7 | project config | the project's deny lists (engine: SI-7) | |
+| step-inputs | @228 SI-8 | counterpart | `step-inputs` SI-8, `engine-inputs` EI-1 | |
+| step-inputs | @241 SI-9 a | project config | the project's reusable ids | |
+| step-inputs | @241 SI-9 b | port | P81 SI-9 b (INFRA-81a/M69) | killed 471f03d |
+| step-inputs | @267 SI-10 | port | P81 SI-10 (INFRA-81a/M70) | killed 471f03d |
+| step-inputs | @273 SI-R1 | project config | the project's data paths (engine: SI-R1) | |
+| step-inputs | @308 SI-R2 | project config | the project's tools reading the registry | |
+| step-inputs | @348 SI-MR1 | counterpart | `step-inputs` SI-MR1 | |
+| step-inputs | @370 S-1 | project config | the project's baseline files | |
+| step-inputs | @443 S-2 no reference | project config | the project's e2e inputs | |
+| step-inputs | @451 S-2 planted | project config | bites the helper of the case above | |
+| step-inputs | @463 SI-G1 | port | P81 SI-G1 (INFRA-81a/M71) | killed 471f03d |
+| step-inputs | @474 SI-G2 | project config | the project's docs paths | |
+| tree-hash | @62 same bytes | port | P81 same bytes (INFRA-81a/M72) | killed 471f03d |
+| tree-hash | @74 untracked excluded | counterpart | `root-and-tree` DR-4 | |
+| tree-hash | @82 tracked edit excluded | counterpart | `root-and-tree` DR-4 | |
+| tree-hash | @90 untracked byte | port | P81 untracked byte (INFRA-81a/M73) | killed 471f03d |
+| tree-hash | @98 committed byte | counterpart | `root-and-tree` DR-4 | |
+| tree-hash | @108 reverted | counterpart | `root-and-tree` DR-4 | |
+| tree-hash | @118 deleted | port | P81 deleted (INFRA-81a/M74) | killed 471f03d |
+| tree-hash | @129 rename | port | P81 rename (INFRA-81a/M75) | killed 471f03d |
+| tree-hash | @140 exec bit | port | P81 exec bit (INFRA-81a/M76) | killed 471f03d |
+| tree-hash | @148 odd names | port | P81 odd names (INFRA-81a/M77) | killed 471f03d |
+| tree-hash | @157 sorted | port | P81 sorted (INFRA-81a/M78) | killed 471f03d |
+| tree-hash | @168 2 MiB | port | P81 2 MiB (INFRA-81a/M79) | killed 471f03d |
+| tree-hash | @186 TH-1 | port | P81 TH-1 (INFRA-81a/M80) | killed 471f03d |
+| tree-hash | @206 TH-2 | port | P81 TH-2 (INFRA-81a/M81) | killed 471f03d |
+| tree-hash | @220 TH-3 | counterpart | `tree-hash` TH-3 | |
+| tree-hash | @229 TH-4 | port | P81 TH-4 (INFRA-81a/M82) | killed 471f03d |
+| tree-hash | @239 TH-5 | counterpart | `tree-hash` TH-5 | |
+| tree-hash | @254 TH-6 | port | P81 TH-6 (INFRA-81a/M83) | killed 471f03d |
+| tree-hash | @275 TH-7 | port | P81 TH-7 (INFRA-81a/M84) | killed 471f03d |
+| tree-hash | @281 TH-B1 | port | P81 TH-B1 (INFRA-81a/M85) | killed 471f03d |
+| tree-hash | @299 TH-R1 | counterpart | `tree-hash` TH-R1 | |
