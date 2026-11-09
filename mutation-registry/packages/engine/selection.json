@@ -646,5 +646,65 @@
     "test": "node --test --test-name-pattern='^NU-5 ' packages/engine/test/e2e/units.test.mjs",
     "testFile": "packages/engine/test/e2e/units.test.mjs",
     "testName": "NU-5 "
+  },
+  "INFRA-81a/M45": {
+    "kind": "patch",
+    "protects": "5 P81-VE-5 known red walks only the ancestors of the base",
+    "file": "packages/engine/selection/units.mjs",
+    "find": ".find((r) => r.sha === baseSha || isAncestor(r.sha));",
+    "replace": ".find((r) => r.sha === baseSha || true);",
+    "test": "node --test --test-name-pattern='^P81 VE-5 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-5 "
+  },
+  "INFRA-81a/M46": {
+    "kind": "patch",
+    "protects": "5 P81-VE-6-b known red lines list only known red files",
+    "file": "packages/engine/selection/units.mjs",
+    "find": ".filter((t) => knownRed.includes(t.file))",
+    "replace": ".filter((t) => !knownRed.includes(t.file))",
+    "test": "node --test --test-name-pattern='^P81 VE-6 b ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-6 b "
+  },
+  "INFRA-81a/M47": {
+    "kind": "patch",
+    "protects": "5 P81-VE-7 a spec is reused only on an unchanged digest",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "l.file === file && l.digest === digest,",
+    "replace": "l.file === file,",
+    "test": "node --test --test-name-pattern='^P81 VE-7 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-7 "
+  },
+  "INFRA-81a/M48": {
+    "kind": "patch",
+    "protects": "5 P81-VE-8 an amber flaky or fresh spec is never reused",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "!fresh && !alwaysRun.has(file) && line?.status === 'pass'",
+    "replace": "line?.status === 'pass'",
+    "test": "node --test --test-name-pattern='^P81 VE-8 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-8 "
+  },
+  "INFRA-81a/M50": {
+    "kind": "patch",
+    "protects": "5 P81-VE-11 a run spec absent from the report fails",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "got !== undefined && !got.fail ? 'pass' : 'fail'",
+    "replace": "got?.fail ? 'fail' : 'pass'",
+    "test": "node --test --test-name-pattern='^P81 VE-11 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-11 "
+  },
+  "INFRA-81a/M52": {
+    "kind": "patch",
+    "protects": "5 P81-VE-13 an unknown --e2e value is refused",
+    "file": "packages/engine/selection/units.mjs",
+    "find": "value === 'full'",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^P81 VE-13 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-13 "
   }
 }

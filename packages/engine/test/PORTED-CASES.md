@@ -127,3 +127,20 @@ and the short sha of the tree the planted fault was run on.
 | entry-points | @30 EP-2 | project config | old-path shim, deleted in 81b | |
 | entry-points | @36 EP-3 | project config | old-path shims, deleted in 81b | |
 | entry-points | @45 EP-4 | project config | shim content; guards INFRA-50/M5, M6 retire with the shims | |
+| verify-ticket-e2e | @67 VE-2 a | counterpart | `e2e/units` VE-3a, VE-3b |  |
+| verify-ticket-e2e | @67 VE-2 b | port | P81 VE-2 b (INFRA-81a/M44) | killed 41748cd |
+| verify-ticket-e2e | @91 VE-3 | counterpart | `e2e/units` VE-3a, VE-3b, VE-3c |  |
+| verify-ticket-e2e | @123 VE-4 | counterpart | `e2e/units` VE-4 |  |
+| verify-ticket-e2e | @155 VE-5 | port | P81 VE-5 (INFRA-81a/M45) | killed 41748cd |
+| verify-ticket-e2e | @228 VE-6 a | counterpart | `e2e/units` NU-5 |  |
+| verify-ticket-e2e | @228 VE-6 b | port | P81 VE-6 b (INFRA-81a/M46) | killed 41748cd |
+| verify-ticket-e2e | @300 VE-7 | port | P81 VE-7 (INFRA-81a/M47) | killed 41748cd |
+| verify-ticket-e2e | @330 VE-8 | port | P81 VE-8 (INFRA-81a/M48) | killed 41748cd |
+| verify-ticket-e2e | @346 VE-8b | counterpart | `e2e/units` VE-8b |  |
+| verify-ticket-e2e | @362 VE-9 | counterpart | `e2e-ledger` VE-9 |  |
+| verify-ticket-e2e | @395 VE-10 a | counterpart | `e2e-ledger` VE-10a, VE-10b |  |
+| verify-ticket-e2e | @395 VE-10 b | port | P81 VE-10 b (INFRA-81a/M49) | killed 41748cd |
+| verify-ticket-e2e | @468 VE-11 | port | P81 VE-11 (INFRA-81a/M50) | killed 41748cd |
+| verify-ticket-e2e | @592 VE-12 | port | P81 VE-12 (INFRA-81a/M51) | killed 41748cd |
+| verify-ticket-e2e | @666 VE-13 | port | P81 VE-13 (INFRA-81a/M52) | killed 41748cd |
+| verify-ticket-e2e | @688 VE-14 | port | P81 VE-14 (INFRA-81a/M53) | killed 41748cd |

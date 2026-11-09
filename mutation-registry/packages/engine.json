@@ -2601,6 +2601,46 @@
     "testFile": "packages/engine/test/verify-cases.test.mjs",
     "testName": "P81 INFRA-43 GC-5 "
   },
+  "INFRA-81a/M44": {
+    "kind": "patch",
+    "protects": "5 P81-VE-2-b the affected plan and the nightly record share one freshness window",
+    "file": "packages/engine/nightly-window.mjs",
+    "find": "36 * 3600 * 1000",
+    "replace": "35 * 3600 * 1000",
+    "test": "node --test --test-name-pattern='^P81 VE-2 b ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-2 b "
+  },
+  "INFRA-81a/M49": {
+    "kind": "patch",
+    "protects": "5 P81-VE-10-b the full median counts only the newest five runs",
+    "file": "packages/engine/ledger.mjs",
+    "find": ".slice(-5);",
+    "replace": ".slice(-6);",
+    "test": "node --test --test-name-pattern='^P81 VE-10 b ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-10 b "
+  },
+  "INFRA-81a/M51": {
+    "kind": "patch",
+    "protects": "5 P81-VE-12 a spec whose inputs moved is not filed in the spec ledger",
+    "file": "packages/engine/ledger.mjs",
+    "find": "digestNow(s.file) === s.digest",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^P81 VE-12 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-12 "
+  },
+  "INFRA-81a/M53": {
+    "kind": "patch",
+    "protects": "5 P81-VE-14 a dry run prints the e2e mode line",
+    "file": "packages/engine/cli.mjs",
+    "find": "console.log(e2eHook.dryLine(e2ePlan));",
+    "replace": "void 0;",
+    "test": "node --test --test-name-pattern='^P81 VE-14 ' packages/engine/test/e2e-unit-cases.test.mjs",
+    "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
+    "testName": "P81 VE-14 "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",
