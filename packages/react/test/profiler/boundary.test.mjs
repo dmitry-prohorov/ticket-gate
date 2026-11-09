@@ -92,6 +92,6 @@ test('PB-2 the profiler imports only node:, its engine seams and siblings', () =
     ))
       assert.ok(
         ALLOWED_IMPORT.test(m[1]),
-        `${f} imports "${m[1]}": only node:*, #engine/lock.mjs, #engine/serve.mjs and sibling ./*.mjs are allowed`,
+        `${f} imports "${m[1]}": only node:*, #engine/lock.mjs, #engine/serve.mjs, #engine/nightly/record.mjs, #engine/nightly/seed.mjs and sibling ./*.mjs are allowed`,
       );
 });

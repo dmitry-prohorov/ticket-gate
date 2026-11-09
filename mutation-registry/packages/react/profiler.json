@@ -273,11 +273,17 @@
     "kind": "patch",
     "protects": "INFRA-85 PF-6 the served app does not outlive the run",
     "file": "packages/react/profiler/cli.mjs",
-    "find": "await stopServer();",
-    "replace": "",
+    "find": "await stopServer();\n      process.removeListener",
+    "replace": "process.removeListener",
     "test": "node --test --test-name-pattern='^PF-6 ' packages/react/test/profiler/project.test.mjs",
     "testFile": "packages/react/test/profiler/project.test.mjs",
-    "testName": "PF-6 "
+    "testName": "PF-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-87a",
+        "why": "the SIGINT handler now also holds `await stopServer();`, so the find carries the following line to stay unique to the finally block"
+      }
+    ]
   },
   "INFRA-85/M7": {
     "kind": "patch",
@@ -393,11 +399,17 @@
     "kind": "patch",
     "protects": "INFRA-87a PS-5 corrupt or empty numbers are red, and the runner never rejects",
     "file": "packages/react/profiler/nightly.mjs",
-    "find": "return Object.keys(n.medians ?? {}).length > 0 ? n : null;",
+    "find": "return shaped && Object.keys(n.medians).length > 0 ? n : null;",
     "replace": "return n;",
     "test": "node --test --test-name-pattern='^PS-5 ' packages/react/test/profiler/nightly.test.mjs",
     "testFile": "packages/react/test/profiler/nightly.test.mjs",
-    "testName": "PS-5 "
+    "testName": "PS-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-87a",
+        "why": "readNumbers now also requires a plain medians object and over and advisory arrays; the guarded line moved from `return Object.keys(n.medians ?? {}).length > 0 ? n : null;`"
+      }
+    ]
   },
   "INFRA-87a/M10": {
     "kind": "patch",
@@ -538,5 +550,25 @@
     "test": "node --test --test-name-pattern='^PC-4 ' packages/react/test/profiler/nightly-child.test.mjs",
     "testFile": "packages/react/test/profiler/nightly-child.test.mjs",
     "testName": "PC-4 "
+  },
+  "INFRA-87a/M24": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-9 the runner resolves red on a filesystem error",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "      } catch (e) {\n        return noNumbers({\n          runs,\n          out: '',\n          reason: e instanceof Error ? e.message : String(e),\n          suspects: suspectsOf(),\n        });\n      }",
+    "replace": "      } catch (e) {\n        throw e;\n      }",
+    "test": "node --test --test-name-pattern='^PS-9 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-9 "
+  },
+  "INFRA-87a/M25": {
+    "kind": "patch",
+    "protects": "INFRA-87a PC-5 a server that ignores SIGTERM is gone after a cut-short",
+    "file": "packages/react/profiler/cli.mjs",
+    "find": "if (stopServer !== null) await stopServer();",
+    "replace": "if (stopServer !== null) stopServer();",
+    "test": "node --test --test-name-pattern='^PC-5 ' packages/react/test/profiler/nightly-child.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly-child.test.mjs",
+    "testName": "PC-5 "
   }
 }

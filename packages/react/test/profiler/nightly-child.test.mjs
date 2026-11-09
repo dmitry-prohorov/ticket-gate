@@ -131,6 +131,24 @@ test('PC-3 cut short at the limit stops the server and frees the port', { timeou
   assert.equal(alive(pid), false, 'the server process is gone');
 });
 
+test('PC-5 a server that ignores SIGTERM is gone after a cut-short', { timeout: 60_000 }, async () => {
+  const { dir, port, write } = await project();
+  write('server.mjs', `process.on('SIGTERM', () => {});\n${SERVER}`);
+  write(
+    'profile.config.mjs',
+    readFileSync(join(dir, 'profile.config.mjs'), 'utf8').replace(
+      'scenarios: { home: async () => async () => {} }',
+      'scenarios: { home: async () => () => new Promise((r) => setTimeout(r, 600_000)) }',
+    ),
+  );
+  const { res } = await runIn({ dir, limitS: 3 });
+  assert.equal(res.timedOut, true);
+  const pid = Number(readFileSync(join(dir, 'server.pid'), 'utf8'));
+  await until(async () => !(await portUp(port)) && !alive(pid), 20_000);
+  assert.equal(alive(pid), false, 'the server process is gone');
+  assert.equal(await portUp(port), false, 'the port answers no more');
+});
+
 test('PC-4 a handle the config leaves open does not hold the suite', { timeout: 60_000 }, async () => {
   const { dir, write } = await project();
   write(

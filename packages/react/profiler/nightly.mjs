@@ -77,6 +77,13 @@ export function statusLine(view) {
   return `nightly profile: ${word}${parts.length > 0 ? ` (${parts.join('; ')})` : ''}`;
 }
 
+const noNumbers = ({ runs, out, reason, suspects }) => ({
+  timedOut: false,
+  summary: summaryOf({ expected: 0, unexpected: 1, flaky: 0, scenarios: 0, runs, failed: ['no numbers'] }),
+  report: { results: null, log: out.slice(-LOG_TAIL) },
+  extra: { medians: {}, over: [], advisory: [], noNumbers: reason, suspects },
+});
+
 const summaryOf = ({ expected, unexpected, flaky, scenarios, runs, failed }) => ({
   stats: { expected, unexpected, flaky, skipped: 0, scenarios, runs },
   failedSpecs: failed,
@@ -84,12 +91,15 @@ const summaryOf = ({ expected, unexpected, flaky, scenarios, runs, failed }) => 
   redTests: [],
 });
 
+const isPlain = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
+
 function readNumbers(io, dir) {
   const file = join(dir, 'numbers.json');
   if (!io.exists(file)) return null;
   try {
     const n = JSON.parse(io.readFile(file));
-    return Object.keys(n.medians ?? {}).length > 0 ? n : null;
+    const shaped = isPlain(n?.medians) && Array.isArray(n.over) && Array.isArray(n.advisory);
+    return shaped && Object.keys(n.medians).length > 0 ? n : null;
   } catch {
     return null;
   }
@@ -114,7 +124,7 @@ export function reactProfile({ config, runs, scenarios, keepTraces }, { git = re
     keep: { reports: 'all', traces: keepTraces },
     statusLine,
     async run({ wt, io, args = [], limitS, env = {}, dir }) {
-      const { history } = readNightly(dirname(dirname(dir)));
+      let history = [];
       const suite = basename(dirname(dir));
       const suspectsOf = () => {
         try {
@@ -132,57 +142,61 @@ export function reactProfile({ config, runs, scenarios, keepTraces }, { git = re
           return null; // no suspects without git
         }
       };
-      io.rm(dir);
-      io.mkdir(dir);
-      const r = await io.run(process.execPath, [NIGHTLY_CHILD, config, dir, ...flags, ...args], {
-        cwd: wt,
-        env: { ...env, TICKET_GATE_ROOT: wt },
-        limitS,
-        killSignal: 'SIGINT',
-        graceS: GRACE_S,
-      });
-      if (r.timedOut)
-        return {
-          timedOut: true,
-          summary: null,
-          report: null,
-          extra: { noNumbers: 'cut-short', suspects: suspectsOf() },
-        };
-      const numbers = r.code === 0 ? readNumbers(io, dir) : null;
-      if (numbers === null)
+      try {
+        history = readNightly(dirname(dirname(dir))).history;
+        io.rm(dir);
+        io.mkdir(dir);
+        const r = await io.run(process.execPath, [NIGHTLY_CHILD, config, dir, ...flags, ...args], {
+          cwd: wt,
+          env: { ...env, TICKET_GATE_ROOT: wt },
+          limitS,
+          killSignal: 'SIGINT',
+          graceS: GRACE_S,
+        });
+        if (r.timedOut)
+          return {
+            timedOut: true,
+            summary: null,
+            report: null,
+            extra: { noNumbers: 'cut-short', suspects: suspectsOf() },
+          };
+        const numbers = r.code === 0 ? readNumbers(io, dir) : null;
+        if (numbers === null)
+          return noNumbers({
+            runs,
+            out: r.out,
+            reason: r.out.trim().split('\n').at(-1) || `exit ${r.code}`,
+            suspects: suspectsOf(),
+          });
+        const blocking = numbers.over.filter((o) => o.blocking);
+        const advisoryOver = numbers.over.length - blocking.length;
+        const red = blocking.length > 0;
+        const count = Object.keys(numbers.medians).length;
         return {
           timedOut: false,
-          summary: summaryOf({ expected: 0, unexpected: 1, flaky: 0, scenarios: 0, runs, failed: ['no numbers'] }),
-          report: { results: null, log: r.out.slice(-LOG_TAIL) },
+          summary: summaryOf({
+            expected: count - numbers.over.length,
+            unexpected: blocking.length,
+            flaky: advisoryOver,
+            scenarios: count,
+            runs,
+            failed: blocking.map((o) => o.scenario),
+          }),
+          report: { results: 'results.json', traces: 'traces' },
           extra: {
-            medians: {},
-            over: [],
-            advisory: [],
-            noNumbers: r.out.trim().split('\n').at(-1) || `exit ${r.code}`,
-            suspects: suspectsOf(),
+            ...numbers,
+            promote: promotable(history, suite, numbers),
+            ...(red ? { suspects: suspectsOf() } : {}),
           },
         };
-      const blocking = numbers.over.filter((o) => o.blocking);
-      const advisoryOver = numbers.over.length - blocking.length;
-      const red = blocking.length > 0;
-      const count = Object.keys(numbers.medians).length;
-      return {
-        timedOut: false,
-        summary: summaryOf({
-          expected: count - numbers.over.length,
-          unexpected: blocking.length,
-          flaky: advisoryOver,
-          scenarios: count,
+      } catch (e) {
+        return noNumbers({
           runs,
-          failed: blocking.map((o) => o.scenario),
-        }),
-        report: { results: 'results.json', traces: 'traces' },
-        extra: {
-          ...numbers,
-          promote: promotable(history, suite, numbers),
-          ...(red ? { suspects: suspectsOf() } : {}),
-        },
-      };
+          out: '',
+          reason: e instanceof Error ? e.message : String(e),
+          suspects: suspectsOf(),
+        });
+      }
     },
   };
 }

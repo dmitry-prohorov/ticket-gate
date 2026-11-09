@@ -8,6 +8,7 @@ import { test } from 'node:test';
 import { readNightly } from '../../../engine/nightly/record.mjs';
 import { dayOf } from '../../../engine/nightly/schedule.mjs';
 import { statusLines } from '../../../engine/nightly/status.mjs';
+import { world } from '../../../engine/test/nightly/__tests__/world.mjs';
 import { chooseE2eMode, recordOf } from '../../../engine/selection/units.mjs';
 import { numbersOf, reactProfile } from '../../profiler/nightly.mjs';
 import {
@@ -157,11 +158,33 @@ test('PS-4 a child that fails is red with no numbers, even with numbers on disk'
 });
 
 test('PS-5 corrupt or empty numbers are red, and the runner never rejects', async () => {
-  for (const text of ['{not json', JSON.stringify({ medians: {}, over: [], advisory: [] })]) {
+  const texts = [
+    '{not json',
+    JSON.stringify({ medians: {}, over: [], advisory: [] }),
+    JSON.stringify({ medians: { home: 1 } }),
+    JSON.stringify({ medians: { home: 1 }, over: 'x' }),
+    JSON.stringify({ medians: [1], over: [], advisory: [] }),
+  ];
+  for (const text of texts) {
     const { view } = await night({ child: rawChild(text) });
     assert.equal(view.status, 'red', text);
     assert.deepEqual(view.redSpecs, ['no numbers']);
   }
+});
+
+test('PS-9 the runner resolves red on a filesystem error', async () => {
+  const w = world();
+  const io = {
+    ...w.io,
+    mkdir: () => {
+      throw new Error('disk full');
+    },
+  };
+  const dir = join(NIGHTLY, 'profile', `${SHA12}-${dayOf(NOW)}`);
+  const res = await reactProfile(OPTS, { git: noGit }).run({ wt: w.wt, io, args: [], limitS: 60, env: {}, dir });
+  assert.equal(res.timedOut, false);
+  assert.deepEqual(res.summary.failedSpecs, ['no numbers']);
+  assert.equal(res.extra.noNumbers, 'disk full');
 });
 
 test("PS-6 a second run the same day cannot read the first run's numbers", async () => {

@@ -79,8 +79,8 @@ export async function run(cfg, argv) {
   const results = {};
   let chromiumVersion = '';
   let stopServer = null;
-  const onSigint = () => {
-    if (stopServer !== null) stopServer();
+  const onSigint = async () => {
+    if (stopServer !== null) await stopServer();
     process.exit(130);
   };
   try {
@@ -101,7 +101,7 @@ export async function run(cfg, argv) {
       );
     }
     const chromium = resolveChromium(cfg.playwrightFrom);
-    const browser = await chromium.launch();
+    const browser = await chromium.launch({ handleSIGINT: false });
     chromiumVersion = browser.version();
     try {
       for (const sc of opts.scenarios) {
