@@ -10,11 +10,40 @@ It provides:
 - the affected-spec selection behind `select` and `select check` (import-graph and spec-header based), enabled by the `selection` key of `defineGate`, with graph sources, rules and test runners from the `selectionGraphs`, `selectionRules` and `testRunners` pack hooks;
 - `nightlyUnits({ selection, suite, full, runFrom })` (`selection/units.mjs`), the units of a step backed by a nightly record; it reads the record the gate's `nightly` key points at (`nightlyRecord(gate)`);
 - the nightly (`ticket-gate nightly run [--now] | install | status`), enabled by the `nightly` key of `defineGate`; see Nightly below;
-- the check modules in `checks/` (`surface`, `duplication`, `docs-stale`, `cache-report`, `ratchet-options`), exported for a project's ratchets; `jscpd` is resolved from the consuming project;
+- the check modules in `checks/` (`surface`, `duplication`, `docs-stale`, `cache-report`, `ratchet-options`, `assertions`, `unguardedKind`), exported for a project's ratchets; `jscpd` is resolved from the consuming project;
 - pack commands: a pack's `packCommands` hook is an object of `name -> (args, { root, gate }) -> code`; `ticket-gate <name> [args]` calls it with the arguments after the name, the project root and the gate, and exits with the number it returns (0 when it returns nothing);
 - `defineGate` and `step`, the API a project's `gate.config.mjs` is written against;
 - the Stop and PreToolUse hooks, which make no network call and collect no telemetry;
 - the receipt, ledger, review-map and follow-up register code.
+
+## Assertions ratchet
+
+`checks/assertions.mjs` exports `assertions(cfg)`: it counts configured needles per spec file, groups the totals by the areas named in each spec's header, and fails when an area's total drops below its baseline unless a green mutation receipt covers the dropped spec. A rise is reported as stale until the baseline is rewritten with `--update`. A project passes `check` under `ratchets`:
+
+```js
+import { assertions } from '@ticket-gate/engine/checks/assertions.mjs';
+import { unguardedKind } from '@ticket-gate/engine/checks/assertions-unguarded.mjs';
+
+const a = assertions({
+  name: 'assertions',
+  specs: { dir: 'tests', match: /\.test\.ts$/, header: /^\/\/ areas: ([a-z]+(, [a-z]+)*)$/ },
+  areas: ['billing', 'search'],
+  counters: { asserts: 'expect(' },
+  from: 'tests/',
+  receipt: '.gate/mutation-check.json',
+  baseline: 'gate/assertions.json',
+  registry: 'gate/registry/',
+  comment: 'Never edit by hand: run the update command.',
+  commands: { update: 'npm run assertions -- --update', mutate: 'npm run mutate -- <ID>', usage: 'npm run assertions' },
+  setup, // resolveSetup(...) or omitted to read the bound setup
+});
+export default defineGate({
+  ratchets: { assertions: { check: a.check, group: 'check' } },
+  mutations: { kinds: { unguarded: unguardedKind({ from: /^tests\/.+\.test\.ts$/, fromHint: 'tests/<...>.test.ts' }) } },
+});
+```
+
+`unguardedKind` is a factory, not a registered kind: an `unguarded` registry entry records a guard no test bites, with a reason, and its `from` covers a dropped spec. `from` must not carry the `g` or `y` flag.
 
 ## Nightly
 

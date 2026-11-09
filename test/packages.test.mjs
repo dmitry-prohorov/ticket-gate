@@ -115,6 +115,8 @@ test('INFRA-47 5-5 tarballs ship no tests', () => {
       'nightly/run.mjs',
       'nightly-config.mjs',
       'mutations/rotation-status.mjs',
+      'checks/assertions.mjs',
+      'checks/assertions-unguarded.mjs',
     ],
     'supabase-next': [
       'LICENSE',
