@@ -21,9 +21,16 @@ It provides:
 `checks/assertions.mjs` exports `assertions(cfg)`: it counts configured needles per spec file, groups the totals by the areas named in each spec's header, and fails when an area's total drops below its baseline unless a green mutation receipt covers the dropped spec. A rise is reported as stale until the baseline is rewritten with `--update`. A project passes `check` under `ratchets`:
 
 ```js
+import { defineGate } from '@ticket-gate/engine';
 import { assertions } from '@ticket-gate/engine/checks/assertions.mjs';
 import { unguardedKind } from '@ticket-gate/engine/checks/assertions-unguarded.mjs';
+import { resolveSetup } from '@ticket-gate/engine/mutations/kinds.mjs';
 
+const mutations = {
+  dir: 'gate/registry',
+  receipts: { ticket: '.gate/mutation-check.json', registry: '.gate/mutation-registry.json' },
+  kinds: { unguarded: unguardedKind({ from: /^tests\/.+\.test\.ts$/, fromHint: 'tests/<...>.test.ts' }) },
+};
 const a = assertions({
   name: 'assertions',
   specs: { dir: 'tests', match: /\.test\.ts$/, header: /^\/\/ areas: ([a-z]+(, [a-z]+)*)$/ },
@@ -35,11 +42,11 @@ const a = assertions({
   registry: 'gate/registry/',
   comment: 'Never edit by hand: run the update command.',
   commands: { update: 'npm run assertions -- --update', mutate: 'npm run mutate -- <ID>', usage: 'npm run assertions' },
-  setup, // resolveSetup(...) or omitted to read the bound setup
+  setup: resolveSetup(mutations), // required under `ratchets`, which binds no setup
 });
 export default defineGate({
   ratchets: { assertions: { check: a.check, group: 'check' } },
-  mutations: { kinds: { unguarded: unguardedKind({ from: /^tests\/.+\.test\.ts$/, fromHint: 'tests/<...>.test.ts' }) } },
+  mutations,
 });
 ```
 
