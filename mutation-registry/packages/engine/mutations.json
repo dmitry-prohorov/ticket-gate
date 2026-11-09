@@ -1538,6 +1538,46 @@
       }
     ]
   },
+  "INFRA-28/M7": {
+    "kind": "patch",
+    "protects": "NS-M2 a rotation over 14 days prints the WARN suffix",
+    "file": "packages/engine/mutations/rotation-status.mjs",
+    "find": "if (rot !== null && rot > ROTATION_WARN_DAYS)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='NS-M2 ' packages/engine/test/nightly/rotation-status.test.mjs",
+    "testFile": "packages/engine/test/nightly/rotation-status.test.mjs",
+    "testName": "NS-M2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/rotation-status.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/rotation-status.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/rotation-status.mjs -> packages/engine/mutations/rotation-status.mjs; test tools/nightly/engine/rotation-status.test.mjs -> packages/engine/test/nightly/rotation-status.test.mjs"
+      }
+    ]
+  },
+  "INFRA-28/M9": {
+    "kind": "patch",
+    "protects": "NS-M3 merges touching the survivor file or testFile come first",
+    "file": "packages/engine/mutations/rotation-status.mjs",
+    "find": "suspect: touches(files, survivor),",
+    "replace": "suspect: false,",
+    "test": "node --test --test-name-pattern='NS-M3 ' packages/engine/test/nightly/rotation-status.test.mjs",
+    "testFile": "packages/engine/test/nightly/rotation-status.test.mjs",
+    "testName": "NS-M3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/rotation-status.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/rotation-status.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/rotation-status.mjs -> packages/engine/mutations/rotation-status.mjs; test tools/nightly/engine/rotation-status.test.mjs -> packages/engine/test/nightly/rotation-status.test.mjs"
+      }
+    ]
+  },
   "INFRA-30/M10": {
     "kind": "patch",
     "protects": "INFRA-30 s5 M-1a a patch that does not type check is error before any build",

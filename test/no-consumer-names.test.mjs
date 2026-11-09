@@ -51,6 +51,8 @@ const ALLOWED = {
     [P + 'NIGHTLY_DIR']: 1,
     [P + 'STACK_LOCK_OWNER']: 1,
   },
+  // the registry entry whose find is the run.mjs line that sets the handed-off lock owner name
+  'mutation-registry/packages/engine/nightly.json': { [P + 'STACK_LOCK_OWNER']: 1 },
 };
 
 /** Every needle hit in `files` (relative to `root`) beyond what `allowed` permits for that file. */

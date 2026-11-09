@@ -171,7 +171,21 @@
     "replace": "read: () => null,",
     "test": "node --test --test-name-pattern='^PK-1 ' packages/supabase-next/test/pack-selection.test.mjs",
     "testFile": "packages/supabase-next/test/pack-selection.test.mjs",
-    "testName": "PK-1 "
+    "testName": "PK-1 ",
+    "retired": {
+      "by": "INFRA-69",
+      "why": "the pack nightly hook is removed; the gate's nightly record is read by nightly/gate.mjs nightlyRecord, guarded by INFRA-69/M4"
+    }
+  },
+  "INFRA-69/M15": {
+    "kind": "patch",
+    "protects": "5 SS-2 nightlyStack gives the supabase-stack payload",
+    "file": "packages/supabase-next/index.mjs",
+    "find": "nightlyPayloads: [supabaseStack(nightlyStack)]",
+    "replace": "nightlyPayloads: []",
+    "test": "node --test --test-name-pattern='^SS-2 ' packages/supabase-next/test/nightly/stack-payload.test.mjs",
+    "testFile": "packages/supabase-next/test/nightly/stack-payload.test.mjs",
+    "testName": "SS-2 "
   },
   "INFRA-77b/M1": {
     "kind": "patch",
