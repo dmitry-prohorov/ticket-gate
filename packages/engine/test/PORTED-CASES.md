@@ -144,3 +144,24 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket-e2e | @592 VE-12 | port | P81 VE-12 (INFRA-81a/M51) | killed 41748cd |
 | verify-ticket-e2e | @666 VE-13 | port | P81 VE-13 (INFRA-81a/M52) | killed 41748cd |
 | verify-ticket-e2e | @688 VE-14 | port | P81 VE-14 (INFRA-81a/M53) | killed 41748cd |
+| stack-lock | @60 S-1 | port | P81 S-1 (INFRA-81a/M54) | killed 5928928 |
+| stack-lock | @93 S-2 | counterpart | `stack-lock` S-2 | |
+| stack-lock | @135 S-3 | counterpart | `stack-lock` S-3 | |
+| stack-lock | @161 S-4 | counterpart | `stack-lock` S-4 | |
+| stack-lock | @181 S-5 | port | P81 S-5 (INFRA-81a/M55) | killed 5928928 |
+| stack-lock | @206 S-6 | counterpart | `stack-lock` S-6 | |
+| stack-lock | @218 S-7 | port | P81 S-7 (INFRA-81a/M56) | killed 5928928 |
+| stack-lock | @239 S-8 | counterpart | `stack-lock` S-8 | |
+| stack-lock | @266 S-9 | port | P81 S-9 (INFRA-81a/M57) | killed 5928928 |
+| stack-lock | @288 S-10 | project config | guard INFRA-22/M6 on the project's Playwright config | |
+| stack-lock | @324 reapStale race | port | P81 reapStale race (INFRA-81a/M58) | killed 5928928 |
+| stack-lock | @366 reaping guard | port | P81 reaping guard (INFRA-81a/M59) | killed 5928928 |
+| verify-ticket-lock | @109 VL-1 | counterpart | `verify-lock` VK-1 | |
+| verify-ticket-lock | @136 VL-3 | counterpart | `verify-lock` VK-3 | |
+| verify-ticket-lock | @168 VL-4 acquires | counterpart | `verify-lock` VK-4 | |
+| verify-ticket-lock | @213 VL-4 gives up | counterpart | `verify-lock` VK-4 | |
+| verify-ticket-lock | @246 VL-4 no nightlyStatus | port | P81 VL-4 no nightlyStatus (INFRA-81a/M60) | killed 5928928 |
+| verify-ticket-lock | @287 VL-2 | port | P81 VL-2 (INFRA-81a/M61) | killed 5928928 |
+| verify-ticket-lock | @327 VL-5 | port | P81 VL-5 (INFRA-81a/M62) | killed 5928928 |
+| verify-ticket-lock | @388 VL-6 | counterpart | `mutations/lock` LK-1 | |
+| verify-ticket-lock | @440 VL-7 | project config | guard INFRA-86/M1 on the project's packs (engine: `react/profiler/project` PF-5) | |

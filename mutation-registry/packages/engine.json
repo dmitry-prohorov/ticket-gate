@@ -2641,6 +2641,96 @@
     "testFile": "packages/engine/test/e2e-unit-cases.test.mjs",
     "testName": "P81 VE-14 "
   },
+  "INFRA-81a/M54": {
+    "kind": "patch",
+    "protects": "5 P81-S-1 the owner record has exactly its six fields",
+    "file": "packages/engine/lock.mjs",
+    "find": "startedAt: new Date(startedAtMs).toISOString(),",
+    "replace": "startedAt: new Date(startedAtMs).toISOString(),\n    extra: true,",
+    "test": "node --test --test-name-pattern='^P81 S-1 ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 S-1 "
+  },
+  "INFRA-81a/M55": {
+    "kind": "patch",
+    "protects": "5 P81-S-5 the lock path is the main checkout from a worktree",
+    "file": "packages/engine/lock.mjs",
+    "find": "join(mainCheckout(cwd), '.turbo', 'stack.lock')",
+    "replace": "join(resolve(cwd), '.turbo', 'stack.lock')",
+    "test": "node --test --test-name-pattern='^P81 S-5 ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 S-5 "
+  },
+  "INFRA-81a/M56": {
+    "kind": "patch",
+    "protects": "5 P81-S-7 an empty lock dir is held for ten seconds",
+    "file": "packages/engine/lock.mjs",
+    "find": "Date.parse(holder.startedAt) > STALE_EMPTY_MS",
+    "replace": "Date.parse(holder.startedAt) > 0",
+    "test": "node --test --test-name-pattern='^P81 S-7 ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 S-7 "
+  },
+  "INFRA-81a/M57": {
+    "kind": "patch",
+    "protects": "5 P81-S-9 a nested take must not release the outer lock",
+    "file": "packages/engine/lock.mjs",
+    "find": "holder: { ...current, nested: true },",
+    "replace": "holder: { ...current },",
+    "test": "node --test --test-name-pattern='^P81 S-9 ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 S-9 "
+  },
+  "INFRA-81a/M58": {
+    "kind": "patch",
+    "protects": "5 P81-reapStale race a re-taken lock must not be reaped",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (onDisk === null || onDisk.id !== holder.id) return false;",
+    "replace": "if (onDisk === null) return false;",
+    "test": "node --test --test-name-pattern='^P81 reapStale race ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 reapStale race "
+  },
+  "INFRA-81a/M59": {
+    "kind": "patch",
+    "protects": "5 P81-reaping guard a stale reaping guard must be cleared",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (now() - statSync(guard).mtimeMs > STALE_EMPTY_MS)",
+    "replace": "if (now() < 0)",
+    "test": "node --test --test-name-pattern='^P81 reaping guard ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 reaping guard "
+  },
+  "INFRA-81a/M60": {
+    "kind": "patch",
+    "protects": "5 P81-VL-4 no nightlyStatus the wait message names no unset nightly command",
+    "file": "packages/engine/lock.mjs",
+    "find": "${commands.nightlyStatus ? ",
+    "replace": "${true ? ",
+    "test": "node --test --test-name-pattern='^P81 VL-4 no nightlyStatus ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 VL-4 no nightlyStatus "
+  },
+  "INFRA-81a/M61": {
+    "kind": "patch",
+    "protects": "5 P81-VL-2 a held stack lock fails the preflight naming it",
+    "file": "packages/engine/run.mjs",
+    "find": "const got = lock ? lock.acquire() : { ok: true };",
+    "replace": "const got = { ok: true };",
+    "test": "node --test --test-name-pattern='^P81 VL-2 ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 VL-2 "
+  },
+  "INFRA-81a/M62": {
+    "kind": "patch",
+    "protects": "5 P81-VL-5 a killed gate leaves its lock without a handler",
+    "file": "packages/engine/lock.mjs",
+    "find": "held = got.holder;",
+    "replace": "held = got.holder;\n        process.on('SIGINT', () => process.exit(130));",
+    "test": "node --test --test-name-pattern='^P81 VL-5 ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 VL-5 "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",
