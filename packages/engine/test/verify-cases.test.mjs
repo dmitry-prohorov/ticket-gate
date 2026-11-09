@@ -440,7 +440,7 @@ test("P81 gate killed by signal a gate killed by SIGTERM takes its running step 
       "--input-type=module",
       "-e",
       `const m = await import(${JSON.stringify(runUrl)});
-       m.runInShell({ id: 'o', cmd: 'sleep 120 & echo $! > ${pidFile}; wait' }, { logDir: ${JSON.stringify(logDir)} });`,
+       m.runInShell({ id: 'o', cmd: 'sleep 120 & echo $! > ${pidFile}.tmp; mv ${pidFile}.tmp ${pidFile}; wait' }, { logDir: ${JSON.stringify(logDir)} });`,
     ],
     { cwd: p.dir, stdio: "ignore" },
   );
