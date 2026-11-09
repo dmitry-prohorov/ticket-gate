@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `@ticket-gate/engine`: the nightly record of a night with two or more suites carries `firstMs`, the first suite's own time; `move-to-ci 1` reads it (or `ms` for an older record) so a later suite does not count toward the first, and `ticket-gate nightly status` prints a `move-to-ci 1 (<name>)` line per later suite.
 - `@ticket-gate/engine`: `serve({ build, start, port, env }, { onSpawn })` (`serve.mjs`) refuses a busy port, builds, starts the server in its own process group and waits until the port answers; `portBusy(port)` is the shared refusal text, and `startWebServer(opts, onSpawn)` takes the same optional hand-over of its stop function. The served-test harness uses them; the guards are registered in `mutation-registry/`.
 - `@ticket-gate/react`: `ticket-gate profile`, the React render profiler (`profiler/`): `profile(cfg)`, `viteProfiling({ cmd, preview })` (`profile.mjs`) and `reactPack({ profile })` (`index.mjs`). Playwright is resolved from the consuming project; the guards are registered in `mutation-registry/`.
 - `@ticket-gate/supabase-next`: `profileHooks({ root, stack, apiUrl, mailUrl, email })` (`profile-hooks.mjs`) for the profiler's database reset and magic-link login, and `nextProfiling({ app })` (`profile-build.mjs`) for the build and start of a Next.js app.

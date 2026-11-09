@@ -352,3 +352,85 @@ test('SC-4 per-suite keep: traces 3 deletes only the oldest traces dir; the defa
     'an orphan root report goes',
   );
 });
+
+test('SC-5 the first suite wall ignores a long later suite and falls back to the night ms without firstMs', () => {
+  const night = (over) =>
+    line({ ranAt: iso(NOW - 24 * H), ms: 5 * H, firstMs: H, ...over });
+  const withField = moveToCi({ history: [night()], nowMs: NOW, queued: 0 });
+  assert.equal(withField.t1.maxWallMs, H);
+  assert.equal(withField.t1.met, false);
+  const legacy = moveToCi({
+    history: [night({ firstMs: undefined })],
+    nowMs: NOW,
+    queued: 0,
+  });
+  assert.equal(legacy.t1.maxWallMs, 5 * H, 'a record without firstMs uses ms');
+  assert.equal(legacy.t1.met, true);
+});
+
+test('SC-5 a real run records the first suite own duration as firstMs and keeps ms as the whole night', async () => {
+  const w = world();
+  const slow = (ms) => async () => {
+    w.clock += ms;
+    return { timedOut: false, summary: GREEN, report: {} };
+  };
+  const cfg = cfgOf([
+    suiteOf('e2e', slow(10 * 60_000)),
+    suiteOf('b', slow(3 * H)),
+  ]);
+  await runNightly(w.io, { config: cfg, mutationBudgetMs: 0 });
+  const rec = history().at(-1);
+  assert.equal(rec.firstMs, 10 * 60_000);
+  assert.equal(rec.suites.b.ms, 3 * H);
+  assert.ok(rec.ms >= 3 * H + 10 * 60_000, 'ms is the whole night');
+
+  const solo = world();
+  await runNightly(solo.io, {
+    config: cfgOf([suiteOf('e2e', ok())]),
+    mutationBudgetMs: 0,
+  });
+  assert.equal('firstMs' in history().at(-1), false, 'one suite: no firstMs');
+});
+
+test('SC-5 statusLines prints one move-to-ci 1 line per later suite with that suite numbers, none for one suite', () => {
+  const rec = line({
+    ranAt: iso(NOW - 24 * H),
+    ms: 6 * H,
+    firstMs: H,
+    suites: {
+      b: {
+        status: 'green',
+        reason: null,
+        reachedPlaywright: true,
+        stats: GREEN.stats,
+        redSpecs: [],
+        flakySpecs: [],
+        report: 'b/r.json',
+        ms: 5 * H,
+      },
+    },
+  });
+  const state = { latest: rec, history: [rec], queued: 0 };
+  const two = statusLines(
+    state,
+    NOW,
+    fakeGit([]),
+    undefined,
+    cfgOf([suiteOf('e2e', ok()), suiteOf('b', ok())]),
+  );
+  const ones = two.filter((l) => l.startsWith('move-to-ci 1'));
+  assert.equal(ones.length, 2, two.join('\n'));
+  assert.match(ones[0], /^move-to-ci 1: max wall 1\.0 h, .*\(not met;/);
+  assert.match(ones[1], /^move-to-ci 1 \(b\): max wall 5\.0 h, .*\(MET;/);
+  assert.equal(two.filter((l) => l.startsWith('move-to-ci 2')).length, 1);
+
+  const one = statusLines(
+    { latest: line(), history: [line()], queued: 0 },
+    NOW,
+    fakeGit([]),
+    undefined,
+    cfgOf([suiteOf('e2e', ok())]),
+  );
+  assert.equal(one.filter((l) => /^move-to-ci 1/.test(l)).length, 1);
+  assert.equal(one.some((l) => l.includes('move-to-ci 1 (')), false);
+});

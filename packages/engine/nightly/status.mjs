@@ -42,7 +42,7 @@ export function moveToCi({
       .map((r) => suiteView(r, suite))
       .filter(Boolean)
       .filter(REACHED)
-      .map((v) => v.ms ?? 0),
+      .map((v) => (suite === null ? (v.firstMs ?? v.ms) : v.ms) ?? 0),
   );
   const busy = new Set(
     recent.filter(busyOf).map((r) => localDay(Date.parse(r.ranAt))),
@@ -126,10 +126,16 @@ export function statusLines(
     }
   }
   const m = moveToCi({ history, nowMs, queued, e2eRuns });
-  const wall = `${(m.t1.maxWallMs / H).toFixed(1)} h`;
-  lines.push(
-    `move-to-ci 1: max wall ${wall}, busy nights ${m.t1.busyNights} of last 7 (${m.t1.met ? 'MET' : 'not met'}; move at over 4 h or 2 nights)`,
-  );
+  const t1Line = (t1, label) =>
+    `move-to-ci 1${label}: max wall ${(t1.maxWallMs / H).toFixed(1)} h, busy nights ${t1.busyNights} of last 7 (${t1.met ? 'MET' : 'not met'}; move at over 4 h or 2 nights)`;
+  lines.push(t1Line(m.t1, ''));
+  for (const suite of cfg.suites.slice(1))
+    lines.push(
+      t1Line(
+        moveToCi({ history, nowMs, queued, e2eRuns, suite: suite.name }).t1,
+        ` (${suite.name})`,
+      ),
+    );
   const share2 =
     m.t2.forcedShare === null
       ? 'n/a (no gate e2e runs in 14 days)'

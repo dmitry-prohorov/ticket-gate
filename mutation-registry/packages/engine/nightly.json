@@ -610,5 +610,35 @@
     "test": "node --test --test-name-pattern='^LD-3 ' packages/engine/test/nightly/launchd.test.mjs",
     "testFile": "packages/engine/test/nightly/launchd.test.mjs",
     "testName": "LD-3 "
+  },
+  "INFRA-87a/M101": {
+    "kind": "patch",
+    "protects": "SC-5 a later suite's move-to-ci 1 line is computed for that suite",
+    "file": "packages/engine/nightly/status.mjs",
+    "find": "moveToCi({ history, nowMs, queued, e2eRuns, suite: suite.name }).t1,",
+    "replace": "moveToCi({ history, nowMs, queued, e2eRuns }).t1,",
+    "test": "node --test --test-name-pattern='^SC-5 statusLines prints one' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-5 statusLines prints one"
+  },
+  "INFRA-87a/M102": {
+    "kind": "patch",
+    "protects": "SC-5 the first suite wall reads firstMs, not the night ms",
+    "file": "packages/engine/nightly/status.mjs",
+    "find": "(suite === null ? (v.firstMs ?? v.ms) : v.ms) ?? 0",
+    "replace": "(suite === null ? v.ms : v.ms) ?? 0",
+    "test": "node --test --test-name-pattern='^SC-5 the first suite wall' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-5 the first suite wall"
+  },
+  "INFRA-87a/M103": {
+    "kind": "patch",
+    "protects": "SC-5 a record without firstMs falls back to the night ms",
+    "file": "packages/engine/nightly/status.mjs",
+    "find": "(suite === null ? (v.firstMs ?? v.ms) : v.ms) ?? 0",
+    "replace": "(suite === null ? (v.firstMs ?? 0) : v.ms) ?? 0",
+    "test": "node --test --test-name-pattern='^SC-5 the first suite wall' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-5 the first suite wall"
   }
 }
