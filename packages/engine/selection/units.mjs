@@ -378,13 +378,13 @@ export function onDisk(selected, specNames) {
 }
 
 /**
- * The newest nightly record and every record, read through the pack's `nightly` hook
- * (`read() -> { latest, history }`). No hook, or a hook that throws, is no record.
+ * The newest nightly record and every record, read from the gate's nightly record
+ * (`{ latest, history }`). No `nightly` key, or a read that throws, is no record.
  */
 async function nightlyRecords(suite, gate) {
   try {
-    const { packHook } = await import('../pack-hooks.mjs');
-    const got = await packHook('nightly', gate)?.read?.();
+    const { nightlyRecord } = await import('../nightly/gate.mjs');
+    const got = nightlyRecord(gate ?? (await import('../project.mjs')).GATE);
     if (!got) return { nightly: null, runs: [] };
     const nightly = got.latest ? recordOf(got.latest, suite) : null;
     const runs = [
@@ -400,7 +400,7 @@ async function nightlyRecords(suite, gate) {
 /**
  * Everything the step needs to be planned and judged. Any failure of the selector is data: the
  * mode falls back to `full` with the reason, never an error. `opts` = { selection, suite, full,
- * runFrom, gate? } (`gate` replaces the project gate when looking up the nightly hook).
+ * runFrom, gate? } (`gate` replaces the project gate when reading the gate's nightly record).
  */
 export async function planE2e(
   paths,

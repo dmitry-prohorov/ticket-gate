@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "ranAt": "2026-01-15T01:00:00.000Z",
+  "endedAt": "2026-01-15T01:40:00.000Z",
+  "ms": 2400000,
+  "trigger": "scheduled",
+  "status": "amber",
+  "reason": null,
+  "reachedPlaywright": true,
+  "stats": { "expected": 118, "unexpected": 0, "flaky": 2, "skipped": 3 },
+  "redSpecs": [],
+  "flakySpecs": ["calendar.spec.ts", "chores.spec.ts"],
+  "report": "aaaaaaaaaaaa-2026-01-15.json",
+  "finalReset": "pass",
+  "mutations": null,
+  "redTests": []
+}

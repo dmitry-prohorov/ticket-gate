@@ -27,6 +27,7 @@ const USAGE = `usage: ticket-gate <command> [args]
   score --base=REF [--files= --report= --base-report=]   judge a mutation report (needs score in gate.config.mjs)
   cache-report [<session>|<path.jsonl>] [--json]   price the cache use of a Claude Code session
   docs-stale                  list the docs pages whose sources changed (needs docs in gate.config.mjs)
+  nightly run [--now] | install | status   the nightly runner (needs nightly in gate.config.mjs)
   <pack command> [args]       a command a pack adds through packCommands`;
 
 const say = (s) => console.log(s);
@@ -191,6 +192,16 @@ async function docsStale(args) {
   return result.code;
 }
 
+async function nightly(args) {
+  const { GATE } = await import('../project.mjs');
+  if (!GATE.nightly) {
+    warn('nightly: FAIL nightly is not configured: add a nightly key to gate.config.mjs');
+    return 2;
+  }
+  const { nightlyMain } = await import('../nightly/cli.mjs');
+  return nightlyMain(args, GATE.nightly);
+}
+
 /** Dispatch `argv` (without node and the script); resolves to the exit code. */
 export async function run(argv) {
   const [cmd, ...rest] = argv;
@@ -227,6 +238,7 @@ export async function run(argv) {
   if (cmd === 'ratchet') return rest[0] === '--all' ? ratchetAll(rest.slice(1)) : ratchet(rest[0], rest.slice(1));
   if (cmd === 'cache-report') return cacheReport(rest);
   if (cmd === 'docs-stale') return docsStale(rest);
+  if (cmd === 'nightly') return nightly(rest);
   // No gate.config.mjs means no pack commands: fall through to the unknown-command line.
   const { GATE, ROOT: root } = await import('../project.mjs').catch((e) => {
     // Only a missing gate.config.mjs means "no pack commands"; a missing import inside it is the user's error.

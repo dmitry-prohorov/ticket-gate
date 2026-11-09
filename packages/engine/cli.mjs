@@ -32,7 +32,7 @@ import { STEP_IDS, STEP_LIMITS, buildResults, runInShell } from './run.mjs';
 import { commandsOf } from './config.mjs';
 import { GATE } from './project.mjs';
 import { nightlyStepOf, planCtx, planSteps, selectUnits } from './plan.mjs';
-import { packHook } from './pack-hooks.mjs';
+import { nightlyLine, recordE2eRun } from './nightly/gate.mjs';
 import { registryHooks } from './mutations/gate.mjs';
 import { runPrecheck } from './precheck.mjs';
 
@@ -96,7 +96,6 @@ export async function main(args = process.argv.slice(2)) {
   const nightlyId = nightlyStep?.id;
   const e2eHook = nightlyStep?.units.nightly ?? {};
   const registryHook = registryHooks(GATE) ?? {};
-  const nightlyHook = packHook('nightly');
   const e2eFlag = e2eHook.parseFlag?.(args) ?? {};
   if (e2eFlag.error) {
     console.error(`verify:ticket: ${e2eFlag.error}`);
@@ -162,7 +161,8 @@ export async function main(args = process.argv.slice(2)) {
   // One informational line, never a gate; a read error prints and moves on.
   const printNightly = () => {
     try {
-      if (nightlyHook) console.log(`nightly: ${nightlyHook.line(Date.now())}`);
+      const line = nightlyLine(GATE, Date.now());
+      if (line !== null) console.log(`nightly: ${line}`);
     } catch (e) {
       console.log(`nightly: unavailable (${e.message})`);
     }
@@ -303,6 +303,11 @@ export async function main(args = process.argv.slice(2)) {
       );
   } catch (e) {
     console.error(`verify:ticket: step ledger not written: ${e.message}`);
+  }
+  try {
+    recordE2eRun({ gate: GATE, results, id: nightlyId, ranAt });
+  } catch (e) {
+    console.error(`verify:ticket: e2e run not recorded: ${e.message}`);
   }
   // The previous green receipt is still on disk here: seed before overwriting it.
   try {

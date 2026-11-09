@@ -34,6 +34,23 @@ const ALLOWED = {
     [P + 'NIGHTLY_MUTATION_MIN']: 1,
   },
   'packages/engine/mutations/rotation-status.mjs': { [P + 'NIGHTLY_MUTATION_MIN']: 1 },
+  // the ported nightly tests set the same handed-off names
+  'packages/engine/test/nightly/__tests__/status-helpers.mjs': {
+    [P + 'NIGHTLY_DIR']: 1,
+    [P + 'STACK_LOCK_OWNER']: 1,
+  },
+  'packages/engine/test/nightly/__tests__/world.mjs': {
+    [P + 'NIGHTLY_DIR']: 2,
+    [P + 'STACK_LOCK_OWNER']: 1,
+  },
+  'packages/engine/test/nightly/rotation-status.test.mjs': { [P + 'NIGHTLY_MUTATION_MIN']: 1 },
+  'packages/engine/test/nightly/run-mutations.test.mjs': { [P + 'STACK_LOCK_OWNER']: 4 },
+  'packages/engine/test/nightly/run.test.mjs': { [P + 'STACK_LOCK_OWNER']: 2 },
+  'packages/engine/test/nightly/seam.test.mjs': { [P + 'STACK_LOCK_OWNER']: 3 },
+  'packages/engine/test/nightly/status-fixtures.test.mjs': {
+    [P + 'NIGHTLY_DIR']: 1,
+    [P + 'STACK_LOCK_OWNER']: 1,
+  },
 };
 
 /** Every needle hit in `files` (relative to `root`) beyond what `allowed` permits for that file. */

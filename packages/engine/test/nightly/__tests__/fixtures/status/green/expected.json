@@ -1,0 +1,9 @@
+{
+  "lines": [
+    "green aaaaaaaaaaaa 2026-01-15T01:00:00.000Z 120 passed, 0 failed, 0 flaky",
+    "move-to-ci 1: max wall 0.7 h, busy nights 0 of last 7 (not met; move at over 4 h or 2 nights)",
+    "move-to-ci 2: forced-full share n/a (no gate e2e runs in 14 days), queued branches 0 (not met; move at over 25% or 3 or more)",
+    "mutations: 8 killed, 0 survived, 0 error; oldest proof 3 days; rotation 5 days (2 unproven)"
+  ],
+  "exit": 0
+}

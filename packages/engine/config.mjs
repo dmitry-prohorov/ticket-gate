@@ -7,6 +7,7 @@ import { pathToFileURL } from 'node:url';
 import { docsOf, packCommandsOf } from './commands-config.mjs';
 import { ROOT } from './root.mjs';
 import { scoreOf, validateScore } from './score-config.mjs';
+import { nightlyOf } from './nightly-config.mjs';
 import { selectionOf } from './selection-config.mjs';
 
 export const GATE_KEYS = Object.freeze([
@@ -32,6 +33,7 @@ export const GATE_KEYS = Object.freeze([
   'score',
   'selection',
   'docs',
+  'nightly',
 ]);
 
 /**
@@ -292,6 +294,7 @@ export function defineGate(config) {
     precheck,
     ...(config.docs !== undefined ? { docs: docsOf(config.docs, fail) } : {}),
     ...(config.score !== undefined ? { score: scoreOf(config.score) } : {}),
+    ...(config.nightly !== undefined ? { nightly: nightlyOf(config, fail) } : {}),
     ...(config.selection !== undefined
       ? { selection: selectionOf(config, fail) }
       : {}),

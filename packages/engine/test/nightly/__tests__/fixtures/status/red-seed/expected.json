@@ -1,0 +1,14 @@
+{
+  "lines": [
+    "red rrrrrrrrrrrr 2026-01-15T01:00:00.000Z 118 passed, 1 failed, 0 flaky reason failed specs auth.spec.ts",
+    "  red: auth.spec.ts > sign in > accepts the code [chromium]: Error: expect(received).toBe(expected)",
+    "fix seed: merges since last green gggggggggggg (suspects first)",
+    "  * m33333333333 Merge pull request #3 from fix/auth-e2e",
+    "  * m11111111111 Merge pull request #1 from chore/e2e-config",
+    "    m22222222222 Merge pull request #2 from feat/theme",
+    "  next: branch fix/nightly-<date> seeded from the lines above",
+    "move-to-ci 1: max wall 0.7 h, busy nights 0 of last 7 (not met; move at over 4 h or 2 nights)",
+    "move-to-ci 2: forced-full share n/a (no gate e2e runs in 14 days), queued branches 0 (not met; move at over 25% or 3 or more)"
+  ],
+  "exit": 1
+}

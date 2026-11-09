@@ -17,6 +17,7 @@ export const ENGINE_COMMANDS = Object.freeze([
   'score',
   'cache-report',
   'docs-stale',
+  'nightly',
 ]);
 
 const NAME = /^[a-z][a-z0-9-]*$/;

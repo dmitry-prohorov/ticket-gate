@@ -1,0 +1,29 @@
+{
+  "v": 1,
+  "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "ranAt": "2026-01-15T01:00:00.000Z",
+  "endedAt": "2026-01-15T01:40:00.000Z",
+  "ms": 2400000,
+  "trigger": "scheduled",
+  "status": "green",
+  "reason": null,
+  "reachedPlaywright": true,
+  "stats": { "expected": 120, "unexpected": 0, "flaky": 0, "skipped": 3 },
+  "redSpecs": [],
+  "flakySpecs": [],
+  "report": "aaaaaaaaaaaa-2026-01-15.json",
+  "finalReset": "pass",
+  "mutations": {
+    "status": "ran",
+    "reason": null,
+    "live": 40,
+    "ran": 8,
+    "killed": 8,
+    "survived": 0,
+    "error": 0,
+    "unproven": 2,
+    "oldestProofDays": 3,
+    "survivors": []
+  },
+  "redTests": []
+}
