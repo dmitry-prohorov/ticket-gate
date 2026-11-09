@@ -422,3 +422,47 @@ test(
     }
   },
 );
+
+// INFRA-72: the previous environment prefix is spelled in env-name.mjs and nowhere else in the
+// engine. The needle is built from parts so this file does not match itself.
+const OLD_PREFIX = new RegExp(
+  '\\b' + 'F' + 'P_|[\'"]F[\'"]\\s*\\+\\s*[\'"]P_',
+);
+
+function scanOldPrefix(gateDir) {
+  const found = [];
+  for (const file of walk(gateDir)) {
+    const rel = relative(gateDir, file).split('\\').join('/');
+    if (rel === 'env-name.mjs') continue;
+    readFileSync(file, 'utf8')
+      .split('\n')
+      .forEach((line, i) => {
+        if (!isComment(line) && OLD_PREFIX.test(line))
+          found.push(`${rel}:${i + 1}`);
+      });
+  }
+  return found;
+}
+
+test('BT-9 only env-name.mjs names the old prefix', () => {
+  assert.deepEqual(
+    scanOldPrefix(GATE_DIR),
+    [],
+    'Read an environment name through envName(env, NAME) and set it through bothNames(NAME, value) from env-name.mjs; do not spell the old prefix elsewhere.',
+  );
+});
+
+test('BT-9b a planted old-prefix read is reported', () => {
+  const whole = 'F' + 'P_E2E_JSON';
+  const t = tempEngine({
+    'plan.mjs': `\nconst a = process.env.${whole};\n`,
+    'lock.mjs': "\nconst b = process.env['F' + 'P_E2E_JSON'];\n",
+  });
+  try {
+    const hits = scanOldPrefix(t.dir);
+    assert.ok(hits.some((h) => h.startsWith('plan.mjs:')), hits.join('\n'));
+    assert.ok(hits.some((h) => h.startsWith('lock.mjs:')), hits.join('\n'));
+  } finally {
+    t.done();
+  }
+});

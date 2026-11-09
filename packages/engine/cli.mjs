@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { bothNames } from './env-name.mjs';
 import { gateLock } from './lock.mjs';
 import {
   HISTORY,
@@ -202,7 +203,7 @@ export async function main(args = process.argv.slice(2)) {
   const e2eRuns = steps.some((s) => s.id === nightlyId && s.mode === 'run');
   if (e2eRuns && e2eHook.reportPath) {
     rmSync(e2eHook.reportPath, { force: true });
-    process.env.FP_E2E_JSON = e2eHook.reportPath;
+    Object.assign(process.env, bothNames('E2E_JSON', e2eHook.reportPath));
   }
   let { results, ok, failures, stoppedBy } = buildResults(
     { steps, notSelected },

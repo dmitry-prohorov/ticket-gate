@@ -123,11 +123,25 @@ test('NM-2b the phase stops at the deadline before the budget, and a batch limit
     assert.equal(c.killSignal, 'SIGTERM');
     assert.equal(c.graceS, MUTATION_GRACE_S);
     assert.equal(c.cwd, w.wt);
-    assert.equal(c.env.FP_STACK_LOCK_OWNER, 'nightly:1:1');
+    assert.equal(c.env.TICKET_GATE_STACK_LOCK_OWNER, 'nightly:1:1');
     assert.match(
       c.line,
       /^node tools\/mutate-check\.mjs --registry --ids=A\/M\d$/,
     );
+  }
+});
+
+test('EN-5c rotation child env has the owner under both names', async () => {
+  const w = world({ entries: reg('A/M1'), mutate: everyBatch25 });
+  await runMutationPhase(
+    w.io,
+    phaseOpts(w, { budgetMs: 60 * MIN, deadlineMs: NOW + 3 * H, batch: 1 }),
+  );
+  const batches = w.calls.filter((c) => c.line.includes('mutate-check'));
+  assert.ok(batches.length > 0, 'a batch ran');
+  for (const c of batches) {
+    assert.equal(c.env.TICKET_GATE_STACK_LOCK_OWNER, 'nightly:1:1');
+    assert.equal(c.env['F' + 'P_STACK_LOCK_OWNER'], 'nightly:1:1');
   }
 });
 
@@ -247,10 +261,10 @@ test('NM-7 the phase runs after Playwright and before the main-checkout reset, o
   );
   assert.ok(pw >= 0 && mc > pw && finalReset > mc, lines.join('\n'));
   assert.equal(
-    w.calls[mc].env.FP_STACK_LOCK_OWNER,
-    w.calls[pw].env.FP_STACK_LOCK_OWNER,
+    w.calls[mc].env.TICKET_GATE_STACK_LOCK_OWNER,
+    w.calls[pw].env.TICKET_GATE_STACK_LOCK_OWNER,
   );
-  assert.match(w.calls[mc].env.FP_STACK_LOCK_OWNER, /^nightly:\d+:\d+$/);
+  assert.match(w.calls[mc].env.TICKET_GATE_STACK_LOCK_OWNER, /^nightly:\d+:\d+$/);
   assert.equal(r.mutations.status, 'ran');
   assert.equal(r.mutations.live, 2);
   assert.equal(

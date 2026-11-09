@@ -255,7 +255,7 @@
     "kind": "patch",
     "protects": "INFRA-60 5#NM-2b the nightly hands the rotation its stack lock owner, so each batch passes the lock the nightly holds",
     "file": "packages/engine/nightly/run.mjs",
-    "find": "env: { FP_STACK_LOCK_OWNER: holderId },",
+    "find": "env: bothNames('STACK_LOCK_OWNER', holderId),",
     "replace": "env: {},",
     "test": "node --test --test-name-pattern='NM-2b ' packages/engine/test/nightly/run-mutations.test.mjs",
     "testFile": "packages/engine/test/nightly/run-mutations.test.mjs",
@@ -268,6 +268,10 @@
       {
         "by": "INFRA-69",
         "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/run-mutations.test.mjs -> packages/engine/test/nightly/run-mutations.test.mjs"
+      },
+      {
+        "by": "INFRA-72",
+        "why": "read and set sites route through the env-name helper"
       }
     ]
   },
@@ -536,5 +540,55 @@
     "test": "node --test --test-name-pattern='^NX-1 ' packages/engine/test/nightly/synthetic-project.test.mjs",
     "testFile": "packages/engine/test/nightly/synthetic-project.test.mjs",
     "testName": "NX-1 "
+  },
+  "INFRA-72/M10": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-6e nightlyDir reads the old name",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": "envName(env, 'NIGHTLY_DIR')",
+    "replace": "env.TICKET_GATE_NIGHTLY_DIR",
+    "test": "node --test --test-name-pattern='^EN-6e ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-6e "
+  },
+  "INFRA-72/M11": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-6f nightlyDirOf reads the old name",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": "envName(process.env, 'NIGHTLY_DIR')",
+    "replace": "process.env.TICKET_GATE_NIGHTLY_DIR",
+    "test": "node --test --test-name-pattern='^EN-6f ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-6f "
+  },
+  "INFRA-72/M12": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-6g the rotation budget reads the old name",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "envName(env, 'NIGHTLY_MUTATION_MIN')",
+    "replace": "env.TICKET_GATE_NIGHTLY_MUTATION_MIN",
+    "test": "node --test --test-name-pattern='^EN-6g ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-6g "
+  },
+  "INFRA-72/M16": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-5c the rotation child env has the owner under both names",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "env: bothNames('STACK_LOCK_OWNER', holderId),",
+    "replace": "env: { TICKET_GATE_STACK_LOCK_OWNER: holderId },",
+    "test": "node --test --test-name-pattern='^EN-5c ' packages/engine/test/nightly/run-mutations.test.mjs",
+    "testFile": "packages/engine/test/nightly/run-mutations.test.mjs",
+    "testName": "EN-5c "
+  },
+  "INFRA-72/M17": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-5d the suite runner gets the owner under both names",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "env: bothNames('STACK_LOCK_OWNER', holder.id),",
+    "replace": "env: { TICKET_GATE_STACK_LOCK_OWNER: holder.id },",
+    "test": "node --test --test-name-pattern='^EN-5d ' packages/engine/test/nightly/run.test.mjs",
+    "testFile": "packages/engine/test/nightly/run.test.mjs",
+    "testName": "EN-5d "
   }
 }

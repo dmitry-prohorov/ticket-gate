@@ -22,6 +22,7 @@ import {
 } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { DEFAULT_COMMANDS } from './config.mjs';
+import { bothNames, envName } from './env-name.mjs';
 import { ROOT } from './root.mjs';
 
 export const OWNERS = [
@@ -46,7 +47,7 @@ export function mainCheckout(cwd = ROOT) {
 
 export function lockPath(cwd = ROOT, { env = process.env } = {}) {
   return (
-    env.FP_STACK_LOCK_PATH ?? join(mainCheckout(cwd), '.turbo', 'stack.lock')
+    envName(env, 'STACK_LOCK_PATH') ?? join(mainCheckout(cwd), '.turbo', 'stack.lock')
   );
 }
 
@@ -169,7 +170,7 @@ export function tryTake(
   if (
     current !== null &&
     current.id !== '' &&
-    env.FP_STACK_LOCK_OWNER === current.id &&
+    envName(env, 'STACK_LOCK_OWNER') === current.id &&
     alive(current.pid)
   )
     return { ok: true, holder: { ...current, nested: true }, nested: true };
@@ -213,7 +214,7 @@ export function heldByOther(
   if (holder === null) return null;
   if (holder.owner === 'unknown')
     return emptyAndOld(holder, now) ? null : holder;
-  if (env.FP_STACK_LOCK_OWNER === holder.id) return null;
+  if (envName(env, 'STACK_LOCK_OWNER') === holder.id) return null;
   return alive(holder.pid) ? holder : null;
 }
 
@@ -225,7 +226,7 @@ export function refuseIfHeld(path = lockPath(), opts) {
   const h = heldByOther(path, opts);
   if (h !== null)
     throw new Error(
-      `stack lock held: ${holderLine(h)}. Wait for it, or stop it; FP_STACK_LOCK_OWNER lets the holder's own runs pass.`,
+      `stack lock held: ${holderLine(h)}. Wait for it, or stop it; TICKET_GATE_STACK_LOCK_OWNER lets the holder's own runs pass.`,
     );
 }
 
@@ -240,7 +241,7 @@ export function takeOrExit(
     exit(1);
     return got.holder;
   }
-  process.env.FP_STACK_LOCK_OWNER = got.holder.id;
+  Object.assign(process.env, bothNames('STACK_LOCK_OWNER', got.holder.id));
   process.on('exit', () => release(path, got.holder));
   return got.holder;
 }
@@ -251,13 +252,13 @@ export function sleepSync(ms) {
 }
 
 const envS = (env, name, dflt) => {
-  const n = Number.parseInt(env[name] ?? '', 10);
+  const n = Number.parseInt(envName(env, name) ?? '', 10);
   return Number.isInteger(n) && n >= 0 ? n : dflt;
 };
 
 /**
  * The stack lock around the stack steps. `acquire` waits for any
- * holder up to FP_STACK_LOCK_WAIT_S (45 min), then fails the preflight step with
+ * holder up to TICKET_GATE_STACK_LOCK_WAIT_S (45 min), then fails the preflight step with
  * a summary naming the holder. `release` is safe to call twice.
  */
 export function gateLock({
@@ -275,15 +276,15 @@ export function gateLock({
   const dropWaiter = () => rmSync(waiter, { force: true });
   return {
     acquire() {
-      const waitS = envS(env, 'FP_STACK_LOCK_WAIT_S', WAIT_S);
-      const pollS = envS(env, 'FP_STACK_LOCK_POLL_S', POLL_S);
-      const printS = envS(env, 'FP_STACK_LOCK_PRINT_S', PRINT_S);
+      const waitS = envS(env, 'STACK_LOCK_WAIT_S', WAIT_S);
+      const pollS = envS(env, 'STACK_LOCK_POLL_S', POLL_S);
+      const printS = envS(env, 'STACK_LOCK_PRINT_S', PRINT_S);
       const take = () =>
         tryTake(path, { owner: 'verify:ticket', now, alive, env });
       const taken = (got) => {
         dropWaiter();
         held = got.holder;
-        env.FP_STACK_LOCK_OWNER = got.holder.id;
+        Object.assign(env, bothNames('STACK_LOCK_OWNER', got.holder.id));
         return { ok: true };
       };
       let got = take();

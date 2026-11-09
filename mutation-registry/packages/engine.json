@@ -1975,6 +1975,136 @@
     "testFile": "packages/engine/test/cli.test.mjs",
     "testName": "CL-N1 "
   },
+  "INFRA-72/M1": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-2 the new name wins over the old one",
+    "file": "packages/engine/env-name.mjs",
+    "find": "if (current !== undefined) return current;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EN-2 ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-2 "
+  },
+  "INFRA-72/M2": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-1 an old name alone is still read",
+    "file": "packages/engine/env-name.mjs",
+    "find": "const value = env[old];",
+    "replace": "const value = undefined;",
+    "test": "node --test --test-name-pattern='^EN-1 ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-1 "
+  },
+  "INFRA-72/M3": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-3 the deprecation line prints once per old name per process",
+    "file": "packages/engine/env-name.mjs",
+    "find": "if (!warned.has(old)) {",
+    "replace": "if (true) {",
+    "test": "node --test --test-name-pattern='^EN-3 ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-3 "
+  },
+  "INFRA-72/M4": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-4 bothNames sets the old name too",
+    "file": "packages/engine/env-name.mjs",
+    "find": "[`FP_${name}`]: value,",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EN-4 ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-4 "
+  },
+  "INFRA-72/M5": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-1 the deprecation line is printed",
+    "file": "packages/engine/env-name.mjs",
+    "find": "log(`ticket-gate: ${old} is deprecated; set TICKET_GATE_${name} (${old} is read until ${REMOVED_IN})`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EN-1 ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-1 "
+  },
+  "INFRA-72/M6": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-6a lockPath reads the old path name",
+    "file": "packages/engine/lock.mjs",
+    "find": "envName(env, 'STACK_LOCK_PATH')",
+    "replace": "env.TICKET_GATE_STACK_LOCK_PATH",
+    "test": "node --test --test-name-pattern='^EN-6a ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-6a "
+  },
+  "INFRA-72/M7": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-6b tryTake nests on the old owner name",
+    "file": "packages/engine/lock.mjs",
+    "find": "envName(env, 'STACK_LOCK_OWNER') === current.id",
+    "replace": "env.TICKET_GATE_STACK_LOCK_OWNER === current.id",
+    "test": "node --test --test-name-pattern='^EN-6b ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-6b "
+  },
+  "INFRA-72/M8": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-6c heldByOther passes the holder on the old owner name",
+    "file": "packages/engine/lock.mjs",
+    "find": "envName(env, 'STACK_LOCK_OWNER') === holder.id",
+    "replace": "env.TICKET_GATE_STACK_LOCK_OWNER === holder.id",
+    "test": "node --test --test-name-pattern='^EN-6c ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-6c "
+  },
+  "INFRA-72/M9": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-6d gateLock timings read the old names",
+    "file": "packages/engine/lock.mjs",
+    "find": "envName(env, name) ?? ''",
+    "replace": "env['TICKET_GATE_' + name] ?? ''",
+    "test": "node --test --test-name-pattern='^EN-6d ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-6d "
+  },
+  "INFRA-72/M13": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-5a takeOrExit hands a child the owner under both names",
+    "file": "packages/engine/lock.mjs",
+    "find": "Object.assign(process.env, bothNames('STACK_LOCK_OWNER', got.holder.id));",
+    "replace": "process.env.TICKET_GATE_STACK_LOCK_OWNER = got.holder.id;",
+    "test": "node --test --test-name-pattern='^EN-5a ' packages/engine/test/env-name.test.mjs",
+    "testFile": "packages/engine/test/env-name.test.mjs",
+    "testName": "EN-5a "
+  },
+  "INFRA-72/M14": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-5b gateLock hands the owner over under both names",
+    "file": "packages/engine/lock.mjs",
+    "find": "Object.assign(env, bothNames('STACK_LOCK_OWNER', got.holder.id));",
+    "replace": "env.TICKET_GATE_STACK_LOCK_OWNER = got.holder.id;",
+    "test": "node --test --test-name-pattern='^EN-5b ' packages/engine/test/verify-lock.test.mjs",
+    "testFile": "packages/engine/test/verify-lock.test.mjs",
+    "testName": "EN-5b "
+  },
+  "INFRA-72/M15": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#EN-5e the e2e step child sees the report path under both names",
+    "file": "packages/engine/cli.mjs",
+    "find": "Object.assign(process.env, bothNames('E2E_JSON', e2eHook.reportPath));",
+    "replace": "process.env.TICKET_GATE_E2E_JSON = e2eHook.reportPath;",
+    "test": "node --test --test-name-pattern='^EN-5e ' packages/engine/test/cli.test.mjs",
+    "testFile": "packages/engine/test/cli.test.mjs",
+    "testName": "EN-5e "
+  },
+  "INFRA-72/M18": {
+    "kind": "patch",
+    "protects": "INFRA-72 5#BT-9 no old-prefix literal outside env-name.mjs",
+    "file": "packages/engine/cli.mjs",
+    "find": "Object.assign(process.env, bothNames('E2E_JSON', e2eHook.reportPath));",
+    "replace": "process.env['F' + 'P_E2E_JSON'] = e2eHook.reportPath;",
+    "test": "node --test --test-name-pattern='^BT-9 ' packages/engine/test/engine-boundary.test.mjs",
+    "testFile": "packages/engine/test/engine-boundary.test.mjs",
+    "testName": "BT-9 "
+  },
   "INFRA-77a/M7": {
     "kind": "patch",
     "protects": "5 PC-2 two packs naming one command is a config error",

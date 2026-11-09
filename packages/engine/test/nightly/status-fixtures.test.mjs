@@ -55,7 +55,7 @@ test('NS-F1 status over the recorded fixtures prints BASE lines and exit codes',
     const cli = spawnSync(process.execPath, [BIN, 'nightly', 'status'], {
       cwd: PROJECT,
       encoding: 'utf8',
-      env: { ...process.env, FP_NIGHTLY_DIR: dir, FP_STACK_LOCK_OWNER: '' },
+      env: { ...process.env, TICKET_GATE_NIGHTLY_DIR: dir, TICKET_GATE_STACK_LOCK_OWNER: '' },
     });
     assert.equal(cli.status, expected.exit, `${name}: exit\n${cli.stderr}`);
   }

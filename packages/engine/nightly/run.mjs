@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { bothNames, envName } from '../env-name.mjs';
 import { realIo } from './io.mjs';
 import { install } from './launchd.mjs';
 import {
@@ -84,8 +85,16 @@ export function runMutationPhase(
     batch,
     graceS: MUTATION_GRACE_S,
     command,
-    env: { FP_STACK_LOCK_OWNER: holderId },
+    env: bothNames('STACK_LOCK_OWNER', holderId),
   });
+}
+
+/** The rotation budget in ms from NIGHTLY_MUTATION_MIN (minutes), or `dflt` when unset, empty or not a number. */
+export function envMutationBudgetMs(env, dflt) {
+  const raw = envName(env, 'NIGHTLY_MUTATION_MIN');
+  return raw !== undefined && raw !== '' && Number.isFinite(Number(raw))
+    ? Number(raw) * 60_000
+    : dflt;
 }
 
 // ---------------------------------------------------------------- the run
@@ -315,7 +324,7 @@ export async function runNightly(
           io,
           args: suite.args ?? [],
           limitS: suite.limitS,
-          env: { FP_STACK_LOCK_OWNER: holder.id },
+          env: bothNames('STACK_LOCK_OWNER', holder.id),
           out,
           dir: sdir,
         });
@@ -366,12 +375,9 @@ export async function runNightly(
     // (8b) rotate registry mutations while the stack and lock are ours
     let mutations = null;
     if (over === null) {
-      const env = process.env.FP_NIGHTLY_MUTATION_MIN;
       const budget =
         mutationBudgetMs ??
-        (env !== undefined && env !== '' && Number.isFinite(Number(env))
-          ? Number(env) * 60_000
-          : MUTATION_BUDGET_MS);
+        envMutationBudgetMs(process.env, MUTATION_BUDGET_MS);
       if (budget <= 0 || !config.rotate)
         mutations = noPhase('skipped', 'disabled');
       else if (trigger !== 'scheduled' && !force)
