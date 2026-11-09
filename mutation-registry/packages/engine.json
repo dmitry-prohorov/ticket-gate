@@ -3081,6 +3081,316 @@
     "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
     "testName": "P81 untracked then committed "
   },
+  "INFRA-81a/M120": {
+    "kind": "patch",
+    "protects": "5 P81-MC-5 export default is not stripped like a plain export",
+    "file": "packages/engine/move-proof.mjs",
+    "find": ".replace(/^export (?![{*])/, '')",
+    "replace": ".replace(/^export (?:default )?(?![{*])/, '')",
+    "test": "node --test --test-name-pattern='^P81 MC-5 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-5 "
+  },
+  "INFRA-81a/M121": {
+    "kind": "patch",
+    "protects": "5 P81-MC-6 a multi-line import gaining a name stays exempt",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "    open = true;\n    inside.add(i + 1);",
+    "replace": "    open = false;\n    inside.add(i + 1);",
+    "test": "node --test --test-name-pattern='^P81 MC-6 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-6 "
+  },
+  "INFRA-81a/M122": {
+    "kind": "patch",
+    "protects": "5 P81-MC-7 excluded paths count on neither side of the proof",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "const counted = (e) => !excludedFromSize(e.path);",
+    "replace": "const counted = () => true;",
+    "test": "node --test --test-name-pattern='^P81 MC-7 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-7 "
+  },
+  "INFRA-81a/M123": {
+    "kind": "patch",
+    "protects": "5 P81-MC-8 blank added lines are ignored by the proof",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "const keep = (e, set) => e.text.trim() !== '' && !set.has(e.line);",
+    "replace": "const keep = (e, set) => !set.has(e.line);",
+    "test": "node --test --test-name-pattern='^P81 MC-8 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-8 "
+  },
+  "INFRA-81a/M124": {
+    "kind": "patch",
+    "protects": "5 P81-MC-10 an import with a trailing comment closes on its line",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "const t = raw.trim().replace(/(['\"`;])\\s*\\/\\/.*$/, '$1');",
+    "replace": "const t = raw.trim();",
+    "test": "node --test --test-name-pattern='^P81 MC-10 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-10 "
+  },
+  "INFRA-81a/M125": {
+    "kind": "patch",
+    "protects": "5 P81-MC-10b a double slash inside a specifier is not a comment",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "const t = raw.trim().replace(/(['\"`;])\\s*\\/\\/.*$/, '$1');",
+    "replace": "const t = raw.trim().replace(/\\s*\\/\\/.*$/, '');",
+    "test": "node --test --test-name-pattern='^P81 MC-10b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-10b "
+  },
+  "INFRA-81a/M126": {
+    "kind": "patch",
+    "protects": "5 P81-MC-11 a non-JS file has no import exemption",
+    "file": "packages/engine/move-proof.mjs",
+    "find": "JS_FILE.test(path) ? importLineNumbers(text.split('\\n')) : new Set(),",
+    "replace": "importLineNumbers(text.split('\\n')),",
+    "test": "node --test --test-name-pattern='^P81 MC-11 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-11 "
+  },
+  "INFRA-81a/M127": {
+    "kind": "patch",
+    "protects": "5 P81-MC-R2 a receipt without a move proof records null",
+    "file": "packages/engine/receipt.mjs",
+    "find": "moveProof = null,",
+    "replace": "moveProof,",
+    "test": "node --test --test-name-pattern='^P81 MC-R2 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MC-R2 "
+  },
+  "INFRA-81a/M128": {
+    "kind": "patch",
+    "protects": "5 P81-L-2 a repeated frontmatter key is a parse error",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (m[1] in data) throw",
+    "replace": "if (false) throw",
+    "test": "node --test --test-name-pattern='^P81 L-2 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 L-2 "
+  },
+  "INFRA-81a/M129": {
+    "kind": "patch",
+    "protects": "5 P81-L-3 a row with a severity survives the file round trip",
+    "file": "packages/engine/fu.mjs",
+    "find": "(data.severity ? ` (${data.severity})` : '') +",
+    "replace": "'' +",
+    "test": "node --test --test-name-pattern='^P81 L-3 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 L-3 "
+  },
+  "INFRA-81a/M130": {
+    "kind": "patch",
+    "protects": "5 P81-L-5 a suffixed id maps to its dashed file id",
+    "file": "packages/engine/fu.mjs",
+    "find": "`${m[1]}-${m[2]}`",
+    "replace": "`${m[1]}_${m[2]}`",
+    "test": "node --test --test-name-pattern='^P81 L-5 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 L-5 "
+  },
+  "INFRA-81a/M131": {
+    "kind": "patch",
+    "protects": "5 P81-C-1 the default list shows open follow-ups only",
+    "file": "packages/engine/fu.mjs",
+    "find": "? p.flags['--all'] || f.data.status === 'open'",
+    "replace": "? true",
+    "test": "node --test --test-name-pattern='^P81 C-1 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 C-1 "
+  },
+  "INFRA-81a/M132": {
+    "kind": "patch",
+    "protects": "5 P81-C-2 the owner filter narrows the list",
+    "file": "packages/engine/fu.mjs",
+    "find": "(f.data.owner ?? '').toLowerCase().includes(owner)",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^P81 C-2 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 C-2 "
+  },
+  "INFRA-81a/M133": {
+    "kind": "patch",
+    "protects": "5 P81-C-3 next is one past the largest number in the folder",
+    "file": "packages/engine/fu.mjs",
+    "find": "max = Math.max(max, Number(m[1]));",
+    "replace": "max = Number(m[1]);",
+    "test": "node --test --test-name-pattern='^P81 C-3 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 C-3 "
+  },
+  "INFRA-81a/M134": {
+    "kind": "patch",
+    "protects": "5 P81-C-4 close keeps the owner of the closed follow-up",
+    "file": "packages/engine/fu.mjs",
+    "find": "owner: data.owner,\n        fixedIn,",
+    "replace": "fixedIn,",
+    "test": "node --test --test-name-pattern='^P81 C-4 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 C-4 "
+  },
+  "INFRA-81a/M135": {
+    "kind": "patch",
+    "protects": "5 P81-C-5-b close without a sha is refused and writes nothing",
+    "file": "packages/engine/fu.mjs",
+    "find": "!p.flags['--sha']",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^P81 C-5 b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 C-5 b "
+  },
+  "INFRA-81a/M136": {
+    "kind": "patch",
+    "protects": "5 P81-C-6 close writes only the closed file",
+    "file": "packages/engine/fu.mjs",
+    "find": "const path = join(dir, f.name);",
+    "replace": "const path = join(dir, `${f.name}.bak`);",
+    "test": "node --test --test-name-pattern='^P81 C-6 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 C-6 "
+  },
+  "INFRA-81a/M137": {
+    "kind": "patch",
+    "protects": "5 P81-C-7 show prints the file text verbatim",
+    "file": "packages/engine/fu.mjs",
+    "find": "out(f.text.replace(/\\n$/, ''));",
+    "replace": "out(f.body);",
+    "test": "node --test --test-name-pattern='^P81 C-7 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 C-7 "
+  },
+  "INFRA-81a/M138": {
+    "kind": "patch",
+    "protects": "5 P81-K-1-b an id that does not parse fails the check",
+    "file": "packages/engine/fu.mjs",
+    "find": "export const ID_RE = /^FU(\\d+)([a-z]?)(?: \\(([^)]+)\\))?$/;",
+    "replace": "export const ID_RE = /^FU(\\d+)([a-z]?)(?: \\(([^)]+)\\))?/;",
+    "test": "node --test --test-name-pattern='^P81 K-1 b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 K-1 b "
+  },
+  "INFRA-81a/M139": {
+    "kind": "patch",
+    "protects": "5 P81-K-2 a bare id next to a suffixed id is a duplicate",
+    "file": "packages/engine/fu.mjs",
+    "find": "(!o.suffixed || !suffixed)",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^P81 K-2 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 K-2 "
+  },
+  "INFRA-81a/M140": {
+    "kind": "patch",
+    "protects": "5 P81-K-5-b a file with no frontmatter fails the check",
+    "file": "packages/engine/fu.mjs",
+    "find": "if (!text.startsWith('---\\n')) throw new Error('no frontmatter');",
+    "replace": "if (false) throw new Error('no frontmatter');",
+    "test": "node --test --test-name-pattern='^P81 K-5 b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 K-5 b "
+  },
+  "INFRA-81a/M141": {
+    "kind": "patch",
+    "protects": "5 P81-MS-4-b test files get the test limit and others the module limit",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "(testRe.test(path) ? limits.test : limits.module)",
+    "replace": "(testRe.test(path) ? limits.module : limits.module)",
+    "test": "node --test --test-name-pattern='^P81 MS-4 b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MS-4 b "
+  },
+  "INFRA-81a/M142": {
+    "kind": "patch",
+    "protects": "5 P81-MS-5 countLines counts physical lines",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "text.split('\\n').length - (text.endsWith('\\n') ? 1 : 0)",
+    "replace": "text.split('\\n').length - 0",
+    "test": "node --test --test-name-pattern='^P81 MS-5 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MS-5 "
+  },
+  "INFRA-81a/M143": {
+    "kind": "patch",
+    "protects": "5 P81-MS-6-b files outside the roots are not measured",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "'--', ...roots]",
+    "replace": "'--']",
+    "test": "node --test --test-name-pattern='^P81 MS-6 b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MS-6 b "
+  },
+  "INFRA-81a/M144": {
+    "kind": "patch",
+    "protects": "5 P81-MS-8-b update with seed refuses a new entry over the limit on an existing baseline",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "seed: opts.seed && !hadBaseline,",
+    "replace": "seed: opts.seed,",
+    "test": "node --test --test-name-pattern='^P81 MS-8 b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MS-8 b "
+  },
+  "INFRA-81a/M145": {
+    "kind": "patch",
+    "protects": "5 P81-MS-9 an allow flag without update is a usage error",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "(opts.seed || Object.keys(opts.allow).length > 0) && !opts.update",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^P81 MS-9 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MS-9 "
+  },
+  "INFRA-81a/M146": {
+    "kind": "patch",
+    "protects": "5 P81-MS-9b a baseline without a files object gives exit 2",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "typeof baseline.files !== 'object' ||",
+    "replace": "false ||",
+    "test": "node --test --test-name-pattern='^P81 MS-9b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 MS-9b "
+  },
+  "INFRA-81a/M147": {
+    "kind": "patch",
+    "protects": "5 P81-SR-2-b CRLF frontmatter skills are read",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "const lines = text.split(/\\r?\\n/);",
+    "replace": "const lines = text.split('\\n');",
+    "test": "node --test --test-name-pattern='^P81 SR-2 b ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 SR-2 b "
+  },
+  "INFRA-81a/M148": {
+    "kind": "patch",
+    "protects": "5 P81-SR-4 a path form resolves under its own root only",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (ref.form === 'path') return isDir(join(root, ref.root, ref.name));",
+    "replace": "if (ref.form === 'path') return installed.has(ref.name);",
+    "test": "node --test --test-name-pattern='^P81 SR-4 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 SR-4 "
+  },
+  "INFRA-81a/M149": {
+    "kind": "patch",
+    "protects": "5 P81-SR-5 placeholders are not skill references",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "const NAME = '[A-Za-z0-9][A-Za-z0-9_-]*';",
+    "replace": "const NAME = '[^\\\\s.]+';",
+    "test": "node --test --test-name-pattern='^P81 SR-5 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 SR-5 "
+  },
+  "INFRA-81a/M150": {
+    "kind": "patch",
+    "protects": "5 P81-SR-7 an unknown argument is a usage error",
+    "file": "packages/engine/ratchet.mjs",
+    "find": "if (!a.startsWith('--root='))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^P81 SR-7 ' packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
+    "testName": "P81 SR-7 "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",

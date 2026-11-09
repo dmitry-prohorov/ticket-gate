@@ -278,3 +278,66 @@ and the short sha of the tree the planted fault was run on.
 | block-git-push.fail-closed | @62 BG-FC-2 a | counterpart | `push-guard-fail-closed` BG-FC-1a | |
 | block-git-push.fail-closed | @62 BG-FC-2 b | port | P81 BG-FC-2 b (INFRA-81a/M119) | killed 589db8d |
 | block-git-push.fail-closed | @79 BG-FC-3 | counterpart | `push-guard-fail-closed` BG-FC-3 | |
+| move-check | @53 MC-1 | counterpart | `move-proof` MP-1 | |
+| move-check | @58 MC-2 | counterpart | `cli` CL-10 | |
+| move-check | @80 MC-3 | counterpart | `move-proof` MP-3 | |
+| move-check | @99 MC-4 | counterpart | `move-proof` MP-4 | |
+| move-check | @107 MC-5 | port | P81 MC-5 (INFRA-81a/M120) | killed 4b9d76e |
+| move-check | @121 MC-6 | port | P81 MC-6 (INFRA-81a/M121) | killed 4b9d76e |
+| move-check | @133 MC-7 | port | P81 MC-7 (INFRA-81a/M122) | killed 4b9d76e |
+| move-check | @154 MC-8 | port | P81 MC-8 (INFRA-81a/M123) | killed 4b9d76e |
+| move-check | @164 MC-10 | port | P81 MC-10 (INFRA-81a/M124) | killed 4b9d76e |
+| move-check | @178 MC-10b | port | P81 MC-10b (INFRA-81a/M125) | killed 4b9d76e |
+| move-check | @187 MC-11 | port | P81 MC-11 (INFRA-81a/M126) | killed 4b9d76e |
+| move-check | @194 MC-9 | counterpart | `cli` CL-10 | |
+| move-check | @238 MC-R1 | counterpart | `move-proof` MP-R1 | |
+| move-check | @245 MC-R2 | port | P81 MC-R2 (INFRA-81a/M127) | killed 4b9d76e |
+| follow-ups | @69 L-1 | counterpart | `fu-register` L-1 | |
+| follow-ups | @121 L-2 | port | P81 L-2 (INFRA-81a/M128) | killed 4b9d76e |
+| follow-ups | @139 L-3 | port | P81 L-3 (INFRA-81a/M129) | killed 4b9d76e |
+| follow-ups | @166 L-4 | counterpart | `fu-register` L-4 | |
+| follow-ups | @180 L-5 | port | P81 L-5 (INFRA-81a/M130) | killed 4b9d76e |
+| follow-ups | @201 C-1 | port | P81 C-1 (INFRA-81a/M131) | killed 4b9d76e |
+| follow-ups | @232 C-2 | port | P81 C-2 (INFRA-81a/M132) | killed 4b9d76e |
+| follow-ups | @255 C-3 | port | P81 C-3 (INFRA-81a/M133) | killed 4b9d76e |
+| follow-ups | @267 C-4 | port | P81 C-4 (INFRA-81a/M134) | killed 4b9d76e |
+| follow-ups | @300 C-5 a | counterpart | `fu-register` C-5 | |
+| follow-ups | @300 C-5 b | port | P81 C-5 b (INFRA-81a/M135) | killed 4b9d76e |
+| follow-ups | @326 C-6 | port | P81 C-6 (INFRA-81a/M136) | killed 4b9d76e |
+| follow-ups | @343 C-7 | port | P81 C-7 (INFRA-81a/M137) | killed 4b9d76e |
+| check-follow-ups | @31 K-0 | project config | the project's real register | |
+| check-follow-ups | @44 clean folder | counterpart | `fu-check` K-1, K-3 controls | |
+| check-follow-ups | @51 K-1 a | counterpart | `fu-check` K-1 | |
+| check-follow-ups | @51 K-1 b | port | P81 K-1 b (INFRA-81a/M138) | killed 4b9d76e |
+| check-follow-ups | @60 K-2 | port | P81 K-2 (INFRA-81a/M139) | killed 4b9d76e |
+| check-follow-ups | @70 K-3 | counterpart | `fu-check` K-3 | |
+| check-follow-ups | @83 K-4 | counterpart | `fu-check` K-4a, K-4b | |
+| check-follow-ups | @96 K-5 a | counterpart | `fu-check` K-5 | |
+| check-follow-ups | @96 K-5 b | port | P81 K-5 b (INFRA-81a/M140) | killed 4b9d76e |
+| check-follow-ups | @105 K-6 | counterpart | `fu-check` K-6 | |
+| check-follow-ups | @112 K-7 | counterpart | `fu-check` K-7 | |
+| check-module-size | @63 MS-1 | counterpart | `module-size` MZ-1a, MZ-1b | |
+| check-module-size | @76 MS-2 | counterpart | `module-size` MZ-2 | |
+| check-module-size | @97 MS-3 | counterpart | `module-size` MZ-3 | |
+| check-module-size | @120 MS-4 a | project config | guard INFRA-40/M4 on the project's testRe and roots | |
+| check-module-size | @120 MS-4 b | port | P81 MS-4 b (INFRA-81a/M141) | killed 4b9d76e |
+| check-module-size | @142 MS-5 | port | P81 MS-5 (INFRA-81a/M142) | killed 4b9d76e |
+| check-module-size | @148 MS-6 a | counterpart | `module-size` MZ-6 | |
+| check-module-size | @148 MS-6 b | port | P81 MS-6 b (INFRA-81a/M143) | killed 4b9d76e |
+| check-module-size | @167 MS-7 | counterpart | `module-size` MZ-7 | |
+| check-module-size | @206 MS-8 a | counterpart | `module-size` MZ-8 | |
+| check-module-size | @206 MS-8 b | port | P81 MS-8 b (INFRA-81a/M144) | killed 4b9d76e |
+| check-module-size | @238 MS-9 | port | P81 MS-9 (INFRA-81a/M145) | killed 4b9d76e |
+| check-module-size | @263 MS-9b | port | P81 MS-9b (INFRA-81a/M146) | killed 4b9d76e |
+| check-module-size | @279 MS-10 | project config | the project's tree against its baseline | |
+| check-module-size | @285 MS-W | project config | package.json check chain | |
+| check-skill-refs | @44 SR-1 | counterpart | `skill-refs` SR-1 | |
+| check-skill-refs | @63 SR-2 a | counterpart | `skill-refs` SR-2 | |
+| check-skill-refs | @63 SR-2 b | port | P81 SR-2 b (INFRA-81a/M147) | killed 4b9d76e |
+| check-skill-refs | @127 SR-3 a | counterpart | `skill-refs` SR-3 | |
+| check-skill-refs | @127 SR-3 b | project config | the project's note text naming its ticket | |
+| check-skill-refs | @158 SR-4 | port | P81 SR-4 (INFRA-81a/M148) | killed 4b9d76e |
+| check-skill-refs | @174 SR-5 | port | P81 SR-5 (INFRA-81a/M149) | killed 4b9d76e |
+| check-skill-refs | @188 SR-6 | project config | the project's tree | |
+| check-skill-refs | @197 SR-7 | port | P81 SR-7 (INFRA-81a/M150) | killed 4b9d76e |
+| check-skill-refs | @204 SR-W | project config | package.json check chain | |
