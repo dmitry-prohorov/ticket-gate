@@ -459,8 +459,7 @@ export async function main(argv, config, io = realIo()) {
     return 2;
   }
   if (argv[0] === '--install') {
-    install(io, config);
-    return 0;
+    return install(io, config) ?? 0;
   }
   const r = await runNightly(io, { now: argv[0] === '--now', config });
   return r.status === 'aborted' ? 1 : 0;

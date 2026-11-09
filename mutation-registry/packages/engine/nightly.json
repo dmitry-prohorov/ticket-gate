@@ -590,5 +590,25 @@
     "test": "node --test --test-name-pattern='^EN-5d ' packages/engine/test/nightly/run.test.mjs",
     "testFile": "packages/engine/test/nightly/run.test.mjs",
     "testName": "EN-5d "
+  },
+  "INFRA-72/M19": {
+    "kind": "patch",
+    "protects": "LD-1 launchd refuses a non-macOS platform",
+    "file": "packages/engine/nightly/launchd.mjs",
+    "find": "if (platform !== 'darwin') {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^LD-1 ' packages/engine/test/nightly/launchd.test.mjs",
+    "testFile": "packages/engine/test/nightly/launchd.test.mjs",
+    "testName": "LD-1 "
+  },
+  "INFRA-72/M20": {
+    "kind": "patch",
+    "protects": "LD-3 a scheduler's returned code is the install exit code",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "return install(io, config) ?? 0;",
+    "replace": "install(io, config); return 0;",
+    "test": "node --test --test-name-pattern='^LD-3 ' packages/engine/test/nightly/launchd.test.mjs",
+    "testFile": "packages/engine/test/nightly/launchd.test.mjs",
+    "testName": "LD-3 "
   }
 }

@@ -8,11 +8,20 @@ export function renderPlist(template, { repo, node }) {
   return template.replaceAll('__REPO__', repo).replaceAll('__NODE__', node);
 }
 
-/** The launchd scheduler adapter: `install` writes the plist and prints the commands. */
-export function launchd({ label, template, wake }) {
+/**
+ * The launchd scheduler adapter (macOS only): `install` writes the plist and prints the
+ * commands, or returns exit code 2 with one line on any other platform.
+ */
+export function launchd({ label, template, wake, platform = process.platform }) {
   return {
     name: 'launchd',
     install(io, dir) {
+      if (platform !== 'darwin') {
+        console.error(
+          `nightly: FAIL the launchd scheduler needs macOS (this is ${platform}); set nightly.scheduler to another adapter, or call nightly run from your own scheduler`,
+        );
+        return 2;
+      }
       const text = readFileSync(join(ROOT, template), 'utf8');
       const plist = join(dir, `${label}.plist`);
       io.writeFile(
@@ -29,5 +38,5 @@ export function launchd({ label, template, wake }) {
 }
 
 export function install(io, cfg) {
-  cfg.scheduler.install(io, nightlyDirOf(io));
+  return cfg.scheduler.install(io, nightlyDirOf(io));
 }
