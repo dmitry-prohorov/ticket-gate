@@ -434,5 +434,225 @@
     "test": "node --test --test-name-pattern='^P81 V-2 b ' packages/engine/test/verify-cases.test.mjs",
     "testFile": "packages/engine/test/verify-cases.test.mjs",
     "testName": "P81 V-2 b "
+  },
+  "INFRA-81a/M98": {
+    "kind": "patch",
+    "protects": "5 P81-ok-false a receipt with ok false blocks the tick",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (!receipt.ok || notVerified.length) {",
+    "replace": "if (notVerified.length) {",
+    "test": "node --test --test-name-pattern='^P81 ok false ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 ok false "
+  },
+  "INFRA-81a/M99": {
+    "kind": "patch",
+    "protects": "5 P81-GT-2 an oversize waiver in section 1 approves",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": ".filter((l) => OVERSIZE_ACCEPTED.test(l))",
+    "replace": ".filter(() => false)",
+    "test": "node --test --test-name-pattern='^P81 GT-2 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GT-2 "
+  },
+  "INFRA-81a/M100": {
+    "kind": "patch",
+    "protects": "5 P81-GT-3 a waiver outside section 1 does not count",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": ".slice(start, end < 0 ? undefined : end)",
+    "replace": ".slice(0)",
+    "test": "node --test --test-name-pattern='^P81 GT-3 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GT-3 "
+  },
+  "INFRA-81a/M101": {
+    "kind": "patch",
+    "protects": "5 P81-GT-5 a receipt without the oversize field approves",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (receipt.oversize === true) {",
+    "replace": "if (receipt.oversize !== false) {",
+    "test": "node --test --test-name-pattern='^P81 GT-5 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GT-5 "
+  },
+  "INFRA-81a/M102": {
+    "kind": "patch",
+    "protects": "5 P81-GT-M1 a move-only waiver with zero unmatched approves",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "return receipt.moveProof?.unmatched === 0;",
+    "replace": "return false;",
+    "test": "node --test --test-name-pattern='^P81 GT-M1 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GT-M1 "
+  },
+  "INFRA-81a/M103": {
+    "kind": "patch",
+    "protects": "5 P81-GT-M4 a receipt with no moveProof never satisfies move-only",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "return receipt.moveProof?.unmatched === 0;",
+    "replace": "return receipt.moveProof === undefined || receipt.moveProof?.unmatched === 0;",
+    "test": "node --test --test-name-pattern='^P81 GT-M4 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GT-M4 "
+  },
+  "INFRA-81a/M104": {
+    "kind": "patch",
+    "protects": "5 P81-GT-M5 a null moveProof never satisfies move-only",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "return receipt.moveProof?.unmatched === 0;",
+    "replace": "return receipt.moveProof === null || receipt.moveProof?.unmatched === 0;",
+    "test": "node --test --test-name-pattern='^P81 GT-M5 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GT-M5 "
+  },
+  "INFRA-81a/M105": {
+    "kind": "patch",
+    "protects": "5 P81-GT-M6 a non-move-only waiver ignores the move proof",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (reasons.some((r) => MOVE_ONLY.test(r)))",
+    "replace": "if (true)",
+    "test": "node --test --test-name-pattern='^P81 GT-M6 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GT-M6 "
+  },
+  "INFRA-81a/M106": {
+    "kind": "patch",
+    "protects": "5 P81-GS-2 the stale block keeps its exact text with no history",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "Whatever changed last was never verified.",
+    "replace": "Whatever changed last was never checked.",
+    "test": "node --test --test-name-pattern='^P81 GS-2 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GS-2 "
+  },
+  "INFRA-81a/M107": {
+    "kind": "patch",
+    "protects": "5 P81-GS-4 an uncommitted tick is not settled by the history",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (commit === null) return true;",
+    "replace": "if (commit === null) return false;",
+    "test": "node --test --test-name-pattern='^P81 GS-4 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GS-4 "
+  },
+  "INFRA-81a/M108": {
+    "kind": "patch",
+    "protects": "5 P81-GS-5 only the unsettled tick is counted and listed",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const ticked = tickedHeader(unsettled);",
+    "replace": "const ticked = tickedHeader(ticks);",
+    "test": "node --test --test-name-pattern='^P81 GS-5 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GS-5 "
+  },
+  "INFRA-81a/M109": {
+    "kind": "patch",
+    "protects": "5 P81-FG-1 a closes item with a done file approves",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (status !== 'done')",
+    "replace": "if (true)",
+    "test": "node --test --test-name-pattern='^P81 FG-1 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 FG-1 "
+  },
+  "INFRA-81a/M110": {
+    "kind": "patch",
+    "protects": "5 P81-FG-6 an unparseable follow-up file blocks",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "status = parseFile(text).data.status;",
+    "replace": "status = 'done';",
+    "test": "node --test --test-name-pattern='^P81 FG-6 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 FG-6 "
+  },
+  "INFRA-81a/M111": {
+    "kind": "patch",
+    "protects": "5 P81-FG-7 a suffixed id reads its hyphenated file",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "return readFileSync(join(FU_DIR, `${fileIdOf(fu)}.md`), 'utf8');",
+    "replace": "return readFileSync(join(FU_DIR, `${fu}.md`), 'utf8');",
+    "test": "node --test --test-name-pattern='^P81 FG-7 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 FG-7 "
+  },
+  "INFRA-81a/M112": {
+    "kind": "patch",
+    "protects": "5 P81-GS-11 a blocking gate run writes nothing under the repo",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const block = (reason) => {",
+    "replace": "const block = (reason) => {\n  execSync('touch stray.txt', { cwd: ROOT });",
+    "test": "node --test --test-name-pattern='^P81 GS-11 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GS-11 "
+  },
+  "INFRA-81a/M113": {
+    "kind": "patch",
+    "protects": "5 P81-GR-4 a receipt without digests or base approves",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "of (receipt.results ?? []).filter((x) => x.status === 'reused')",
+    "replace": "of (receipt.results ?? []).filter((x) => x.status !== 'human')",
+    "test": "node --test --test-name-pattern='^P81 GR-4 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GR-4 "
+  },
+  "INFRA-81a/M114": {
+    "kind": "patch",
+    "protects": "5 P81-GR-5 a receipt without a base blocks a reused result",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "typeof receipt.base === 'string' &&\n      sameInputs(r);",
+    "replace": "sameInputs(r);",
+    "test": "node --test --test-name-pattern='^P81 GR-5 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GR-5 "
+  },
+  "INFRA-81a/M115": {
+    "kind": "patch",
+    "protects": "5 P81-GE-7 an unknown result mode blocks",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (mode !== 'full' && mode !== 'affected') {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^P81 GE-7 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 GE-7 "
+  },
+  "INFRA-81a/M116": {
+    "kind": "patch",
+    "protects": "5 P81-TG-FC-4 stop_hook_active approves with a broken config",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "if (input.stop_hook_active) approve();",
+    "replace": "if (false) approve();",
+    "test": "node --test --test-name-pattern='^P81 TG-FC-4 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 TG-FC-4 "
+  },
+  "INFRA-81a/M117": {
+    "kind": "patch",
+    "protects": "5 P81-TG-FC-5 an invalid config with a new tick exits 2",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "failClosed(err);",
+    "replace": "approve();",
+    "test": "node --test --test-name-pattern='^P81 TG-FC-5 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 TG-FC-5 "
+  },
+  "INFRA-81a/M118": {
+    "kind": "patch",
+    "protects": "5 P81-TG-FC-6 a tick in an untracked nested phase file is read",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "const dodFiles = [...files, ...untracked];",
+    "replace": "const dodFiles = [...files];",
+    "test": "node --test --test-name-pattern='^P81 TG-FC-6 ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 TG-FC-6 "
+  },
+  "INFRA-81a/M119": {
+    "kind": "patch",
+    "protects": "5 P81-BG-FC-2-b a config with protected empty denies a push",
+    "file": "packages/engine/hooks/pre-tool-use.mjs",
+    "find": "if (guard.error) return failClosedDenial(command, guard.error);",
+    "replace": "if (guard.error) return null;",
+    "test": "node --test --test-name-pattern='^P81 BG-FC-2 b ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 BG-FC-2 b "
   }
 }

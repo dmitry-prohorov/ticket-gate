@@ -221,3 +221,60 @@ and the short sha of the tree the planted fault was run on.
 | verify-failures | @405 FV-12 a | counterpart | `failures` FV-12 | |
 | verify-failures | @405 FV-12 b | port | P81 FV-12 b (INFRA-81a/M96) | killed 009a2ae |
 | verify-failures | @446 FV-13 | counterpart | `failures` FV-13 | |
+| ticket-gate | @124 untracked then committed | port | P81 untracked then committed (INFRA-81a/M97) | killed 589db8d |
+| ticket-gate | @134 untracked excluded | counterpart | `root-and-tree` DR-4 | |
+| ticket-gate | @142 byte change stale | counterpart | `stop-hook` GS-3 | |
+| ticket-gate | @152 skipped result | counterpart | `stop-hook` GR-3 (same not-verified branch) | |
+| ticket-gate | @167 ok false | port | P81 ok false (INFRA-81a/M98) | killed 589db8d |
+| ticket-gate | @177 GT-1 | counterpart | `stop-hook` GT-1 | |
+| ticket-gate | @187 GT-2 | port | P81 GT-2 (INFRA-81a/M99) | killed 589db8d |
+| ticket-gate | @198 GT-3 | port | P81 GT-3 (INFRA-81a/M100) | killed 589db8d |
+| ticket-gate | @209 GT-4 | project config | guard INFRA-10/M12 on the project's oversize regex | |
+| ticket-gate | @217 GT-5 | port | P81 GT-5 (INFRA-81a/M101) | killed 589db8d |
+| ticket-gate | @230 GT-M1 | port | P81 GT-M1 (INFRA-81a/M102) | killed 589db8d |
+| ticket-gate | @238 GT-M2 | counterpart | `stop-hook` GT-M2 | |
+| ticket-gate | @248 GT-M3 | counterpart | `stop-hook` GT-M3 | |
+| ticket-gate | @259 GT-M4 | port | P81 GT-M4 (INFRA-81a/M103) | killed 589db8d |
+| ticket-gate | @267 GT-M5 | port | P81 GT-M5 (INFRA-81a/M104) | killed 589db8d |
+| ticket-gate | @275 GT-M6 | port | P81 GT-M6 (INFRA-81a/M105) | killed 589db8d |
+| ticket-gate | @320 GS-1 | counterpart | `stop-hook` GS-1 | |
+| ticket-gate | @329 GS-2 | port | P81 GS-2 (INFRA-81a/M106) | killed 589db8d |
+| ticket-gate | @339 GS-3 | counterpart | `stop-hook` GS-3 | |
+| ticket-gate | @355 GS-4 | port | P81 GS-4 (INFRA-81a/M107) | killed 589db8d |
+| ticket-gate | @368 GS-5 | port | P81 GS-5 (INFRA-81a/M108) | killed 589db8d |
+| ticket-gate | @387 GS-6 | counterpart | `stop-hook` GS-6 | |
+| ticket-gate | @417 FG-1 | port | P81 FG-1 (INFRA-81a/M109) | killed 589db8d |
+| ticket-gate | @424 FG-2 | counterpart | `stop-hook-e2e-fu` FG-2 | |
+| ticket-gate | @434 FG-3 | counterpart | `stop-hook-e2e-fu` FG-3 | |
+| ticket-gate | @440 FG-4 | counterpart | `stop-hook-e2e-fu` FG-5 (control) | |
+| ticket-gate | @449 FG-5 | counterpart | `stop-hook-e2e-fu` FG-5 | |
+| ticket-gate | @462 FG-6 | port | P81 FG-6 (INFRA-81a/M110) | killed 589db8d |
+| ticket-gate | @468 FG-7 | port | P81 FG-7 (INFRA-81a/M111) | killed 589db8d |
+| ticket-gate | @477 GS-7 | counterpart | `stop-hook` GS-7 | |
+| ticket-gate | @495 GS-8 | counterpart | `stop-hook` GS-8 | |
+| ticket-gate | @505 GS-9 | counterpart | `stop-hook` GS-9 | |
+| ticket-gate | @514 GS-10 | counterpart | `stop-hook` GS-10 | |
+| ticket-gate | @528 GS-11 | port | P81 GS-11 (INFRA-81a/M112) | killed 589db8d |
+| ticket-gate | @590 GR-1 | counterpart | `stop-hook` GR-2 (control) | |
+| ticket-gate | @597 GR-2 | counterpart | `stop-hook` GR-2 | |
+| ticket-gate | @607 GR-3 | counterpart | `stop-hook` GR-3 | |
+| ticket-gate | @622 GR-4 | port | P81 GR-4 (INFRA-81a/M113) | killed 589db8d |
+| ticket-gate | @635 GR-5 | port | P81 GR-5 (INFRA-81a/M114) | killed 589db8d |
+| ticket-gate | @647 GR-6 | counterpart | `engine-inputs` EI-3 | |
+| ticket-gate | @716 GE-1 | counterpart | `stop-hook-e2e-fu` GE-5 (control) | |
+| ticket-gate | @724 GE-2 | counterpart | `stop-hook-e2e-fu` GE-2 | |
+| ticket-gate | @760 GE-3 | counterpart | `stop-hook-e2e-fu` GE-3 | |
+| ticket-gate | @779 GE-4 | counterpart | `stop-hook-e2e-fu` GE-4 | |
+| ticket-gate | @812 GE-5 | counterpart | `stop-hook-e2e-fu` GE-5 | |
+| ticket-gate | @830 GE-6 | counterpart | `stop-hook-e2e-fu` GE-6 | |
+| ticket-gate | @852 GE-7 | port | P81 GE-7 (INFRA-81a/M115) | killed 589db8d |
+| ticket-gate.fail-closed | @97 TG-FC-1 | counterpart | `stop-hook-fail-closed` TG-FC-1a, 1b | |
+| ticket-gate.fail-closed | @105 TG-FC-2 | counterpart | `stop-hook-fail-closed` TG-FC-2 | |
+| ticket-gate.fail-closed | @113 TG-FC-3 | counterpart | `stop-hook-fail-closed` TG-FC-3 | |
+| ticket-gate.fail-closed | @126 TG-FC-4 | port | P81 TG-FC-4 (INFRA-81a/M116) | killed 589db8d |
+| ticket-gate.fail-closed | @132 TG-FC-5 | port | P81 TG-FC-5 (INFRA-81a/M117) | killed 589db8d |
+| ticket-gate.fail-closed | @138 TG-FC-6 | port | P81 TG-FC-6 (INFRA-81a/M118) | killed 589db8d |
+| block-git-push.fail-closed | @23 BG-FC-1 | counterpart | `push-guard-fail-closed` BG-FC-1a, 1b | |
+| block-git-push.fail-closed | @62 BG-FC-2 a | counterpart | `push-guard-fail-closed` BG-FC-1a | |
+| block-git-push.fail-closed | @62 BG-FC-2 b | port | P81 BG-FC-2 b (INFRA-81a/M119) | killed 589db8d |
+| block-git-push.fail-closed | @79 BG-FC-3 | counterpart | `push-guard-fail-closed` BG-FC-3 | |

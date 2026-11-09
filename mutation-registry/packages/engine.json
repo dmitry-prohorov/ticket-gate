@@ -3071,6 +3071,16 @@
     "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
     "testName": "P81 FV-12 b "
   },
+  "INFRA-81a/M97": {
+    "kind": "patch",
+    "protects": "5 P81-untracked-then-committed a receipt stays valid once an untracked file is committed",
+    "file": "packages/engine/tree.mjs",
+    "find": "const tracked = nul(`git diff -z --name-only --no-renames ${ref}`);",
+    "replace": "const tracked = nul('git diff -z --name-only --no-renames HEAD');",
+    "test": "node --test --test-name-pattern='^P81 untracked then committed ' packages/engine/test/stop-hook-cases.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-cases.test.mjs",
+    "testName": "P81 untracked then committed "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",
