@@ -207,3 +207,17 @@ and the short sha of the tree the planted fault was run on.
 | tree-hash | @275 TH-7 | port | P81 TH-7 (INFRA-81a/M84) | killed 471f03d |
 | tree-hash | @281 TH-B1 | port | P81 TH-B1 (INFRA-81a/M85) | killed 471f03d |
 | tree-hash | @299 TH-R1 | counterpart | `tree-hash` TH-R1 | |
+| verify-failures | @193 FV-1 | port | P81 FV-1 (INFRA-81a/M86) | killed 009a2ae |
+| verify-failures | @207 FV-2 | port | P81 FV-2 (INFRA-81a/M87) | killed 009a2ae |
+| verify-failures | @222 FV-3 | port | P81 FV-3 (INFRA-81a/M88) | killed 009a2ae |
+| verify-failures | @237 FV-4 | port | P81 FV-4 (INFRA-81a/M89) | killed 009a2ae |
+| verify-failures | @255 FV-5 | port | P81 FV-5 (INFRA-81a/M90) | killed 009a2ae |
+| verify-failures | @266 FV-6 | port | P81 FV-6 (INFRA-81a/M91) | killed 009a2ae |
+| verify-failures | @277 FV-7 | port | P81 FV-7 (INFRA-81a/M92) | killed 009a2ae |
+| verify-failures | @313 FV-8 | port | P81 FV-8 (INFRA-81a/M93) | killed 009a2ae |
+| verify-failures | @330 FV-9 | port | P81 FV-9 (INFRA-81a/M94) | killed 009a2ae |
+| verify-failures | @361 FV-10 | counterpart | `failures` FV-10 | |
+| verify-failures | @400 FV-11 | port | P81 FV-11 (INFRA-81a/M95) | killed 009a2ae |
+| verify-failures | @405 FV-12 a | counterpart | `failures` FV-12 | |
+| verify-failures | @405 FV-12 b | port | P81 FV-12 b (INFRA-81a/M96) | killed 009a2ae |
+| verify-failures | @446 FV-13 | counterpart | `failures` FV-13 | |

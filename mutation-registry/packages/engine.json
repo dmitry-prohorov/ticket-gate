@@ -2961,6 +2961,116 @@
     "testFile": "packages/engine/test/digest-tree-cases.test.mjs",
     "testName": "P81 TH-B1 "
   },
+  "INFRA-81a/M86": {
+    "kind": "patch",
+    "protects": "5 P81-FV-1 cleanLines strips ANSI and the task prefix from every line",
+    "file": "packages/engine/failures.mjs",
+    "find": ".map((l) => stripLine(l).trim())",
+    "replace": ".map((l) => l.trim())",
+    "test": "node --test --test-name-pattern='^P81 FV-1 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-1 "
+  },
+  "INFRA-81a/M87": {
+    "kind": "patch",
+    "protects": "5 P81-FV-2 the vitest recogniser reports the file:line of a failing test",
+    "file": "packages/engine/failures.mjs",
+    "find": "const where = loc ? loc[1] : null;",
+    "replace": "const where = null;",
+    "test": "node --test --test-name-pattern='^P81 FV-2 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-2 "
+  },
+  "INFRA-81a/M88": {
+    "kind": "patch",
+    "protects": "5 P81-FV-3 the tsc recogniser reads the colon format as well as the paren format",
+    "file": "packages/engine/failures.mjs",
+    "find": "/^(.+?):(\\d+):(\\d+) - error (TS\\d+): (.*)$/;",
+    "replace": "/^(.+?):(\\d+):(\\d+) - errr (TS\\d+): (.*)$/;",
+    "test": "node --test --test-name-pattern='^P81 FV-3 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-3 "
+  },
+  "INFRA-81a/M89": {
+    "kind": "patch",
+    "protects": "5 P81-FV-4 the eslint recogniser pairs each rule row with its file header",
+    "file": "packages/engine/failures.mjs",
+    "find": "file = line;",
+    "replace": "file = null;",
+    "test": "node --test --test-name-pattern='^P81 FV-4 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-4 "
+  },
+  "INFRA-81a/M90": {
+    "kind": "patch",
+    "protects": "5 P81-FV-5 the playwright recogniser reports the first Error line of a failure",
+    "file": "packages/engine/failures.mjs",
+    "find": "entry('playwright', m[2], msg ? msg[1] : m[2], m[1])",
+    "replace": "entry('playwright', m[2], m[2], m[1])",
+    "test": "node --test --test-name-pattern='^P81 FV-5 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-5 "
+  },
+  "INFRA-81a/M91": {
+    "kind": "patch",
+    "protects": "5 P81-FV-6 the node:test recogniser reads the spec reporter output",
+    "file": "packages/engine/failures.mjs",
+    "find": "else if (line.startsWith('✖') && (m = SPEC_FAIL.exec(line))) {",
+    "replace": "else if (false && line.startsWith('✖') && (m = SPEC_FAIL.exec(line))) {",
+    "test": "node --test --test-name-pattern='^P81 FV-6 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-6 "
+  },
+  "INFRA-81a/M92": {
+    "kind": "patch",
+    "protects": "5 P81-FV-7 a check tool failed block is named for its own tool",
+    "file": "packages/engine/failures.mjs",
+    "find": "detail = `check:${m[1]}`;",
+    "replace": "detail = 'check';",
+    "test": "node --test --test-name-pattern='^P81 FV-7 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-7 "
+  },
+  "INFRA-81a/M93": {
+    "kind": "patch",
+    "protects": "5 P81-FV-8 the turbo recogniser keeps every Tasks line in the message",
+    "file": "packages/engine/failures.mjs",
+    "find": "found.push(entry('turbo', task, tasks.join(' | ')));",
+    "replace": "found.push(entry('turbo', task, tasks.slice(0, 1).join(' | ')));",
+    "test": "node --test --test-name-pattern='^P81 FV-8 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-8 "
+  },
+  "INFRA-81a/M94": {
+    "kind": "patch",
+    "protects": "5 P81-FV-9 the rendered summary carries the step hint line",
+    "file": "packages/engine/failures.mjs",
+    "find": "`Hint: ${f.why}`",
+    "replace": "''",
+    "test": "node --test --test-name-pattern='^P81 FV-9 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-9 "
+  },
+  "INFRA-81a/M95": {
+    "kind": "patch",
+    "protects": "5 P81-FV-11 a passing mutation line is not reported as a failure",
+    "file": "packages/engine/failures.mjs",
+    "find": "const MUTATION = /^mutation: FAIL (.+)$/;",
+    "replace": "const MUTATION = /^mutation: (.+)$/;",
+    "test": "node --test --test-name-pattern='^P81 FV-11 ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-11 "
+  },
+  "INFRA-81a/M96": {
+    "kind": "patch",
+    "protects": "5 P81-FV-12-b the summary lists the failed steps in run order",
+    "file": "packages/engine/failures.mjs",
+    "find": "for (const f of failures) {\n    const entries",
+    "replace": "for (const f of [...failures].reverse()) {\n    const entries",
+    "test": "node --test --test-name-pattern='^P81 FV-12 b ' packages/engine/test/failure-parser-cases.test.mjs",
+    "testFile": "packages/engine/test/failure-parser-cases.test.mjs",
+    "testName": "P81 FV-12 b "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",
