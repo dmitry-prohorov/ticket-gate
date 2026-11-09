@@ -27,6 +27,13 @@ const ALLOWED = {
     [P + 'STACK_LOCK_POLL_S']: 1,
     [P + 'STACK_LOCK_PRINT_S']: 1,
   },
+  // nightly variable names handed off with the export; the TICKET_GATE_* rename removes them
+  'packages/engine/nightly/record.mjs': { [P + 'NIGHTLY_DIR']: 2 },
+  'packages/engine/nightly/run.mjs': {
+    [P + 'STACK_LOCK_OWNER']: 2,
+    [P + 'NIGHTLY_MUTATION_MIN']: 1,
+  },
+  'packages/engine/mutations/rotation-status.mjs': { [P + 'NIGHTLY_MUTATION_MIN']: 1 },
 };
 
 /** Every needle hit in `files` (relative to `root`) beyond what `allowed` permits for that file. */
