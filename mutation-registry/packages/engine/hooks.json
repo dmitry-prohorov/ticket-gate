@@ -424,5 +424,15 @@
     "test": "node --test --test-name-pattern='^GE-7 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
     "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
     "testName": "GE-7 "
+  },
+  "INFRA-81a/M33": {
+    "kind": "patch",
+    "protects": "5 P81-V-2-b a ticked box with no receipt blocks at the Stop hook",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "receipt = JSON.parse(readFileSync(RECEIPT, 'utf8'));",
+    "replace": "receipt = { treeHash: treeHash(), ok: true, results: [] };",
+    "test": "node --test --test-name-pattern='^P81 V-2 b ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 V-2 b "
   }
 }

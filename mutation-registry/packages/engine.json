@@ -2191,6 +2191,416 @@
     "testFile": "packages/engine/test/pack-commands.test.mjs",
     "testName": "PC-2 "
   },
+  "INFRA-81a/M1": {
+    "kind": "patch",
+    "protects": "5 P81-VT-P3d-b the reset note names the step that ran the reset",
+    "file": "packages/engine/plan.mjs",
+    "find": "s.summary = (out) => `${base(out) ?? 'passed'}; ${reset.note.text(by)}`;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VT-P3d b ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-P3d b "
+  },
+  "INFRA-81a/M2": {
+    "kind": "patch",
+    "protects": "5 P81-skip-human-step a skipped human step keeps mode human",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (s.human) return 'human';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 --skip human step ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 --skip human step "
+  },
+  "INFRA-81a/M3": {
+    "kind": "patch",
+    "protects": "5 P81-unknown-skip an unknown skip id exits 2 before any step",
+    "file": "packages/engine/cli.mjs",
+    "find": "if (unknown.length) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^P81 unknown --skip ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 unknown --skip "
+  },
+  "INFRA-81a/M4": {
+    "kind": "patch",
+    "protects": "5 P81-dry-run-NOT-SELECTED the dry run reports a skip the diff does not select",
+    "file": "packages/engine/cli.mjs",
+    "find": "console.log(`NOT SELECTED --skip=${id} (the diff does not select it)`);",
+    "replace": "void id;",
+    "test": "node --test --test-name-pattern='^P81 dry-run NOT SELECTED ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 dry-run NOT SELECTED "
+  },
+  "INFRA-81a/M5": {
+    "kind": "patch",
+    "protects": "5 P81-VT-2 the dry run writes the review map JSON",
+    "file": "packages/engine/cli.mjs",
+    "find": "writeMap(map);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VT-2 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-2 "
+  },
+  "INFRA-81a/M6": {
+    "kind": "patch",
+    "protects": "5 P81-VT-S1 unselected ids share one Not selected line",
+    "file": "packages/engine/summary.mjs",
+    "find": "notRun.map((s) => s.id).join(', ')",
+    "replace": "notRun.map((s) => s.id).join(' ')",
+    "test": "node --test --test-name-pattern='^P81 VT-S1 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-S1 "
+  },
+  "INFRA-81a/M7": {
+    "kind": "patch",
+    "protects": "5 P81-VT-S2 the HUMAN SKIPPED and FAIL markers are upper case",
+    "file": "packages/engine/summary.mjs",
+    "find": "${r.status.toUpperCase()}",
+    "replace": "${r.status}",
+    "test": "node --test --test-name-pattern='^P81 VT-S2 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-S2 "
+  },
+  "INFRA-81a/M8": {
+    "kind": "patch",
+    "protects": "5 P81-VT-S3-summary no unselected step prints no Not selected line",
+    "file": "packages/engine/summary.mjs",
+    "find": "if (notRun.length)",
+    "replace": "if (true)",
+    "test": "node --test --test-name-pattern='^P81 VT-S3 summary ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-S3 summary "
+  },
+  "INFRA-81a/M9": {
+    "kind": "patch",
+    "protects": "5 P81-VT-S4 MACHINE paths are listed only with --review-map=full",
+    "file": "packages/engine/cli.mjs",
+    "find": "const machine = mapArg === 'full' ? 'full' : 'count';",
+    "replace": "const machine = 'count';",
+    "test": "node --test --test-name-pattern='^P81 VT-S4 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-S4 "
+  },
+  "INFRA-81a/M10": {
+    "kind": "patch",
+    "protects": "5 P81-VT-S5 an unknown --review-map value exits 2",
+    "file": "packages/engine/cli.mjs",
+    "find": "if (mapArg !== undefined && mapArg !== 'full') {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^P81 VT-S5 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-S5 "
+  },
+  "INFRA-81a/M11": {
+    "kind": "patch",
+    "protects": "5 P81-VT-F1-b a result has exactly id cmd status summary and ms",
+    "file": "packages/engine/run.mjs",
+    "find": "status: ok ? 'pass' : 'fail',",
+    "replace": "status: ok ? 'pass' : 'fail',\n        extra: 1,",
+    "test": "node --test --test-name-pattern='^P81 VT-F1 b ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-F1 b "
+  },
+  "INFRA-81a/M12": {
+    "kind": "patch",
+    "protects": "5 P81-VT-F3 the receipt size block is trimmed to lines and level",
+    "file": "packages/engine/receipt.mjs",
+    "find": "size: { lines: size.lines, level: size.level },",
+    "replace": "size,",
+    "test": "node --test --test-name-pattern='^P81 VT-F3 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-F3 "
+  },
+  "INFRA-81a/M13": {
+    "kind": "patch",
+    "protects": "5 P81-VH-5 seedHistory seeds a missing history file once",
+    "file": "packages/engine/ledger.mjs",
+    "find": "if (existsSync(historyPath)) return false;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VH-5 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VH-5 "
+  },
+  "INFRA-81a/M14": {
+    "kind": "patch",
+    "protects": "5 P81-VH-8 appendHistory keeps valid lines past a corrupt one",
+    "file": "packages/engine/ledger.mjs",
+    "find": "const kept = [...readHistory(historyPath), entry].slice(-HISTORY_MAX);",
+    "replace": "const kept = [entry];",
+    "test": "node --test --test-name-pattern='^P81 VH-8 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VH-8 "
+  },
+  "INFRA-81a/M15": {
+    "kind": "patch",
+    "protects": "5 P81-runInShell-noise runInShell returns stdout and stderr in the step output",
+    "file": "packages/engine/run.mjs",
+    "find": "bash -lc \"$1\" 2>&1 | tee -a \"$3\"",
+    "replace": "bash -lc \"$1\" | tee -a \"$3\"",
+    "test": "node --test --test-name-pattern='^P81 runInShell noise ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 runInShell noise "
+  },
+  "INFRA-81a/M16": {
+    "kind": "patch",
+    "protects": "5 P81-gate-killed-by-signal a gate killed by SIGTERM takes its running step with it",
+    "file": "packages/engine/run.mjs",
+    "find": "kill -0 \"$VERIFY_TICKET_PID\"",
+    "replace": "kill -0 \"$$\"",
+    "test": "node --test --test-name-pattern='^P81 gate killed by signal ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 gate killed by signal "
+  },
+  "INFRA-81a/M17": {
+    "kind": "patch",
+    "protects": "5 P81-VR-1 a green line on the same digest reuses the step",
+    "file": "packages/engine/run.mjs",
+    "find": "if (step.mode === 'reuse') {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^P81 VR-1 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VR-1 "
+  },
+  "INFRA-81a/M18": {
+    "kind": "patch",
+    "protects": "5 P81-VR-4-b a fully reused stack plans no reset and no preflight",
+    "file": "packages/engine/plan.mjs",
+    "find": "s.when && modeOf(s) === 'run'",
+    "replace": "s.when",
+    "test": "node --test --test-name-pattern='^P81 VR-4 b ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VR-4 b "
+  },
+  "INFRA-81a/M19": {
+    "kind": "patch",
+    "protects": "5 P81-VR-6 a skip beats a green ledger line",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (skip.has(s.id)) return 'skip';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VR-6 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VR-6 "
+  },
+  "INFRA-81a/M20": {
+    "kind": "patch",
+    "protects": "5 P81-VR-8 the dry run prints REUSE with the reused-from time",
+    "file": "packages/engine/cli.mjs",
+    "find": "const note = s.mode === 'reuse' ? `reused from ${s.reusedFrom}` : s.why;",
+    "replace": "const note = s.why;",
+    "test": "node --test --test-name-pattern='^P81 VR-8 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VR-8 "
+  },
+  "INFRA-81a/M21": {
+    "kind": "patch",
+    "protects": "5 P81-VR-9 every non-human result carries its digest",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (s.mode !== 'reuse') return { ...s, digest };",
+    "replace": "if (s.mode !== 'reuse') return s;",
+    "test": "node --test --test-name-pattern='^P81 VR-9 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VR-9 "
+  },
+  "INFRA-81a/M22": {
+    "kind": "patch",
+    "protects": "5 P81-VL-2 a corrupt ledger line is skipped",
+    "file": "packages/engine/ledger.mjs",
+    "find": "continue; // a corrupt line is skipped, never fatal",
+    "replace": "throw new Error('corrupt ledger line');",
+    "test": "node --test --test-name-pattern='^P81 VL-2 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VL-2 "
+  },
+  "INFRA-81a/M23": {
+    "kind": "patch",
+    "protects": "5 P81-VL-3-b a TIMEOUT fail is recorded in the ledger",
+    "file": "packages/engine/ledger.mjs",
+    "find": "(r.status === 'pass' || r.status === 'fail') &&",
+    "replace": "r.status === 'pass' &&",
+    "test": "node --test --test-name-pattern='^P81 VL-3 b ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VL-3 b "
+  },
+  "INFRA-81a/M24": {
+    "kind": "patch",
+    "protects": "5 P81-VL-6 a red verify appends a fail line to the ledger",
+    "file": "packages/engine/cli.mjs",
+    "find": "appendLedger(LEDGER, lines);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VL-6 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VL-6 "
+  },
+  "INFRA-81a/M25": {
+    "kind": "patch",
+    "protects": "5 P81-VT-R1-b a stack step gets ready only when stack steps follow",
+    "file": "packages/engine/plan.mjs",
+    "find": "if (s.mode === 'run' && after.length) s.ready = stack.health.ready(after);",
+    "replace": "s.ready = stack.health.ready(after);",
+    "test": "node --test --test-name-pattern='^P81 VT-R1 b ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-R1 b "
+  },
+  "INFRA-81a/M26": {
+    "kind": "patch",
+    "protects": "5 P81-VT-T1b a timed out stack step names the stack check",
+    "file": "packages/engine/run.mjs",
+    "find": "const hint = STACK_STEPS.includes(step.id)",
+    "replace": "const hint = false",
+    "test": "node --test --test-name-pattern='^P81 VT-T1b ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-T1b "
+  },
+  "INFRA-81a/M27": {
+    "kind": "patch",
+    "protects": "5 P81-VT-T5 a step ended before its limit leaves no orphan timer",
+    "file": "packages/engine/run.mjs",
+    "find": "[ -n \"$timer\" ] && kill -KILL \"$timer\" $kids 2>/dev/null",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 VT-T5 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-T5 "
+  },
+  "INFRA-81a/M28": {
+    "kind": "patch",
+    "protects": "5 P81-VT-T3-b only an overridden step carries limitS",
+    "file": "packages/engine/run.mjs",
+    "find": "...(overridden.has(step.id) ? { limitS } : {}),",
+    "replace": "limitS,",
+    "test": "node --test --test-name-pattern='^P81 VT-T3 b ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-T3 b "
+  },
+  "INFRA-81a/M29": {
+    "kind": "patch",
+    "protects": "5 P81-VT-L1 an appended step run keeps the earlier log",
+    "file": "packages/engine/run.mjs",
+    "find": "if (!step.append) writeFileSync(log, '');",
+    "replace": "writeFileSync(log, '');",
+    "test": "node --test --test-name-pattern='^P81 VT-L1 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-L1 "
+  },
+  "INFRA-81a/M30": {
+    "kind": "patch",
+    "protects": "5 P81-VT-L2 streamed output is not written twice",
+    "file": "packages/engine/run.mjs",
+    "find": "if (first.streamed !== true) process.stdout.write(first.out);",
+    "replace": "process.stdout.write(first.out);",
+    "test": "node --test --test-name-pattern='^P81 VT-L2 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-L2 "
+  },
+  "INFRA-81a/M31": {
+    "kind": "patch",
+    "protects": "5 P81-VT-D1 the summary line appends the step duration",
+    "file": "packages/engine/summary.mjs",
+    "find": "r.ms === undefined ? '' : ` ${formatMs(r.ms)}`",
+    "replace": "''",
+    "test": "node --test --test-name-pattern='^P81 VT-D1 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-D1 "
+  },
+  "INFRA-81a/M32": {
+    "kind": "patch",
+    "protects": "5 P81-V-1f a stopped stack keeps its skipped steps",
+    "file": "packages/engine/run.mjs",
+    "find": "if (step.mode === 'skip') {",
+    "replace": "if (step.mode === 'skip' && stoppedBy === null) {",
+    "test": "node --test --test-name-pattern='^P81 V-1f ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 V-1f "
+  },
+  "INFRA-81a/M34": {
+    "kind": "patch",
+    "protects": "5 P81-V-3d precheck keeps only live ticket ids",
+    "file": "packages/engine/precheck.mjs",
+    "find": ".filter((id) => known.has(id))",
+    "replace": ".filter(() => true)",
+    "test": "node --test --test-name-pattern='^P81 V-3d ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 V-3d "
+  },
+  "INFRA-81a/M36": {
+    "kind": "patch",
+    "protects": "5 P81-GC-8 defineGate returns a frozen config",
+    "file": "packages/engine/config.mjs",
+    "find": "return deepFreeze({",
+    "replace": "return ({",
+    "test": "node --test --test-name-pattern='^P81 GC-8 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 GC-8 "
+  },
+  "INFRA-81a/M37": {
+    "kind": "patch",
+    "protects": "5 P81-pick-allTasksLines allTasksLines joins every Tasks line",
+    "file": "packages/engine/config.mjs",
+    "find": "hits.length ? hits.join(' | ') : null",
+    "replace": "hits.length ? hits[0] : null",
+    "test": "node --test --test-name-pattern='^P81 pick, allTasksLines ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 pick, allTasksLines "
+  },
+  "INFRA-81a/M38": {
+    "kind": "patch",
+    "protects": "5 P81-GC-P3 a planned step carries no config-only key",
+    "file": "packages/engine/plan.mjs",
+    "find": "summary: s.summary,",
+    "replace": "summary: s.summary,\n      limitS: s.limitS,",
+    "test": "node --test --test-name-pattern='^P81 GC-P3 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 GC-P3 "
+  },
+  "INFRA-81a/M39": {
+    "kind": "patch",
+    "protects": "5 P81-INFRA-43-GC-1 reviewMap rejects a duplicate rule id",
+    "file": "packages/engine/config.mjs",
+    "find": "if (ids.has(r.id)) fail(at, `duplicate rule id \"${r.id}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 INFRA-43 GC-1 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 INFRA-43 GC-1 "
+  },
+  "INFRA-81a/M40": {
+    "kind": "patch",
+    "protects": "5 P81-INFRA-43-GC-2 dod contract must contain the id placeholder",
+    "file": "packages/engine/config.mjs",
+    "find": "|| !dod.contract.includes('{id}')",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 INFRA-43 GC-2 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 INFRA-43 GC-2 "
+  },
+  "INFRA-81a/M41": {
+    "kind": "patch",
+    "protects": "5 P81-INFRA-43-GC-3 pushGuard refuses a protected name with a metacharacter",
+    "file": "packages/engine/config.mjs",
+    "find": "typeof n !== 'string' || !BRANCH_NAME.test(n)",
+    "replace": "typeof n !== 'string'",
+    "test": "node --test --test-name-pattern='^P81 INFRA-43 GC-3 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 INFRA-43 GC-3 "
+  },
+  "INFRA-81a/M42": {
+    "kind": "patch",
+    "protects": "5 P81-INFRA-43-GC-4 stack services reject an unknown step id",
+    "file": "packages/engine/config.mjs",
+    "find": "if (!stepIds.has(id)) fail(`${at}.${id}`, `unknown step id \"${id}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^P81 INFRA-43 GC-4 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 INFRA-43 GC-4 "
+  },
+  "INFRA-81a/M43": {
+    "kind": "patch",
+    "protects": "5 P81-INFRA-43-GC-5 loadGateConfig validates a plain object again",
+    "file": "packages/engine/config.mjs",
+    "find": "return defineGate(config);",
+    "replace": "return config;",
+    "test": "node --test --test-name-pattern='^P81 INFRA-43 GC-5 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 INFRA-43 GC-5 "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",
