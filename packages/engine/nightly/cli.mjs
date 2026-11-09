@@ -19,6 +19,10 @@ export function nightlyIo(cfg) {
 /** Run one sub-command; resolves to the exit code. */
 export async function nightlyMain([sub, ...rest], cfg) {
   if (sub === 'run' && !rest.includes('--install')) return runMain(rest, cfg, nightlyIo(cfg));
+  if (sub === 'install' && rest.length === 0 && !cfg.scheduler) {
+    console.error('nightly: FAIL install needs nightly.scheduler in gate.config.mjs');
+    return 2;
+  }
   if (sub === 'install' && rest.length === 0) return runMain(['--install'], cfg, nightlyIo(cfg));
   if (sub === 'status') return statusMain(rest, cfg);
   console.error(NIGHTLY_USAGE);

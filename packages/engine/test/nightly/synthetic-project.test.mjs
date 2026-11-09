@@ -1,4 +1,4 @@
-// NX-1..NX-4: the whole nightly through `ticket-gate nightly ...` in a synthetic project: a bare
+// NX-1..NX-5: the whole nightly through `ticket-gate nightly ...` in a synthetic project: a bare
 // origin, a clone holding a gate.config.mjs whose `nightly` key comes from this checkout's engine,
 // a fake runner and a pack that gives a payload. Nothing here needs docker, a browser or a network.
 import assert from 'node:assert/strict';
@@ -195,4 +195,12 @@ test('NX-4 ticket-gate nightly install calls the configured scheduler with the n
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /^installed \S+\/\.turbo\/nightly$/m);
   assert.equal(r.stdout.trim().split('\n').at(-1).endsWith('.turbo/nightly'), true);
+});
+
+test('NX-5 nightly install without a scheduler exits 2 with the line', () => {
+  const p = project({ config: CONFIG.replace(/\n {4}scheduler:.*\n/, '\n') });
+  const r = p.nightly('install');
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /nightly: FAIL install needs nightly\.scheduler in gate\.config\.mjs/);
+  assert.doesNotMatch(r.stderr, /TypeError|\n\s+at /);
 });

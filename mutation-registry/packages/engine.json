@@ -1955,6 +1955,26 @@
     "testFile": "packages/engine/test/nightly-config.test.mjs",
     "testName": "NC-1 "
   },
+  "INFRA-69/M17": {
+    "kind": "patch",
+    "protects": "5 NC-6 loadGateConfig re-defines a frozen gate whose pack payload is already collected without a duplicate-name error",
+    "file": "packages/engine/nightly-config.mjs",
+    "find": "if (payloads.includes(p)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^NC-6 ' packages/engine/test/nightly-config.test.mjs",
+    "testFile": "packages/engine/test/nightly-config.test.mjs",
+    "testName": "NC-6 "
+  },
+  "INFRA-69/M18": {
+    "kind": "patch",
+    "protects": "5 CL-N1 verify records one e2e-runs line for the nightly step of a gate with a nightly key",
+    "file": "packages/engine/cli.mjs",
+    "find": "recordE2eRun({ gate: GATE, results, id: nightlyId, ranAt });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CL-N1 ' packages/engine/test/cli.test.mjs",
+    "testFile": "packages/engine/test/cli.test.mjs",
+    "testName": "CL-N1 "
+  },
   "INFRA-77a/M7": {
     "kind": "patch",
     "protects": "5 PC-2 two packs naming one command is a config error",

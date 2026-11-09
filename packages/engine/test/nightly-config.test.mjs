@@ -1,9 +1,11 @@
-// NC-1..NC-5: the `nightly` key of gate.config.mjs: validation, pack payloads, the gate readers.
+// NC-1..NC-6: the `nightly` key of gate.config.mjs: validation, pack payloads, the gate readers.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import { pathToFileURL } from 'node:url';
 
 import { enterScratchProject } from './scratch-project.mjs';
 
@@ -70,6 +72,12 @@ test('NC-3 a nightly the runner cannot honour fails load as gate.config: nightly
     () => gate({ ...NIGHTLY, payloads: [{ name: '' }] }),
     /gate\.config: nightly: payload from gate\.config must be an object with a string name/,
   );
+  for (const bad of [5, true, {}])
+    assert.throws(
+      () => gate({ ...NIGHTLY, payloads: bad }),
+      /^Error: gate\.config: nightly: payloads must be an array$/,
+    );
+  assert.doesNotThrow(() => gate({ ...NIGHTLY, payloads: null }));
 });
 
 test('NC-4 nightly is a known gate key and ENGINE_COMMANDS lists nightly', () => {
@@ -106,4 +114,32 @@ test('NC-5 nightlyLine and nightlyRecord read the gate\'s nightly dir only when 
   assert.equal(nightlyLine(bare, NOW), null);
   assert.equal(nightlyRecord(bare), null);
   assert.equal(nightlyLine(undefined, NOW), null);
+});
+
+test('NC-6 loadGateConfig accepts a gate whose pack gives a nightly payload', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'nc6-'));
+  const cfgUrl = pathToFileURL(join(import.meta.dirname, '..', 'config.mjs')).href;
+  writeFileSync(
+    join(dir, 'gate.config.mjs'),
+      `import { defineGate, step } from '${cfgUrl}';
+export default defineGate({
+  steps: [step({ id: 'a', when: true, cmd: 'x', reuse: false })],
+  dod: { files: ['plans/phase-*.md'], contract: 'plans/contracts/{id}.md' },
+  reviewMap: { splitHint: 'split' },
+  packs: [{ name: 'p', version: '0.0.0', nightlyPayloads: [{ name: 'from-pack', preflight: async () => ({ ok: true }) }] }],
+  nightly: { suites: [{ name: 'web', runner: { run: async () => ({}) }, limitS: 60 }], worktree: { dir: 'wt', install: ['node', '-e', '0'] } },
+});
+`,
+  );
+  try {
+    const { loadGateConfig } = await import('../config.mjs');
+    const loaded = await loadGateConfig(dir);
+    assert.deepEqual(loaded.nightly.payloads.map((p) => p.name), ['from-pack']);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+  assert.throws(
+    () => gate({ ...NIGHTLY, payloads: [payload('x'), payload('x')] }),
+    /payload "x" is given by gate\.config and gate\.config/,
+  );
 });

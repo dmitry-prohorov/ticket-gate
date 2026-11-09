@@ -16,6 +16,7 @@ export function nightlyOf(config, fail) {
   const seen = new Map();
   const add = (by, given) => {
     for (const p of [].concat(given)) {
+      if (payloads.includes(p)) continue;
       if (typeof p?.name !== 'string' || p.name === '')
         fail('nightly', `payload from ${by} must be an object with a string name`);
       if (seen.has(p.name)) fail('nightly', `payload "${p.name}" is given by ${seen.get(p.name)} and ${by}`);
@@ -23,7 +24,9 @@ export function nightlyOf(config, fail) {
       payloads.push(p);
     }
   };
-  for (const p of config.nightly.payloads ?? []) add('gate.config', p);
+  const own = config.nightly.payloads ?? [];
+  if (!Array.isArray(own)) fail('nightly', 'payloads must be an array');
+  for (const p of own) add('gate.config', p);
   for (const { by, value } of packHooksAll('nightlyPayloads', config)) add(by, value);
   try {
     return defineNightly({ ...config.nightly, payloads });
