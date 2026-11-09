@@ -127,6 +127,26 @@
       }
     ]
   },
+  "INFRA-13/M11": {
+    "kind": "patch",
+    "protects": "INFRA-85 SV-2 serve refuses a busy port before building: a stale server would be measured",
+    "file": "packages/engine/serve.mjs",
+    "find": "if (await portInUse(port)) throw new Error(portBusy(port));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SV-2 ' packages/engine/test/serve.test.mjs",
+    "testFile": "packages/engine/test/serve.test.mjs",
+    "testName": "SV-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/cli.mjs (4.7.1, D12); test moved beside it; find follows the cfg option"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "re-registered against serve(): INFRA-25a/M15 covers served().refuse only, the profiler never runs it; test -> packages/engine/test/serve.test.mjs"
+      }
+    ]
+  },
   "INFRA-16/M3": {
     "kind": "patch",
     "protects": "I1 TH-5 zero sha is uncommitted",
@@ -2170,5 +2190,35 @@
     "test": "node --test --test-name-pattern='^PC-2 ' packages/engine/test/pack-commands.test.mjs",
     "testFile": "packages/engine/test/pack-commands.test.mjs",
     "testName": "PC-2 "
+  },
+  "INFRA-85/M2": {
+    "kind": "patch",
+    "protects": "INFRA-85 SV-3 a failed build is not served",
+    "file": "packages/engine/serve.mjs",
+    "find": "if (b.code !== 0) throw new Error(`build failed (${build}): ${tail(b.out)}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SV-3 ' packages/engine/test/serve.test.mjs",
+    "testFile": "packages/engine/test/serve.test.mjs",
+    "testName": "SV-3 "
+  },
+  "INFRA-85/M3": {
+    "kind": "patch",
+    "protects": "INFRA-85 SV-4 a server that never answers rejects",
+    "file": "packages/engine/serve.mjs",
+    "find": "  if (!server.ok) {",
+    "replace": "  if (false) {",
+    "test": "node --test --test-name-pattern='^SV-4 ' packages/engine/test/serve.test.mjs",
+    "testFile": "packages/engine/test/serve.test.mjs",
+    "testName": "SV-4 "
+  },
+  "INFRA-85/M4": {
+    "kind": "patch",
+    "protects": "INFRA-85 SV-5 stop reaches the caller before the wait",
+    "file": "packages/engine/serve.mjs",
+    "find": "onSpawn?.(stop);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SV-5 ' packages/engine/test/serve.test.mjs",
+    "testFile": "packages/engine/test/serve.test.mjs",
+    "testName": "SV-5 "
   }
 }

@@ -117,6 +117,7 @@ test('INFRA-47 5-5 tarballs ship no tests', () => {
       'mutations/rotation-status.mjs',
       'checks/assertions.mjs',
       'checks/assertions-unguarded.mjs',
+      'serve.mjs',
     ],
     'supabase-next': [
       'LICENSE',
@@ -127,8 +128,21 @@ test('INFRA-47 5-5 tarballs ship no tests', () => {
       'checks/db-schema.mjs',
       'checks/stack-preflight.mjs',
       'nightly/stack-payload.mjs',
+      'profile-hooks.mjs',
+      'profile-build.mjs',
     ],
-    react: ['LICENSE', 'README.md', 'package.json', 'compiler.mjs'],
+    react: [
+      'LICENSE',
+      'README.md',
+      'package.json',
+      'compiler.mjs',
+      'index.mjs',
+      'profile.mjs',
+      'profiler/trace.mjs',
+      'profiler/stats.mjs',
+      'profiler/capture.mjs',
+      'profiler/cli.mjs',
+    ],
   };
   for (const name of PACKAGES) {
     const files = packList(name);

@@ -10,6 +10,7 @@ It provides:
 - the affected-spec selection behind `select` and `select check` (import-graph and spec-header based), enabled by the `selection` key of `defineGate`, with graph sources, rules and test runners from the `selectionGraphs`, `selectionRules` and `testRunners` pack hooks;
 - `nightlyUnits({ selection, suite, full, runFrom })` (`selection/units.mjs`), the units of a step backed by a nightly record; it reads the record the gate's `nightly` key points at (`nightlyRecord(gate)`);
 - the nightly (`ticket-gate nightly run [--now] | install | status`), enabled by the `nightly` key of `defineGate`; see Nightly below;
+- `serve({ build, start, port, env }, { onSpawn })` (`serve.mjs`): refuses a busy port, builds, starts the server and resolves with `{ stop }` once the port answers; it rejects on a busy port, a failed build or a server that never answers, and `onSpawn(stop)` runs right after the spawn;
 - the check modules in `checks/` (`surface`, `duplication`, `docs-stale`, `cache-report`, `ratchet-options`, `assertions`, `unguardedKind`), exported for a project's ratchets; `jscpd` is resolved from the consuming project;
 - pack commands: a pack's `packCommands` hook is an object of `name -> (args, { root, gate }) -> code`; `ticket-gate <name> [args]` calls it with the arguments after the name, the project root and the gate, and exits with the number it returns (0 when it returns nothing);
 - `defineGate` and `step`, the API a project's `gate.config.mjs` is written against;
