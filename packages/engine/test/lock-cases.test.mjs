@@ -381,3 +381,44 @@ test("P81 VL-5 a gate killed by SIGINT leaves a dead-pid lock; no signal handler
   assert.equal(rel.owner, "verify:ticket");
   assert.ok(Date.parse(rel.lastReleasedAt) >= killedAt - 1000);
 });
+
+// ---- round 1 review: cases the public suite did not bite on ----
+
+test("P81 VL-6 a refused mutate leaves the holder's lock and its owner.json id as they were", () => {
+  const { dir } = gateProject();
+  const path = join(dir, ".turbo", "stack.lock");
+  const holder = hold(path, "verify:ticket");
+  const before = readFileSync(join(path, "owner.json"), "utf8");
+  // the child env is PATH and HOME only, so it carries no lock variable
+  const r = bin(dir, ["mutate", "--registry", "--all"]);
+  assert.equal(r.status, 1, r.out);
+  assert.match(r.out, /stack lock held: verify:ticket running since/);
+  assert.equal(existsSync(path), true, "the holder's lock is still there");
+  assert.equal(json(join(path, "owner.json")).id, holder.id);
+  assert.equal(readFileSync(join(path, "owner.json"), "utf8"), before);
+  assert.equal(readReleased(path), null);
+});
+
+test("P81 S-3 reapStale returns false for a live holder and keeps its lock, true for a dead one and removes it", () => {
+  const live = newLock();
+  const owner = hold(live);
+  assert.equal(reapStale(live), false);
+  assert.equal(existsSync(live), true);
+  assert.equal(json(join(live, "owner.json")).id, owner.id);
+  assert.equal(readReleased(live), null);
+
+  const dead = newLock();
+  const gone = tryTake(dead, {
+    owner: "nightly",
+    cwd: "/work/holder",
+    pid: deadPid(),
+    env: {},
+  });
+  assert.equal(gone.ok, true);
+  assert.equal(reapStale(dead), true);
+  assert.equal(existsSync(dead), false);
+  assert.equal(readReleased(dead).stale, true);
+  assert.equal(readReleased(dead).pid, gone.holder.pid);
+  // nothing held: nothing to reap
+  assert.equal(reapStale(newLock()), false);
+});

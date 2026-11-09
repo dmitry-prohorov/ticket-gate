@@ -13,10 +13,10 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket | @59 VT-P3d b | port | P81 VT-P3d b (INFRA-81a/M1) | killed 1bfb27b |
 | verify-ticket | @71 --skip e2e core-only | counterpart | `engine-inputs` EI-4 | |
 | verify-ticket | @84 --skip e2e web | counterpart | `engine-inputs` EI-4 | |
-| verify-ticket | @93 receiptOk | counterpart | `step-reuse` VR-7 | |
+| verify-ticket | @93 receiptOk | port | P81 receiptOk (INFRA-81a/M152) | killed 4253dd2 |
 | verify-ticket | @100 --skip human step | port | P81 --skip human step (INFRA-81a/M2) | killed 1bfb27b |
 | verify-ticket | @105 unknown --skip | port | P81 unknown --skip (INFRA-81a/M3) | killed 1bfb27b |
-| verify-ticket | @115 dry-run reset before e2e | counterpart | `plan-steps` VT-P3a | |
+| verify-ticket | @115 dry-run reset before e2e | port | P81 VT-P3a (INFRA-81a/M153) | killed 4253dd2 |
 | verify-ticket | @124 dry-run NOT SELECTED | port | P81 dry-run NOT SELECTED (INFRA-81a/M4) | killed 1bfb27b |
 | verify-ticket | @137 VT-1 | counterpart | `verify-run` VT-1 | |
 | verify-ticket | @150 VT-2 | port | P81 VT-2 (INFRA-81a/M5) | killed 1bfb27b |
@@ -34,10 +34,10 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket | @339 VT-F2 | counterpart | `verify-run` VT-F2 | |
 | verify-ticket | @355 VT-F3 | port | P81 VT-F3 (INFRA-81a/M12) | killed 1bfb27b |
 | verify-ticket | @378 VT-F4 | counterpart | `verify-run` VT-F4 | |
-| verify-ticket | @389 VH-1 | counterpart | `verify-run` VH-2 (entry shape), VH-7 (history path) | |
+| verify-ticket | @389 VH-1 | port | P81 VH-1 (INFRA-81a/M154) | killed 4253dd2 |
 | verify-ticket | @406 VH-2 | counterpart | `verify-run` VH-2 | |
 | verify-ticket | @421 VH-3 | counterpart | `verify-run` VH-3 | |
-| verify-ticket | @427 VH-4 | counterpart | `verify-run` VH-4 | |
+| verify-ticket | @427 VH-4 | port | P81 VH-4 (INFRA-81a/M155) | killed 4253dd2 |
 | verify-ticket | @438 VH-5 | port | P81 VH-5 (INFRA-81a/M13) | killed 1bfb27b |
 | verify-ticket | @452 VH-6 | counterpart | `verify-run` VH-6 | |
 | verify-ticket | @469 VH-7 | counterpart | `verify-run` VH-7 | |
@@ -45,13 +45,13 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket | @500 runInShell noise | port | P81 runInShell noise (INFRA-81a/M15) | killed 1bfb27b |
 | verify-ticket | @508 gate killed by signal | port | P81 gate killed by signal (INFRA-81a/M16) | killed 1bfb27b |
 | verify-ticket-reuse | @49 VR-1 | port | P81 VR-1 (INFRA-81a/M17) | killed 1bfb27b |
-| verify-ticket-reuse | @79 VR-2 | counterpart | `step-reuse` VR-2a, VR-2b | |
+| verify-ticket-reuse | @79 VR-2 | port | P81 VR-2 (INFRA-81a/M156) | killed 4253dd2 |
 | verify-ticket-reuse | @141 VR-3 | project config | the project's deny lists | |
 | verify-ticket-reuse | @151 VR-4 a | project config | the project's docs deny rule | |
 | verify-ticket-reuse | @151 VR-4 b | port | P81 VR-4 b (INFRA-81a/M18) | killed 1bfb27b |
 | verify-ticket-reuse | @169 VR-5 | counterpart | `step-reuse` VR-5 | |
 | verify-ticket-reuse | @179 VR-6 | port | P81 VR-6 (INFRA-81a/M19) | killed 1bfb27b |
-| verify-ticket-reuse | @189 VR-7 | counterpart | `step-reuse` VR-7, `verify-run` VH-2 | |
+| verify-ticket-reuse | @189 VR-7 | port | P81 VR-7 (INFRA-81a/M157, INFRA-81a/M158) | killed 4253dd2 |
 | verify-ticket-reuse | @203 VR-8 | port | P81 VR-8 (INFRA-81a/M20) | killed 1bfb27b |
 | verify-ticket-reuse | @225 VR-9 | port | P81 VR-9 (INFRA-81a/M21) | killed 1bfb27b |
 | verify-ticket-reuse | @243 VL-1 | counterpart | `step-reuse` VG-1 | |
@@ -66,7 +66,7 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket-stack | @150 VT-T1 | counterpart | `verify-stack` VT-T1a, VT-T1b | |
 | verify-ticket-stack | @181 VT-T1b | port | P81 VT-T1b (INFRA-81a/M26) | killed 1bfb27b |
 | verify-ticket-stack | @199 VT-T5 | port | P81 VT-T5 (INFRA-81a/M27) | killed 1bfb27b |
-| verify-ticket-stack | @218 VT-T2 | counterpart | `verify-stack` VT-T1a (exit 124 arm) | |
+| verify-ticket-stack | @218 VT-T2 | port | P81 VT-T2 (INFRA-81a/M151) | killed 4253dd2 |
 | verify-ticket-stack | @238 VT-T3 a | project config | the project's step limits | |
 | verify-ticket-stack | @238 VT-T3 b | port | P81 VT-T3 b (INFRA-81a/M28) | killed 1bfb27b |
 | verify-ticket-stack | @271 VT-T4 | counterpart | `verify-stack` VT-T4 | |
@@ -77,9 +77,9 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket-stack | @400 V-1f | port | P81 V-1f (INFRA-81a/M32) | killed 1bfb27b |
 | verify-ticket-stack | @418 V-1b | counterpart | `verify-stack` V-1b | |
 | verify-ticket-stack | @427 V-1c | project config | the project's step list and order (engine: V-1c) | |
-| verify-ticket-stack | @456 V-1d | counterpart | `verify-stack` V-1d, `step-reuse` VG-3 | |
+| verify-ticket-stack | @456 V-1d | port | P81 V-1d (INFRA-81a/M159) | killed 4253dd2 |
 | verify-ticket-stack | @496 V-1e | counterpart | `verify-stack` V-1e | |
-| verify-ticket-stack | @508 V-2 a | counterpart | `verify-stack` V-2, V-2b | |
+| verify-ticket-stack | @508 V-2 a | port | P81 V-2 a (INFRA-81a/M160) | killed 4253dd2 |
 | verify-ticket-stack | @508 V-2 b | port | P81 V-2 b (INFRA-81a/M33) | killed 1bfb27b |
 | verify-ticket-stack | @566 V-3d | port | P81 V-3d (INFRA-81a/M34) | killed 1bfb27b |
 | verify-ticket-stack | @654 V-3a | project config | guards INFRA-30/M6, INFRA-83c/M4 | |
@@ -118,7 +118,7 @@ and the short sha of the tree the planted fault was run on.
 | gate-config | @384 INFRA-43 GC-5 | port | P81 INFRA-43 GC-5 (INFRA-81a/M43) | killed 1bfb27b |
 | gate-config | @397 INFRA-43 GC-6 | project config | the project's moved values | |
 | gate-config | @424 INFRA-47 GC-C1 | project config | the project's command names | |
-| gate-engine | @128 EI-1 | counterpart | `engine-inputs` EI-1 | |
+| gate-engine | @128 EI-1 | port | P81 EI-1 (INFRA-81a/M161) | killed 4253dd2 |
 | gate-engine | @140 EI-2 | counterpart | `engine-inputs` EI-2 | |
 | gate-engine | @166 EI-3 | counterpart | `engine-inputs` EI-3 | |
 | gate-engine | @198 EI-4 | counterpart | `engine-inputs` EI-4 | |
@@ -146,7 +146,7 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket-e2e | @688 VE-14 | port | P81 VE-14 (INFRA-81a/M53) | killed 41748cd |
 | stack-lock | @60 S-1 | port | P81 S-1 (INFRA-81a/M54) | killed 5928928 |
 | stack-lock | @93 S-2 | counterpart | `stack-lock` S-2 | |
-| stack-lock | @135 S-3 | counterpart | `stack-lock` S-3 | |
+| stack-lock | @135 S-3 | port | P81 S-3 (INFRA-81a/M163) | killed 4253dd2 |
 | stack-lock | @161 S-4 | counterpart | `stack-lock` S-4 | |
 | stack-lock | @181 S-5 | port | P81 S-5 (INFRA-81a/M55) | killed 5928928 |
 | stack-lock | @206 S-6 | counterpart | `stack-lock` S-6 | |
@@ -163,7 +163,7 @@ and the short sha of the tree the planted fault was run on.
 | verify-ticket-lock | @246 VL-4 no nightlyStatus | port | P81 VL-4 no nightlyStatus (INFRA-81a/M60) | killed 5928928 |
 | verify-ticket-lock | @287 VL-2 | port | P81 VL-2 (INFRA-81a/M61) | killed 5928928 |
 | verify-ticket-lock | @327 VL-5 | port | P81 VL-5 (INFRA-81a/M62) | killed 5928928 |
-| verify-ticket-lock | @388 VL-6 | counterpart | `mutations/lock` LK-1 | |
+| verify-ticket-lock | @388 VL-6 | port | P81 VL-6 (INFRA-81a/M162) | killed 4253dd2 |
 | verify-ticket-lock | @440 VL-7 | project config | guard INFRA-86/M1 on the project's packs (engine: `react/profiler/project` PF-5) | |
 | step-inputs | @117 SI-1 | port | P81 SI-1 (INFRA-81a/M63) | killed 471f03d |
 | step-inputs | @127 SI-2 | counterpart | `engine-inputs` EI-1 | |

@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 import {
   existsSync,
+  mkdirSync,
   mkdtempSync,
   readFileSync,
   rmSync,
@@ -69,11 +70,12 @@ const { planFor, planSteps } = await import("../plan.mjs");
 const { parseTimeouts } = await import("../cli.mjs");
 const { runPrecheck } = await import("../precheck.mjs");
 const { buildResults, runInShell } = await import("../run.mjs");
-const { buildReceipt } = await import("../receipt.mjs");
+const { buildReceipt, receiptOk } = await import("../receipt.mjs");
 const { renderSummary, formatMs } = await import("../summary.mjs");
 const {
   appendHistory,
   appendLedger,
+  historyEntry,
   ledgerLines,
   newestLedgerLine,
   readLedger,
@@ -1067,4 +1069,219 @@ test("P81 INFRA-43 GC-5 loadGateConfig rejects an invalid, a missing and a throw
   const good = await loadGateConfig(project(plain(["main", "release/v1.0"])));
   assert.equal(good.pushGuard.protected.length, 2);
   assert.ok(Object.isFrozen(good));
+});
+
+// ---- round 1 review: cases the public suite did not bite on ----
+
+test("P81 VT-T2 a step that itself exits 124 while the watchdog never fired is a plain failure, not a TIMEOUT", () => {
+  const exits124 = () => ({
+    status: 124,
+    out: "error: boom\n",
+    timedOut: false,
+  });
+  const got = quiet(() =>
+    buildResults({ steps: [runStep("check")], notSelected: [] }, exits124, {
+      limits: { check: 7 },
+    }),
+  );
+  assert.equal(got.results[0].status, "fail");
+  assert.equal(got.results[0].summary, "error: boom");
+  assert.doesNotMatch(got.results[0].summary, /TIMEOUT/);
+  assert.doesNotMatch(got.failures[0].out, /TIMEOUT/);
+  // control: the same exit code with the watchdog's flag is a TIMEOUT
+  const fired = quiet(() =>
+    buildResults(
+      { steps: [runStep("check")], notSelected: [] },
+      () => ({ status: 124, out: "", timedOut: true }),
+      { limits: { check: 7 } },
+    ),
+  );
+  assert.match(fired.results[0].summary, /^TIMEOUT after 7 s/);
+});
+
+test("P81 receiptOk an empty result list is ok, a skipped, failed or unknown status is not", () => {
+  assert.equal(receiptOk([]), true);
+  assert.equal(
+    receiptOk([{ status: "pass" }, { status: "reused" }, { status: "human" }]),
+    true,
+  );
+  assert.equal(receiptOk([{ status: "pass" }, { status: "skipped" }]), false);
+  assert.equal(receiptOk([{ status: "fail" }]), false);
+  assert.equal(receiptOk([{ status: "stopped" }]), false);
+  assert.equal(receiptOk([{ status: "weird" }]), false);
+});
+
+const STACK_DRY = `import { defineGate, step } from ${JSON.stringify(CONFIG_URL)};
+const on = (id, when, cmd) => step({ id, when, cmd, reuse: false, stack: 'st' });
+export default defineGate({
+  steps: [
+    step({ id: 'preflight', when: false, cmd: 'start-stack', reuse: false }),
+    on('seed', false, 'reset-seed'),
+    on('e2e', ['web/**'], 'run-e2e'),
+  ],
+  stacks: {
+    st: {
+      reset: { step: 'seed', before: ['e2e'], satisfiedBy: [] },
+      health: { step: 'preflight', preflight: (ids) => 'start-stack ' + ids.join(',') },
+    },
+  },
+});
+`;
+
+test("P81 VT-P3a a dry run prints the reset line immediately before the line of the step that needs it", () => {
+  const p = gateProject({ config: STACK_DRY, registry: null });
+  p.put("web/x", "x\n");
+  const r = bin(p.dir, ["verify", "--dry-run"]);
+  assert.equal(r.status, 0, r.out);
+  const rows = r.out.split("\n");
+  const at = (needle) => rows.findIndex((l) => l.includes(needle));
+  assert.ok(
+    at("start-stack") >= 0 && at("reset-seed") >= 0 && at("run-e2e") >= 0,
+    r.out,
+  );
+  assert.equal(at("run-e2e"), at("reset-seed") + 1, r.out);
+  assert.ok(at("start-stack") < at("reset-seed"), r.out);
+});
+
+test("P81 VH-1 the history line appended for a green receipt has exactly the keys treeHash and ranAt", () => {
+  const file = join(tmp("p81-vh1-"), ".turbo", "history.jsonl");
+  const receipt = greenReceipt(3, {
+    size: { lines: 4 },
+    base: "abc",
+    moveProof: null,
+    results: [{ id: "a", status: "pass", digest: "D", summary: "ok" }],
+  });
+  assert.deepEqual(historyEntry(receipt), {
+    treeHash: "hash-3",
+    ranAt: "run-3",
+  });
+  assert.equal(appendHistory(file, receipt), true);
+  const got = lines(file).map((l) => JSON.parse(l));
+  assert.equal(got.length, 1);
+  assert.deepEqual(Object.keys(got[0]).sort(), ["ranAt", "treeHash"]);
+  assert.deepEqual(got[0], { treeHash: "hash-3", ranAt: "run-3" });
+});
+
+test("P81 VH-4 an append or a seed leaves no .tmp file beside the history or the ledger", () => {
+  const dir = tmp("p81-vh4-");
+  const history = join(dir, ".turbo", "history.jsonl");
+  appendHistory(history, greenReceipt(1));
+  appendHistory(history, greenReceipt(2));
+  assert.equal(existsSync(`${history}.tmp`), false);
+  assert.equal(lines(history).length, 2);
+  const ledger = join(dir, ".turbo", "steps.jsonl");
+  appendLedger(ledger, [passLine("coverage", COVERAGE, "T1")]);
+  assert.equal(existsSync(`${ledger}.tmp`), false);
+  assert.equal(readLedger(ledger).length, 1);
+  const seeded = join(dir, ".turbo", "seeded.jsonl");
+  const receipt = join(dir, "receipt.json");
+  writeFileSync(receipt, JSON.stringify(greenReceipt(5)));
+  assert.equal(seedHistory(seeded, receipt), true);
+  assert.equal(existsSync(`${seeded}.tmp`), false);
+  assert.equal(lines(seeded).length, 1);
+});
+
+test("P81 VR-2 a pass line on another digest is not a match: the step runs, and the line on its own digest is the one reused", () => {
+  const other = passLine("coverage", COVERAGE, "T2", {
+    digest: "another-digest",
+  });
+  const only = planWith([other]);
+  assert.equal(byId(only.steps, "coverage").mode, "run");
+  assert.equal(
+    newestLedgerLine([other], {
+      id: "coverage",
+      cmd: COVERAGE,
+      digest: digestOf("coverage", COVERAGE),
+    }),
+    undefined,
+  );
+  // a newer line on another digest does not shadow the older line on this one
+  const both = planWith([passLine("coverage", COVERAGE, "T1"), other]);
+  assert.equal(byId(both.steps, "coverage").mode, "reuse");
+  assert.equal(byId(both.steps, "coverage").reusedFrom, "T1");
+});
+
+test("P81 VR-7 historyEntry accepts a reused result and returns null for an unknown status", () => {
+  const receipt = (statuses) => ({
+    ok: true,
+    treeHash: "h",
+    ranAt: "t",
+    results: statuses.map((status) => ({ id: "x", status })),
+  });
+  assert.deepEqual(historyEntry(receipt(["pass", "reused", "human"])), {
+    treeHash: "h",
+    ranAt: "t",
+  });
+  assert.equal(historyEntry(receipt(["pass", "weird"])), null);
+  assert.equal(historyEntry(receipt(["pass", "stopped"])), null);
+  assert.equal(historyEntry(receipt(["fail"])), null);
+});
+
+const STOPPED = `import { defineGate, step } from ${JSON.stringify(CONFIG_URL)};
+const on = (id, when, cmd) =>
+  step({ id, when, cmd, reuse: { deny: [] }, stack: 'st' });
+export default defineGate({
+  steps: [
+    step({ id: 'a', when: true, cmd: 'echo red-a >&2; exit 1', reuse: { deny: [] } }),
+    step({ id: 'preflight', when: false, cmd: 'echo start-stack', reuse: { deny: [] } }),
+    on('seed', false, 'echo reset-seed'),
+    on('integ', ['web/**'], 'echo run-integ'),
+  ],
+  stacks: {
+    st: {
+      reset: { step: 'seed', before: ['integ'], satisfiedBy: [] },
+      health: { step: 'preflight', preflight: (ids) => 'echo start-stack ' + ids.join(',') },
+    },
+  },
+  stopOnRedBefore: 'integ',
+});
+`;
+
+test("P81 V-1d the steps a red run stopped are not written to the step ledger", () => {
+  const p = gateProject({ config: STOPPED, registry: null });
+  p.put("web/x", "x\n");
+  const r = bin(p.dir, ["verify"]);
+  assert.equal(r.status, 1, r.out);
+  const receipt = JSON.parse(
+    readFileSync(join(p.dir, ".turbo", "ticket-verify.json"), "utf8"),
+  );
+  const status = (id) => receipt.results.find((x) => x.id === id)?.status;
+  assert.equal(status("a"), "fail", r.out);
+  assert.equal(status("integ"), "stopped", r.out);
+  const got = readLedger(join(p.dir, ".turbo", "ticket-verify-steps.jsonl"));
+  assert.deepEqual(
+    got.map((l) => [l.id, l.status]),
+    [["a", "fail"]],
+  );
+});
+
+test("P81 V-2 a --precheck leaves an existing failures file as it was", () => {
+  const p = spawnProject();
+  p.put("src/new.txt", "x\n");
+  const failures = join(p.dir, ".turbo", "ticket-verify-failures.md");
+  mkdirSync(join(p.dir, ".turbo"), { recursive: true });
+  writeFileSync(failures, "# earlier failure summary\nkeep me\n");
+  const r = bin(p.dir, ["verify", "--precheck"]);
+  assert.equal(r.status, 0, r.out);
+  assert.equal(
+    readFileSync(failures, "utf8"),
+    "# earlier failure summary\nkeep me\n",
+  );
+});
+
+test("P81 EI-1 a real second run reuses the step whose inputs did not change and runs the step that never reuses", () => {
+  const p = spawnProject();
+  p.put("web/x", "x\n");
+  const results = () =>
+    Object.fromEntries(
+      JSON.parse(
+        readFileSync(join(p.dir, ".turbo", "ticket-verify.json"), "utf8"),
+      ).results.map((x) => [x.id, x.status]),
+    );
+  const first = bin(p.dir, ["verify"]);
+  assert.equal(first.status, 0, first.out);
+  assert.deepEqual(results(), { a: "pass", web: "pass" });
+  const second = bin(p.dir, ["verify"]);
+  assert.equal(second.status, 0, second.out);
+  assert.deepEqual(results(), { a: "reused", web: "pass" });
 });

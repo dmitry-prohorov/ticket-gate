@@ -3391,6 +3391,136 @@
     "testFile": "packages/engine/test/move-fu-ratchet-cases.test.mjs",
     "testName": "P81 SR-7 "
   },
+  "INFRA-81a/M151": {
+    "kind": "patch",
+    "protects": "5 P81-VT-T2 a step exiting 124 is a plain failure not a timeout",
+    "file": "packages/engine/run.mjs",
+    "find": "let timedOut = first.timedOut === true;",
+    "replace": "let timedOut = first.timedOut === true || first.status === 124;",
+    "test": "node --test --test-name-pattern='^P81 VT-T2 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-T2 "
+  },
+  "INFRA-81a/M152": {
+    "kind": "patch",
+    "protects": "5 P81-receiptOk an empty result list is ok",
+    "file": "packages/engine/receipt.mjs",
+    "find": "return results.every((r) => VERIFIED_STATUSES.includes(r.status));",
+    "replace": "if (results.length === 0) return false;\n  return results.every((r) => VERIFIED_STATUSES.includes(r.status));",
+    "test": "node --test --test-name-pattern='^P81 receiptOk ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 receiptOk "
+  },
+  "INFRA-81a/M153": {
+    "kind": "patch",
+    "protects": "5 P81-VT-P3a the dry run prints the reset line before the step that needs it",
+    "file": "packages/engine/cli.mjs",
+    "find": "for (const s of steps) {\n      const mode =",
+    "replace": "for (const s of [...steps].reverse()) {\n      const mode =",
+    "test": "node --test --test-name-pattern='^P81 VT-P3a ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VT-P3a "
+  },
+  "INFRA-81a/M154": {
+    "kind": "patch",
+    "protects": "5 P81-VH-1 the history line has exactly treeHash and ranAt",
+    "file": "packages/engine/ledger.mjs",
+    "find": "return { treeHash: receipt.treeHash, ranAt: receipt.ranAt };",
+    "replace": "return receipt;",
+    "test": "node --test --test-name-pattern='^P81 VH-1 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VH-1 "
+  },
+  "INFRA-81a/M155": {
+    "kind": "patch",
+    "protects": "5 P81-VH-4 an append leaves no tmp file behind",
+    "file": "packages/engine/ledger.mjs",
+    "find": "renameSync(`${path}.tmp`, path);",
+    "replace": "writeFileSync(path, readFileSync(`${path}.tmp`));",
+    "test": "node --test --test-name-pattern='^P81 VH-4 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VH-4 "
+  },
+  "INFRA-81a/M156": {
+    "kind": "patch",
+    "protects": "5 P81-VR-2 a pass line on another digest is not a match",
+    "file": "packages/engine/ledger.mjs",
+    "find": "(l) => l.id === id && l.cmd === cmd && l.digest === digest,",
+    "replace": "(l) => l.id === id && l.cmd === cmd,",
+    "test": "node --test --test-name-pattern='^P81 VR-2 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VR-2 "
+  },
+  "INFRA-81a/M157": {
+    "kind": "patch",
+    "protects": "5 P81-VR-7 historyEntry accepts a reused result",
+    "file": "packages/engine/ledger.mjs",
+    "find": "every((r) => VERIFIED_STATUSES.includes(r.status))) return null;",
+    "replace": "every((r) => VERIFIED_STATUSES.includes(r.status) && r.status !== 'reused')) return null;",
+    "test": "node --test --test-name-pattern='^P81 VR-7 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VR-7 "
+  },
+  "INFRA-81a/M158": {
+    "kind": "patch",
+    "protects": "5 P81-VR-7 historyEntry returns null for an unknown status",
+    "file": "packages/engine/ledger.mjs",
+    "find": "every((r) => VERIFIED_STATUSES.includes(r.status))) return null;",
+    "replace": "every((r) => r.status !== 'fail' && r.status !== 'skipped')) return null;",
+    "test": "node --test --test-name-pattern='^P81 VR-7 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 VR-7 "
+  },
+  "INFRA-81a/M159": {
+    "kind": "patch",
+    "protects": "5 P81-V-1d stopped steps are not written to the step ledger",
+    "file": "packages/engine/cli.mjs",
+    "find": "const lines = ledgerLines(results, {",
+    "replace": "const lines = ledgerLines(results.map((r) => (r.status === 'stopped' ? { ...r, status: 'fail' } : r)), {",
+    "test": "node --test --test-name-pattern='^P81 V-1d ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 V-1d "
+  },
+  "INFRA-81a/M160": {
+    "kind": "patch",
+    "protects": "5 P81-V-2-a precheck leaves the failures file content unchanged",
+    "file": "packages/engine/cli.mjs",
+    "find": "if (args.includes('--precheck')) process.exit(await runPrecheck({ base: baseSha }));",
+    "replace": "if (args.includes('--precheck')) { writeFileSync(FAILURES, ''); process.exit(await runPrecheck({ base: baseSha })); }",
+    "test": "node --test --test-name-pattern='^P81 V-2 a ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 V-2 a "
+  },
+  "INFRA-81a/M161": {
+    "kind": "patch",
+    "protects": "5 P81-EI-1 a real second run reuses an unchanged step",
+    "file": "packages/engine/cli.mjs",
+    "find": "ledger: readLedger(),",
+    "replace": "ledger: dryRun ? readLedger() : [],",
+    "test": "node --test --test-name-pattern='^P81 EI-1 ' packages/engine/test/verify-cases.test.mjs",
+    "testFile": "packages/engine/test/verify-cases.test.mjs",
+    "testName": "P81 EI-1 "
+  },
+  "INFRA-81a/M162": {
+    "kind": "patch",
+    "protects": "5 P81-VL-6 a refused mutate leaves the holder lock unchanged",
+    "file": "packages/engine/lock.mjs",
+    "find": "exit(1);\n    return got.holder;",
+    "replace": "rmSync(path, { recursive: true, force: true });\n    exit(1);\n    return got.holder;",
+    "test": "node --test --test-name-pattern='^P81 VL-6 ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 VL-6 "
+  },
+  "INFRA-81a/M163": {
+    "kind": "patch",
+    "protects": "5 P81-S-3 reapStale returns false for a live holder",
+    "file": "packages/engine/lock.mjs",
+    "find": "if (holder === null || alive(holder.pid)) return false;",
+    "replace": "if (holder === null) return false;\n  if (alive(holder.pid)) return true;",
+    "test": "node --test --test-name-pattern='^P81 S-3 ' packages/engine/test/lock-cases.test.mjs",
+    "testFile": "packages/engine/test/lock-cases.test.mjs",
+    "testName": "P81 S-3 "
+  },
   "INFRA-85/M2": {
     "kind": "patch",
     "protects": "INFRA-85 SV-3 a failed build is not served",
