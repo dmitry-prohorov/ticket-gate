@@ -308,5 +308,235 @@
     "test": "node --test --test-name-pattern='^CA-1 ' packages/react/test/profiler/capture.test.mjs",
     "testFile": "packages/react/test/profiler/capture.test.mjs",
     "testName": "CA-1 "
+  },
+  "INFRA-87a/M1": {
+    "kind": "patch",
+    "protects": "INFRA-87a PN-1 a fake night runs e2e, profile, rotation in order and records both",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": ", TICKET_GATE_ROOT: wt",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PN-1 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PN-1 "
+  },
+  "INFRA-87a/M2": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-1 every scenario in budget is green, a median equal to its budget included",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "if (renders > b.max) over",
+    "replace": "if (renders >= b.max) over",
+    "test": "node --test --test-name-pattern='^PS-1 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-1 "
+  },
+  "INFRA-87a/M3": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-2 an advisory over budget is amber on two nights running",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "flakySpecs: NO_FLAKY,",
+    "replace": "flakySpecs: ['home'],",
+    "test": "node --test --test-name-pattern='^PS-2 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-2 "
+  },
+  "INFRA-87a/M4": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-2 an advisory over budget is amber on two nights running",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "flaky: advisoryOver,",
+    "replace": "flaky: 0,",
+    "test": "node --test --test-name-pattern='^PS-2 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-2 "
+  },
+  "INFRA-87a/M5": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-3 a blocking over budget is red with suspect merges",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "unexpected: blocking.length,",
+    "replace": "unexpected: 0,",
+    "test": "node --test --test-name-pattern='^PS-3 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-3 "
+  },
+  "INFRA-87a/M6": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-3 a blocking over budget is red with suspect merges",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "...(red ? { suspects: suspectsOf() } : {}),",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PS-3 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-3 "
+  },
+  "INFRA-87a/M7": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-4 a child that fails is red with no numbers, even with numbers on disk",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "expected: 0, unexpected: 1,",
+    "replace": "expected: 1, unexpected: 0,",
+    "test": "node --test --test-name-pattern='^PS-4 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-4 "
+  },
+  "INFRA-87a/M8": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-4 a child that fails is red with no numbers, even with numbers on disk",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "const numbers = r.code === 0 ? readNumbers(io, dir) : null;",
+    "replace": "const numbers = readNumbers(io, dir);",
+    "test": "node --test --test-name-pattern='^PS-4 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-4 "
+  },
+  "INFRA-87a/M9": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-5 corrupt or empty numbers are red, and the runner never rejects",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "return Object.keys(n.medians ?? {}).length > 0 ? n : null;",
+    "replace": "return n;",
+    "test": "node --test --test-name-pattern='^PS-5 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-5 "
+  },
+  "INFRA-87a/M10": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-6 a second run the same day cannot read the first run's numbers",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "      io.rm(dir);\n",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PS-6 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-6 "
+  },
+  "INFRA-87a/M11": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-7 a cut-short night prints red and the rotation still runs",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "view.status === 'error' ? 'red' : view.status",
+    "replace": "view.status",
+    "test": "node --test --test-name-pattern='^PS-7 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-7 "
+  },
+  "INFRA-87a/M12": {
+    "kind": "patch",
+    "protects": "INFRA-87a PS-8 suspect merges fall back when git throws",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "return null; // no suspects without git",
+    "replace": "throw new Error('git');",
+    "test": "node --test --test-name-pattern='^PS-8 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PS-8 "
+  },
+  "INFRA-87a/M13": {
+    "kind": "patch",
+    "protects": "INFRA-87a PP-2 six nights do not",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "const STABLE_NIGHTS = 7;",
+    "replace": "const STABLE_NIGHTS = 6;",
+    "test": "node --test --test-name-pattern='^PP-2 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PP-2 "
+  },
+  "INFRA-87a/M14": {
+    "kind": "patch",
+    "protects": "INFRA-87a PP-3 an over-budget or number-less night breaks the streak",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": " && !(e.over ?? []).some((o) => o.scenario === sc)",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PP-3 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PP-3 "
+  },
+  "INFRA-87a/M15": {
+    "kind": "patch",
+    "protects": "INFRA-87a PP-4 exactly 10% promotes, 11% does not",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "(Math.max(...values) - Math.min(...values)) * 10 <= Math.min(...values)",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^PP-4 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PP-4 "
+  },
+  "INFRA-87a/M16": {
+    "kind": "patch",
+    "protects": "INFRA-87a PP-5 a blocking scenario gets no hint",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "if (!blocking) advisory.push(scenario);",
+    "replace": "advisory.push(scenario);",
+    "test": "node --test --test-name-pattern='^PP-5 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PP-5 "
+  },
+  "INFRA-87a/M17": {
+    "kind": "patch",
+    "protects": "INFRA-87a PK-1 traces go after 3 nights, results stay, also for a cut-short night",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "traces: keepTraces }",
+    "replace": "traces: 100 }",
+    "test": "node --test --test-name-pattern='^PK-1 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PK-1 "
+  },
+  "INFRA-87a/M18": {
+    "kind": "patch",
+    "protects": "INFRA-87a PK-1 traces go after 3 nights, results stay, also for a cut-short night",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "reports: 'all'",
+    "replace": "reports: 1",
+    "test": "node --test --test-name-pattern='^PK-1 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PK-1 "
+  },
+  "INFRA-87a/M19": {
+    "kind": "patch",
+    "protects": "INFRA-87a PV-1 reactProfile refuses bad options and a bad budget",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "if (typeof b?.max !== 'number') throw new Error(`budget for ${scenario} needs a numeric max`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PV-1 ' packages/react/test/profiler/nightly.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly.test.mjs",
+    "testName": "PV-1 "
+  },
+  "INFRA-87a/M20": {
+    "kind": "patch",
+    "protects": "INFRA-87a PC-1 a real child writes results, traces and numbers",
+    "file": "packages/react/profiler/nightly-child.mjs",
+    "find": "renameSync(join(out, written), join(out, 'results.json'));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PC-1 ' packages/react/test/profiler/nightly-child.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly-child.test.mjs",
+    "testName": "PC-1 "
+  },
+  "INFRA-87a/M21": {
+    "kind": "patch",
+    "protects": "INFRA-87a PC-2 the child takes no lock while another owner holds it",
+    "file": "packages/react/profiler/nightly-child.mjs",
+    "find": "profiler({ ...cfg, lock: false })",
+    "replace": "profiler(cfg)",
+    "test": "node --test --test-name-pattern='^PC-2 ' packages/react/test/profiler/nightly-child.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly-child.test.mjs",
+    "testName": "PC-2 "
+  },
+  "INFRA-87a/M22": {
+    "kind": "patch",
+    "protects": "INFRA-87a PC-3 cut short at the limit stops the server and frees the port",
+    "file": "packages/react/profiler/nightly.mjs",
+    "find": "killSignal: 'SIGINT',",
+    "replace": "killSignal: 'SIGKILL',",
+    "test": "node --test --test-name-pattern='^PC-3 ' packages/react/test/profiler/nightly-child.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly-child.test.mjs",
+    "testName": "PC-3 "
+  },
+  "INFRA-87a/M23": {
+    "kind": "patch",
+    "protects": "INFRA-87a PC-4 a handle the config leaves open does not hold the suite",
+    "file": "packages/react/profiler/nightly-child.mjs",
+    "find": "process.exit(process.exitCode ?? 0);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PC-4 ' packages/react/test/profiler/nightly-child.test.mjs",
+    "testFile": "packages/react/test/profiler/nightly-child.test.mjs",
+    "testName": "PC-4 "
   }
 }

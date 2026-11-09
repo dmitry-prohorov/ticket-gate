@@ -46,7 +46,7 @@ const BANNED = [
 const BANNED_CI = ['supabase', 'mailpit'];
 const SCENARIO = /\bW[1-7]\b/;
 const ALLOWED_IMPORT =
-  /^(node:[\w/]+|#engine\/(lock|serve)\.mjs|\.\/[\w-]+\.mjs)$/;
+  /^(node:[\w/]+|#engine\/(lock|serve|nightly\/record|nightly\/seed)\.mjs|\.\/[\w-]+\.mjs)$/;
 
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
