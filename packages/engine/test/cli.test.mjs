@@ -338,3 +338,33 @@ test('CL-N1 verify appends one e2e-runs line for the nightly step, and none with
   bin(off, ['verify']);
   assert.equal(existsSync(join(off, '.turbo', 'nightly')), false);
 });
+
+test('EN-5e the e2e step child sees the report path under both names', () => {
+  const dir = project();
+  put(
+    dir,
+    'seen.mjs',
+    `import { writeFileSync } from 'node:fs';
+const old = 'F' + 'P_E2E_JSON';
+writeFileSync('seen.json', JSON.stringify([process.env.TICKET_GATE_E2E_JSON, process.env[old]]));
+`,
+  );
+  put(
+    dir,
+    'gate.config.mjs',
+    `import { defineGate, step } from ${JSON.stringify(CONFIG_URL)};
+export default defineGate({
+  steps: [step({ id: 'e2e', when: true, cmd: 'x', reuse: false, units: { nightly: { reportPath: '.turbo/e2e-report.json', finish: (r) => ({ ...r, mode: 'full', why: 'w' }) },
+    select: () => ({ mode: 'full', why: 'w', units: ['u'], plan: { mode: 'full' } }), cmd: () => 'node seen.mjs' } })],
+  dod: { files: ['plans/phase-*.md'], contract: 'plans/contracts/{id}.md' },
+  reviewMap: { splitHint: 'split' },
+});
+`,
+  );
+  const r = bin(withGit(dir), ['verify']);
+  const seenFile = join(dir, 'seen.json');
+  assert.ok(existsSync(seenFile), r.stdout + r.stderr);
+  const [current, old] = JSON.parse(readFileSync(seenFile, 'utf8'));
+  assert.equal(current, '.turbo/e2e-report.json');
+  assert.equal(old, current);
+});

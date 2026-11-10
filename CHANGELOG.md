@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `@ticket-gate/engine`: the `launchd` scheduler refuses a non-macOS platform with one line and exit 2; a scheduler's `install` may return the exit code.
+- `@ticket-gate/engine`: the environment variables are renamed to `TICKET_GATE_STACK_LOCK_{PATH,OWNER,WAIT_S,POLL_S,PRINT_S}`, `TICKET_GATE_E2E_JSON`, `TICKET_GATE_NIGHTLY_DIR` and `TICKET_GATE_NIGHTLY_MUTATION_MIN` (`env-name.mjs`). The previous names are still read when the new one is unset, with one deprecation line on stderr per name per process, and a name the engine sets is set under both for the deprecation release. The previous names are removed in 0.2.0. Output prefixes are unchanged.
 - `@ticket-gate/engine`: the nightly: the `nightly` key of `defineGate` (`nightly-config.mjs`, `nightly/define.mjs`), the runner, record, scheduler, launchd install and status (`nightly/`), the suite contract (runner `extra` and `statusLine`, per-suite `limitS`, `keep`, flaky and move-to-CI handling, the rotation last) with `playwrightSuite`, and the commands `ticket-gate nightly run|install|status`; the rotation status functions are in `mutations/rotation-status.mjs`; the guards are registered in `mutation-registry/`.
 - `@ticket-gate/engine`: `nightlyPayloads` pack hook, collected with `packHooksAll`; `nightlyUnits` and the dry-run status line read the record of the gate's `nightly` key; the pack `nightly` hook is removed.
 - `@ticket-gate/engine`: every end-to-end gate run appends `{ ranAt, ms, mode, why }` to `e2e-runs.jsonl` in the nightly directory, and `ticket-gate nightly status` prints the 14-day forced-full share against 25% in `move-to-ci 2`.

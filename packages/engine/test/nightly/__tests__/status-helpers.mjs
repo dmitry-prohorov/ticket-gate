@@ -126,7 +126,7 @@ export const cli = (repo, nightly, ...args) =>
   spawnSync(process.execPath, [BIN, 'nightly', 'status', ...args], {
     cwd: repo.dir,
     encoding: 'utf8',
-    env: { ...process.env, FP_NIGHTLY_DIR: nightly, FP_STACK_LOCK_OWNER: '' },
+    env: { ...process.env, TICKET_GATE_NIGHTLY_DIR: nightly, TICKET_GATE_STACK_LOCK_OWNER: '' },
   });
 export function nightlyDir(repo, latest) {
   const d = tmp();

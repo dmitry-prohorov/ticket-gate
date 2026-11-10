@@ -28,7 +28,7 @@ import {
 const LOCK_URL = pathToFileURL(
   join(import.meta.dirname, "..", "lock.mjs"),
 ).href;
-const OWNER_ENV = "F" + "P_STACK_LOCK_OWNER";
+const OWNER_ENV = "TICKET_GATE_STACK_LOCK_OWNER";
 const dirs = [];
 const kids = [];
 after(() => {

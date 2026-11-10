@@ -77,7 +77,7 @@ test('NS-M2 a rotation over 14 days prints the WARN suffix, exactly 14 does not'
   assert.equal(rotationDays(nightsOf(over), NOW), 15);
   assert.match(
     mlines(over, nightsOf(over)).at(-1),
-    /rotation 15 days WARN: rotation over 14 days; raise FP_NIGHTLY_MUTATION_MIN or take the Move-to-CI trigger$/,
+    /rotation 15 days WARN: rotation over 14 days; raise TICKET_GATE_NIGHTLY_MUTATION_MIN or take the Move-to-CI trigger$/,
   );
   const exact = phase({ live: 140 });
   assert.equal(rotationDays(nightsOf(exact), NOW), 14);

@@ -92,12 +92,12 @@ test('NS-S1 a two-suite fake night writes v1 fields for the first suite and suit
   assert.equal(first.limitS, 111);
   assert.equal(first.out, join(w.tmpd, `demo-nightly-${SHA12}.pw.json`));
   assert.equal(first.dir, join(NIGHTLY, 'e2e', `${SHA12}-${day}`));
-  assert.match(first.env.FP_STACK_LOCK_OWNER, /^nightly:\d+:\d+$/);
+  assert.match(first.env.TICKET_GATE_STACK_LOCK_OWNER, /^nightly:\d+:\d+$/);
   assert.equal(second.limitS, 222);
   assert.equal(second.dir, join(NIGHTLY, 'b', `${SHA12}-${day}`));
   assert.equal(
-    second.env.FP_STACK_LOCK_OWNER,
-    first.env.FP_STACK_LOCK_OWNER,
+    second.env.TICKET_GATE_STACK_LOCK_OWNER,
+    first.env.TICKET_GATE_STACK_LOCK_OWNER,
     'one lock holder for the night',
   );
 

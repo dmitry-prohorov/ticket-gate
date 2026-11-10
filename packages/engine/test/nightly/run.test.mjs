@@ -75,14 +75,14 @@ test('N-3 runNightly issues the section 2.4 commands in order with the cwd each 
   });
   const pw = got[7];
   assert.equal(pw.limitS, E2E_LIMIT_S);
-  assert.match(pw.env.FP_STACK_LOCK_OWNER, /^nightly:\d+:\d+$/);
+  assert.match(pw.env.TICKET_GATE_STACK_LOCK_OWNER, /^nightly:\d+:\d+$/);
   assert.ok(
     pw.env.PLAYWRIGHT_JSON_OUTPUT_NAME.startsWith(sep),
     'an absolute report path',
   );
   assert.equal(
     w.lockDuringRun[0]?.id,
-    pw.env.FP_STACK_LOCK_OWNER,
+    pw.env.TICKET_GATE_STACK_LOCK_OWNER,
     'the lock was held, under that id',
   );
   assert.equal(w.lockDuringRun[0]?.owner, 'nightly');
@@ -108,6 +108,15 @@ test('N-3 runNightly issues the section 2.4 commands in order with the cwd each 
     holder.id,
     "the other holder's lock is untouched",
   );
+});
+
+test('EN-5d the suite runner gets the owner under both names', async () => {
+  const w = world();
+  await runNightly(w.io);
+  const pw = w.calls.find((c) => c.line.includes('playwright test'));
+  assert.ok(pw, 'the suite runner ran');
+  assert.match(pw.env.TICKET_GATE_STACK_LOCK_OWNER, /^nightly:\d+:\d+$/);
+  assert.equal(pw.env['F' + 'P_STACK_LOCK_OWNER'], pw.env.TICKET_GATE_STACK_LOCK_OWNER);
 });
 
 test('N-3 a busy stack defers by RETRY_MS and starts once it has been idle for IDLE_MS', async () => {

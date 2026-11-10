@@ -1,5 +1,5 @@
 // The shared fake-io world for the runner tests. It is the one place that fakes a lock holder
-// with the engine's lock.mjs (surface kind wiring); importing it first sets FP_NIGHTLY_DIR before
+// with the engine's lock.mjs (surface kind wiring); importing it first sets TICKET_GATE_NIGHTLY_DIR before
 // any module under test reads the env.
 import { spawn } from 'node:child_process';
 import {
@@ -27,8 +27,8 @@ export const FIX = join(
 
 // One nightly dir for the whole file: the module may read the env at import.
 export const NIGHTLY = mkdtempSync(join(tmpdir(), 'nightly-out-'));
-process.env.FP_NIGHTLY_DIR = NIGHTLY;
-delete process.env.FP_STACK_LOCK_OWNER;
+process.env.TICKET_GATE_NIGHTLY_DIR = NIGHTLY;
+delete process.env.TICKET_GATE_STACK_LOCK_OWNER;
 
 export const dirs = [NIGHTLY];
 export const kids = [];

@@ -67,7 +67,7 @@ export function mutationLines(latest, history, nowMs, git = realGit) {
   if (m.unproven > 0) text += ` (${m.unproven} unproven)`;
   if (m.status !== 'ran') text += ` [phase ${m.status}: ${m.reason}]`;
   if (rot !== null && rot > ROTATION_WARN_DAYS)
-    text += ` WARN: rotation over ${ROTATION_WARN_DAYS} days; raise FP_NIGHTLY_MUTATION_MIN or take the Move-to-CI trigger`;
+    text += ` WARN: rotation over ${ROTATION_WARN_DAYS} days; raise TICKET_GATE_NIGHTLY_MUTATION_MIN or take the Move-to-CI trigger`;
   const lines = [text];
   const day = new Date(nowMs).toLocaleDateString('en-CA');
   for (const survivor of m.survivors ?? []) {

@@ -8,6 +8,7 @@ import {
 } from 'node:fs';
 import { dirname, join } from 'node:path';
 
+import { envName } from '../env-name.mjs';
 import { mainCheckout } from '../lock.mjs';
 
 export const H = 3_600_000;
@@ -139,10 +140,10 @@ export function readNightly(dir) {
 }
 
 export const nightlyDir = (env = process.env) =>
-  env.FP_NIGHTLY_DIR ?? join(mainCheckout(), '.turbo', 'nightly');
+  envName(env, 'NIGHTLY_DIR') ?? join(mainCheckout(), '.turbo', 'nightly');
 
 export const nightlyDirOf = (io) =>
-  process.env.FP_NIGHTLY_DIR ?? join(io.mainCheckout, '.turbo', 'nightly');
+  envName(process.env, 'NIGHTLY_DIR') ?? join(io.mainCheckout, '.turbo', 'nightly');
 
 const REPORT_FILE = /^[^.].*-\d{4}-\d{2}-\d{2}\.json$/;
 

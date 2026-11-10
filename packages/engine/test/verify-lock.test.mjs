@@ -18,7 +18,7 @@ after(leave);
 const { gateLock, release, tryTake } = await import("../lock.mjs");
 const { buildResults } = await import("../run.mjs");
 
-const P = "F" + "P_STACK_LOCK_";
+const P = "TICKET_GATE_STACK_LOCK_";
 const OWNER_ENV = `${P}OWNER`;
 const tuning = (waitS, pollS = 1, printS = 1) => ({
   [`${P}WAIT_S`]: String(waitS),
@@ -196,4 +196,15 @@ test("VK-4 gateLock gives up after the wait limit naming the holder, and removes
     : [];
   assert.deepEqual(left, []);
   assert.equal(existsSync(path), true, "the other holder keeps the lock");
+});
+
+test("EN-5b gateLock: env carries the owner under both names", () => {
+  const path = newLock();
+  const env = {};
+  const g = gateLock({ path, env, log: () => {} });
+  assert.deepEqual(g.acquire(), { ok: true });
+  const old = "F" + "P_STACK_LOCK_OWNER";
+  assert.match(env.TICKET_GATE_STACK_LOCK_OWNER, /^verify:ticket:\d+:\d+$/);
+  assert.equal(env[old], env.TICKET_GATE_STACK_LOCK_OWNER);
+  g.release();
 });
