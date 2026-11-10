@@ -12,6 +12,8 @@ It provides:
 - the nightly (`ticket-gate nightly run [--now] | install | status`), enabled by the `nightly` key of `defineGate`; see Nightly below;
 - `serve({ build, start, port, env }, { onSpawn })` (`serve.mjs`): refuses a busy port, builds, starts the server and resolves with `{ stop }` once the port answers; it rejects on a busy port, a failed build or a server that never answers, and `onSpawn(stop)` runs right after the spawn;
 - the check modules in `checks/` (`surface`, `duplication`, `docs-stale`, `cache-report`, `ratchet-options`, `assertions`, `unguardedKind`), exported for a project's ratchets; `jscpd` is resolved from the consuming project;
+  - the `surface` manifest holds `entries` of `{ match, kind, why, owner? }`, an optional `ownerPattern`, `strict` and, when strict, `budget.check` and `budget.wiring` (non-negative integers; `strict: true` without both is exit 2);
+  - `strict: true` adds: a `pending` entry fails (rule 2), the code lines of `check` files over `budget.check` fail (rule 5), more than `budget.wiring` files of kind `wiring` fail (rule 6), and `budget.check` may only go down against the baseline's `budget.check` (`--update` records it and refuses a raise); a non-strict manifest ignores `budget`;
 - pack commands: a pack's `packCommands` hook is an object of `name -> (args, { root, gate }) -> code`; `ticket-gate <name> [args]` calls it with the arguments after the name, the project root and the gate, and exits with the number it returns (0 when it returns nothing);
 - `defineGate` and `step`, the API a project's `gate.config.mjs` is written against;
 - the Stop and PreToolUse hooks, which make no network call and collect no telemetry;

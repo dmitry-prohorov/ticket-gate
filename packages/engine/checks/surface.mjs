@@ -1,6 +1,8 @@
 // The surface ratchet: every tracked file under the configured roots is classified in a
 // manifest with one kind, and the kind decides what the file may import or do. Engine-shaped:
 // no project path is named here; the manifest, baseline, roots and messages come from the caller.
+// A manifest with `strict: true` also fails every pending entry, the code lines of `check` files over
+// `budget.check` (which may only go down, against the baseline) and more than `budget.wiring` wiring files.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, posix } from 'node:path';
@@ -83,9 +85,11 @@ function codeOf(text) {
     } else if (c === '/' && regexAllowed(out)) {
       out += c;
       let inClass = false;
+      // Quotes inside a regex body are blanked, so importsOf never reads one as a string start.
+      const body = (ch) => (ch === "'" || ch === '"' || ch === '`' ? ' ' : ch);
       for (i++; i < text.length && text[i] !== '\n'; i++) {
-        out += text[i];
-        if (text[i] === '\\') out += text[++i] ?? '';
+        out += body(text[i]);
+        if (text[i] === '\\') out += body(text[++i] ?? '');
         else if (text[i] === '[') inClass = true;
         else if (text[i] === ']') inClass = false;
         else if (text[i] === '/' && !inClass) break;
@@ -103,16 +107,20 @@ export function codeLines(text) {
   return codeOf(text).length;
 }
 
-/** Specifiers of `from '...'`, `import('...')` and `import '...'` on code lines. */
+/** A string literal, consumed first so a `from` or `import` inside one is never a specifier. */
+const STRING = '\'(?:[^\'\\\\\\n]|\\\\.)*\'|"(?:[^"\\\\\\n]|\\\\.)*"|`(?:[^`\\\\]|\\\\.)*`';
+
+/** Specifiers of `from '...'`, `import('...')` and `import '...'` on code lines, outside strings. */
 export function importsOf(text) {
   const code = codeOf(text).join('\n');
   const out = [];
   for (const re of [
-    /\bfrom\s*['"]([^'"]+)['"]/g,
-    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
-    /(?:^|[;{}])\s*import\s*['"]([^'"]+)['"]/gm,
+    /\bfrom\s*['"]([^'"]+)['"]/.source,
+    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/.source,
+    /(?:^|[;{}])\s*import\s*['"]([^'"]+)['"]/.source,
   ])
-    for (const m of code.matchAll(re)) out.push(m[1]);
+    for (const m of code.matchAll(new RegExp(`${STRING}|${re}`, 'gm')))
+      if (m[1] !== undefined) out.push(m[1]);
   return out;
 }
 
@@ -128,7 +136,13 @@ function loadManifest(path) {
   const m = readJson(path, 'manifest');
   if (!Array.isArray(m?.entries)) throw inputError('entries must be an array');
   // prettier-ignore
-  if (m.strict !== undefined && m.strict !== false) throw inputError('strict mode is not supported yet');
+  if (m.strict !== undefined && typeof m.strict !== 'boolean') throw inputError('strict must be true or false');
+  if (m.strict === true) {
+    for (const key of ['check', 'wiring']) {
+      // prettier-ignore
+      if (!Number.isInteger(m.budget?.[key]) || m.budget[key] < 0) throw inputError(`strict needs budget.${key}, a non-negative integer`);
+    }
+  }
   const seen = new Set();
   m.entries.forEach((e, i) => {
     const at = `entries[${i}]${Array.isArray(e?.match) ? ` (${e.match[0]})` : ''}`;
@@ -152,7 +166,9 @@ function loadBaseline(path) {
   const b = readJson(path, 'baseline');
   if (!Array.isArray(b?.pending))
     throw inputError(`baseline ${path} has no "pending" array`);
-  return new Set(b.pending);
+  // prettier-ignore
+  if (b.budget !== undefined && !(Number.isInteger(b.budget?.check) && b.budget.check >= 0)) throw inputError(`baseline ${path}: budget.check must be a non-negative integer`);
+  return { pending: new Set(b.pending), budgetCheck: b.budget?.check };
 }
 
 function trackedFiles(root, roots) {
@@ -201,7 +217,12 @@ export function surface(cfg) {
       throw inputError(
         `no baseline at ${baselinePath}. Fix: run the ratchet once with --update --seed`,
       );
-    const before = haveBaseline ? loadBaseline(absBaseline) : new Set();
+    const { pending: before, budgetCheck: floor } = haveBaseline
+      ? loadBaseline(absBaseline)
+      : { pending: new Set(), budgetCheck: undefined };
+    const strict = manifest.strict === true;
+    // prettier-ignore
+    if (strict && !update && floor === undefined) throw inputError(`baseline ${baselinePath} has no budget.check. Fix: run the ratchet once with --update`);
 
     const globs = manifest.entries.flatMap((entry) =>
       entry.match.map((glob) => ({ glob, entry })),
@@ -222,16 +243,25 @@ export function surface(cfg) {
       });
       // prettier-ignore
       if (added.length > 0) return refuse(added);
+      const refuseBudget = () => ({
+        code: 1,
+        lines: [
+          `surface: refused: budget.check ${manifest.budget.check} is over ${floor} in ${baselinePath}. A budget only goes down.`,
+          cfg.fix,
+        ],
+      });
+      // prettier-ignore
+      if (strict && manifest.budget.check > floor) return refuseBudget();
       const next = [...new Set(pendingGlobs)].sort();
       const removed = [...before].filter((g) => !next.includes(g)).length;
-      writeFileSync(
-        absBaseline,
-        `${JSON.stringify({ comment: cfg.comment, pending: next }, null, 2)}\n`,
-      );
+      const kept = strict ? manifest.budget.check : floor;
+      const nextBaseline = { comment: cfg.comment, pending: next };
+      if (kept !== undefined) nextBaseline.budget = { check: kept };
+      writeFileSync(absBaseline, `${JSON.stringify(nextBaseline, null, 2)}\n`);
       return {
         code: 0,
         lines: [
-          `surface: baseline ${baselinePath}: ${next.length} pending globs (removed ${removed})`,
+          `surface: baseline ${baselinePath}: ${next.length} pending globs (removed ${removed})${strict ? `, budget.check ${kept}` : ''}`,
         ],
       };
     }
@@ -247,6 +277,7 @@ export function surface(cfg) {
     const kindOf = (file) => hitsOf.get(file)?.[0]?.entry.kind;
     const ownerRe = new RegExp(manifest.ownerPattern ?? '.+');
     const out = [];
+    let checkLines = 0;
 
     function configImportOk(spec, file) {
       if (spec.startsWith(SCOPE) || CONFIG_NODE.has(spec)) return true;
@@ -266,6 +297,8 @@ export function surface(cfg) {
       const abs = join(root, file);
       if (!existsSync(abs)) continue;
       const text = readFileSync(abs, 'utf8');
+      // prettier-ignore
+      if (kind === 'check') checkLines += codeLines(text);
       if ((kind === 'config' || kind === 'data') && file.endsWith('.mjs')) {
         for (const spec of importsOf(text))
           // prettier-ignore
@@ -297,7 +330,17 @@ export function surface(cfg) {
       if (!before.has(glob)) out.push([2, glob, 'pending entry is not in the baseline']);
       // prettier-ignore
       if (!ownerRe.test(entry.owner ?? '')) out.push([2, glob, 'pending entry names no owner ticket']);
+      // prettier-ignore
+      if (strict) out.push([2, glob, 'pending entry in strict mode']);
     }
+
+    const wiring = files.filter((f) => kindOf(f) === 'wiring');
+    // prettier-ignore
+    if (strict && checkLines > manifest.budget.check) out.push([5, manifestPath, `check files have ${checkLines} code lines, over budget.check ${manifest.budget.check}`]);
+    // prettier-ignore
+    if (strict && manifest.budget.check > floor) out.push([5, manifestPath, `budget.check ${manifest.budget.check} is over ${floor} in ${baselinePath}; the budget only goes down`]);
+    // prettier-ignore
+    if (strict && wiring.length > manifest.budget.wiring) out.push([6, manifestPath, `${wiring.length} files of kind wiring (${wiring.join(', ')}), over budget.wiring ${manifest.budget.wiring}`]);
 
     if (out.length > 0) {
       out.sort((a, b) => a[0] - b[0] || a[1].localeCompare(b[1]));
@@ -328,6 +371,11 @@ export function surface(cfg) {
         `surface: OK ${files.length} tracked files, ${manifest.entries.length} entries, ${globs.length} globs`,
         `  kinds (files): ${KINDS.map((k) => `${k} ${kinds[k]}`).join(', ')}`,
         `  pending: ${pendingGlobs.length} globs (${ownerList})`,
+        ...(strict
+          ? [
+              `  budget: check ${checkLines}/${manifest.budget.check} code lines, wiring ${wiring.length}/${manifest.budget.wiring} files`,
+            ]
+          : []),
       ],
     };
   }
