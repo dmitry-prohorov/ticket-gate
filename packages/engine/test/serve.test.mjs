@@ -1,6 +1,7 @@
 // serve(): refuse a busy port, build, start, wait until the port answers. Real `node` servers on
 // ephemeral ports in a scratch directory; no network beyond loopback.
 import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { createServer as netServer } from 'node:net';
@@ -159,4 +160,41 @@ setInterval(() => {}, 1000);
   // A survivor would keep this process alive for good: reap it before asserting.
   if (!gone) process.kill(pid, 'SIGKILL');
   assert.equal(gone, true, 'the build worker is gone');
+});
+
+test('SV-7 a build that ignores SIGINT is gone after one', async () => {
+  const port = await freePort();
+  const pidFile = join(dir, 'sv7.pid');
+  const worker = join(dir, 'sv7-worker.cjs');
+  writeFileSync(
+    worker,
+    `require('node:fs').writeFileSync(${JSON.stringify(pidFile)}, String(process.pid));
+process.on('SIGINT', () => {});
+setInterval(() => {}, 1000);
+`,
+  );
+  const runner = join(dir, 'sv7-run.mjs');
+  const serveUrl = new URL('../serve.mjs', import.meta.url).href;
+  writeFileSync(
+    runner,
+    `import { serve } from ${JSON.stringify(serveUrl)};
+await serve({ build: ${JSON.stringify(`(trap "" INT; node ${q(worker)}); true`)}, start: 'true', port: ${port} }).catch(() => {});
+`,
+  );
+  const child = spawn(process.execPath, [runner], { stdio: 'ignore' });
+  const exited = new Promise((resolve) => child.on('exit', (code) => resolve(code)));
+  let pid = 0;
+  try {
+    for (let i = 0; i < 100 && !existsSync(pidFile); i++) await new Promise((r) => setTimeout(r, 100));
+    assert.ok(existsSync(pidFile), 'the build started');
+    pid = Number(readFileSync(pidFile, 'utf8'));
+    child.kill('SIGINT');
+    const code = await Promise.race([exited, new Promise((r) => setTimeout(() => r('hung'), 9000))]);
+    assert.equal(code, 130, 'the run exits with 130 within the bound');
+    for (let i = 0; i < 20 && alive(pid); i++) await new Promise((r) => setTimeout(r, 100));
+    assert.equal(alive(pid), false, 'the build that ignored SIGINT is gone');
+  } finally {
+    if (pid > 0 && alive(pid)) process.kill(pid, 'SIGKILL');
+    if (child.exitCode === null) child.kill('SIGKILL');
+  }
 });

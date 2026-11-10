@@ -309,6 +309,7 @@ export async function runNightly(
     const suites = {};
     const suiteReports = {};
     let first = null;
+    let firstMs = null;
     if (over === null)
       for (const [i, suite] of config.suites.entries()) {
         const out = join(
@@ -337,6 +338,7 @@ export async function runNightly(
         else if (s.expected + s.unexpected + s.flaky + s.skipped === 0)
           stop = { status: 'error', reason: 'zero-tests' };
         if (i === 0) {
+          firstMs = ms;
           first = { summary, report: res.report ?? null };
           over = stop;
           continue;
@@ -370,6 +372,8 @@ export async function runNightly(
       }
     const suitesPart = {
       ...(Object.keys(suites).length > 0 ? { suites } : {}),
+      // the first suite's own time, so a later suite does not count toward it
+      ...(firstMs !== null && config.suites.length > 1 ? { firstMs } : {}),
     };
 
     // (8b) rotate registry mutations while the stack and lock are ours

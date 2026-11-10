@@ -73,6 +73,9 @@ export const portBusy = (port) =>
 // Detached, in its own process group, so the timeout can kill the whole build (a compound
 // command forks, and a surviving worker holds the pipes open). A terminal Ctrl-C no longer
 // reaches it, so a SIGINT forwarder does, and is removed when the build ends.
+// How long a build gets to close after SIGINT before its group is killed.
+const INTERRUPT_GRACE_MS = 5000;
+
 function runBuild(build, env) {
   return new Promise((resolve) => {
     const c = spawn('bash', ['-lc', build], {
@@ -83,15 +86,28 @@ function runBuild(build, env) {
     });
     let out = '';
     let settled = false;
+    let escalation = null;
     const forward = () => {
+      if (escalation !== null) return;
       safeKillGroup(c.pid, 'SIGINT');
       // Our listener replaced the default exit; keep it when nobody else handles the signal.
-      if (process.listenerCount('SIGINT') === 1) process.exit(130);
+      const exits = process.listenerCount('SIGINT') === 1;
+      // A build that ignores SIGINT must not outlive the run: kill the group after a bounded wait.
+      escalation = setTimeout(() => {
+        safeKillGroup(c.pid, 'SIGKILL');
+        if (exits) process.exit(130);
+      }, INTERRUPT_GRACE_MS);
+      if (exits)
+        c.once('close', () => {
+          safeKillGroup(c.pid, 'SIGKILL');
+          process.exit(130);
+        });
     };
     const done = (r) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
+      if (escalation !== null) clearTimeout(escalation);
       process.removeListener('SIGINT', forward);
       resolve(r);
     };

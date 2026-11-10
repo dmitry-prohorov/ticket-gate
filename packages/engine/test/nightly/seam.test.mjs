@@ -102,7 +102,10 @@ test('NS-S1 a two-suite fake night writes v1 fields for the first suite and suit
   );
 
   const line = history().at(-1);
-  assert.deepEqual(Object.keys(line).sort(), [...KEYS, 'suites'].sort());
+  assert.deepEqual(
+    Object.keys(line).sort(),
+    [...KEYS, 'suites', 'firstMs'].sort(),
+  );
   assert.equal(line.status, 'green', 'top level is the first suite');
   assert.deepEqual(line.stats, GREEN.stats);
   assert.equal(line.reachedPlaywright, true);

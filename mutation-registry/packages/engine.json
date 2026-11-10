@@ -2240,5 +2240,15 @@
     "test": "node --test --test-name-pattern='^SV-5 ' packages/engine/test/serve.test.mjs",
     "testFile": "packages/engine/test/serve.test.mjs",
     "testName": "SV-5 "
+  },
+  "INFRA-87a/M104": {
+    "kind": "patch",
+    "protects": "INFRA-87a SV-7 a build that ignores SIGINT is killed as a group after the grace, not left running",
+    "file": "packages/engine/serve.mjs",
+    "find": "        safeKillGroup(c.pid, 'SIGKILL');\n        if (exits) process.exit(130);",
+    "replace": "        if (exits) process.exit(130);",
+    "test": "node --test --test-name-pattern='^SV-7 ' packages/engine/test/serve.test.mjs",
+    "testFile": "packages/engine/test/serve.test.mjs",
+    "testName": "SV-7 "
   }
 }
