@@ -142,6 +142,8 @@ test('INFRA-47 5-5 tarballs ship no tests', () => {
       'profiler/stats.mjs',
       'profiler/capture.mjs',
       'profiler/cli.mjs',
+      'profiler/nightly.mjs',
+      'profiler/nightly-child.mjs',
     ],
   };
   for (const name of PACKAGES) {

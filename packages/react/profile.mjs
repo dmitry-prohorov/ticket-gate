@@ -24,3 +24,4 @@ export const viteProfiling = ({ cmd, preview }) => ({
   port: 4173,
   noBuildLabel: 'unknown (existing server on :4173)',
 });
+export { reactProfile } from './profiler/nightly.mjs';

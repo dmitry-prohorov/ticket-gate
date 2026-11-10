@@ -46,7 +46,7 @@ const BANNED = [
 const BANNED_CI = ['supabase', 'mailpit'];
 const SCENARIO = /\bW[1-7]\b/;
 const ALLOWED_IMPORT =
-  /^(node:[\w/]+|#engine\/(lock|serve)\.mjs|\.\/[\w-]+\.mjs)$/;
+  /^(node:[\w/]+|#engine\/(lock|serve|nightly\/record|nightly\/seed)\.mjs|\.\/[\w-]+\.mjs)$/;
 
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
@@ -92,6 +92,6 @@ test('PB-2 the profiler imports only node:, its engine seams and siblings', () =
     ))
       assert.ok(
         ALLOWED_IMPORT.test(m[1]),
-        `${f} imports "${m[1]}": only node:*, #engine/lock.mjs, #engine/serve.mjs and sibling ./*.mjs are allowed`,
+        `${f} imports "${m[1]}": only node:*, #engine/lock.mjs, #engine/serve.mjs, #engine/nightly/record.mjs, #engine/nightly/seed.mjs and sibling ./*.mjs are allowed`,
       );
 });
