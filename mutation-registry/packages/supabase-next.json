@@ -111,6 +111,46 @@
       }
     ]
   },
+  "INFRA-18/M15": {
+    "kind": "patch",
+    "protects": "G11 dbReset re-checks the stack",
+    "file": "packages/supabase-next/profile-hooks.mjs",
+    "find": "const problems = await io.checkStack(['db']);",
+    "replace": "const problems = [];",
+    "test": "node --test --test-name-pattern='^PW-12 ' packages/supabase-next/test/profile-hooks.test.mjs",
+    "testFile": "packages/supabase-next/test/profile-hooks.test.mjs",
+    "testName": "PW-12 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/supabase-next/profile-hooks.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/supabase-next/profile-hooks.mjs -> packages/supabase-next/profile-hooks.mjs; test -> packages/supabase-next/test/profile-hooks.test.mjs"
+      }
+    ]
+  },
+  "INFRA-18/M16": {
+    "kind": "patch",
+    "protects": "G11 dbReset timeout throws",
+    "file": "packages/supabase-next/profile-hooks.mjs",
+    "find": "if (r.timedOut === true) throw new Error(",
+    "replace": "if (false) throw new Error(",
+    "test": "node --test --test-name-pattern='^PW-13 ' packages/supabase-next/test/profile-hooks.test.mjs",
+    "testFile": "packages/supabase-next/test/profile-hooks.test.mjs",
+    "testName": "PW-13 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/supabase-next/profile-hooks.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/supabase-next/profile-hooks.mjs -> packages/supabase-next/profile-hooks.mjs; test -> packages/supabase-next/test/profile-hooks.test.mjs"
+      }
+    ]
+  },
   "INFRA-23b/M1": {
     "kind": "patch",
     "protects": "5 VE-1a G1 core src arm",
@@ -256,5 +296,15 @@
     "test": "node --test --test-name-pattern='^SNC-4 ' packages/supabase-next/test/checks/pack-commands.test.mjs",
     "testFile": "packages/supabase-next/test/checks/pack-commands.test.mjs",
     "testName": "SNC-4 "
+  },
+  "INFRA-85/M10": {
+    "kind": "patch",
+    "protects": "INFRA-85 NP-1 the Next preset builds with the profiling flags",
+    "file": "packages/supabase-next/profile-build.mjs",
+    "find": "build --profile --no-mangling",
+    "replace": "build",
+    "test": "node --test --test-name-pattern='^NP-1 ' packages/supabase-next/test/profile-build.test.mjs",
+    "testFile": "packages/supabase-next/test/profile-build.test.mjs",
+    "testName": "NP-1 "
   }
 }

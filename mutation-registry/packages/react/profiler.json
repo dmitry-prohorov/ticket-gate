@@ -1,0 +1,312 @@
+{
+  "INFRA-13/M1": {
+    "kind": "patch",
+    "protects": "5 PW-4 no Commit gives the not-a-profiling-build message",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "if (r.commits === 0) return hints.noCommit;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-4 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/trace.mjs (4.7.1, D12); test moved beside it; find follows the cfg option"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/trace.mjs -> packages/react/profiler/trace.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M2": {
+    "kind": "patch",
+    "protects": "5 PW-5 Commits without a Components track give the hook-stub message",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "if (r.componentRendersAll === 0) return hints.noHook;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-5 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/trace.mjs (4.7.1, D12); test moved beside it; find follows the cfg option"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/trace.mjs -> packages/react/profiler/trace.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M3": {
+    "kind": "patch",
+    "protects": "5 PW-4 no COMPONENTS name gives the mangled-names message",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "  if (names.every((name) => r[name] === 0)) return hints.mangled;\n",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-4 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/trace.mjs (4.7.1, D12); test moved beside it; find follows the cfg option"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/trace.mjs -> packages/react/profiler/trace.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M4": {
+    "kind": "patch",
+    "protects": "5 PW-6 reduceRun throws the guard message (exit 1 path, R1)",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "if (problem !== null) throw new Error(problem);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-6 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/trace.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/trace.mjs -> packages/react/profiler/trace.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M5": {
+    "kind": "patch",
+    "protects": "5 PW-1 a Render before the lane's previous Commit is not counted twice",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "r.start >= since && ",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-1 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/trace.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/trace.mjs -> packages/react/profiler/trace.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M6": {
+    "kind": "patch",
+    "protects": "5 PW-2 secondary-coloured (effect) Components entries are skipped",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "!String(d.color).startsWith('secondary')",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^PW-2 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/trace.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/trace.mjs -> packages/react/profiler/trace.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M7": {
+    "kind": "patch",
+    "protects": "5 PW-2 GridChipList does not count as GridChip",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "(\\\\)|$)",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-2 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/trace.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/trace.mjs -> packages/react/profiler/trace.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M8": {
+    "kind": "patch",
+    "protects": "5 PW-7 even-length median is the mean of the two middle values (R3)",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "round((s[mid - 1] + s[mid]) / 2)",
+    "replace": "s[mid]",
+    "test": "node --test --test-name-pattern='^PW-7 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/trace.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/trace.mjs -> packages/react/profiler/trace.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M9": {
+    "kind": "patch",
+    "protects": "5 PW-8 zero baseline: no division by zero (R4)",
+    "file": "packages/react/profiler/stats.mjs",
+    "find": "base === 0 ? (now === 0 ? 0 : null) : ",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-8 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/stats.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/stats.mjs -> packages/react/profiler/stats.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M10": {
+    "kind": "patch",
+    "protects": "5 PW-9 a baseline without meta is reported, not crashed on",
+    "file": "packages/react/profiler/stats.mjs",
+    "find": "if (!baseMeta) return [SETUP_MISSING];",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-9 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/stats.mjs (4.7.1, D12); test moved beside it"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/stats.mjs -> packages/react/profiler/stats.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M12": {
+    "kind": "patch",
+    "protects": "5 PW-10 without --build, nothing on :3000 is reported with its fix",
+    "file": "packages/react/profiler/cli.mjs",
+    "find": "if (!build && !appUp) problems.push(cfg.preflight.noApp);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-10 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/cli.mjs (4.7.1, D12); test moved beside it; find follows the cfg option"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/cli.mjs -> packages/react/profiler/cli.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-13/M13": {
+    "kind": "patch",
+    "protects": "5 PW-11 --runs must be an integer >= 1",
+    "file": "packages/react/profiler/stats.mjs",
+    "find": "if (!Number.isInteger(runs) || runs < 1) throw new Error(usage);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-11 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-11 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/stats.mjs (4.7.1, D12); test moved beside it; find follows the cfg option"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/stats.mjs -> packages/react/profiler/stats.mjs; test -> packages/react/test/profiler/profiler.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M11": {
+    "kind": "patch",
+    "protects": "5 PF-5 profile takes the lock",
+    "file": "packages/react/profiler/cli.mjs",
+    "find": "if (cfg.lock !== false) takeOrExit(cfg.lock);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PF-5 ' packages/react/test/profiler/project.test.mjs",
+    "testFile": "packages/react/test/profiler/project.test.mjs",
+    "testName": "PF-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-84",
+        "why": "split: tools/profile-web.mjs -> tools/checks/react/profiler/cli.mjs (4.7.1, D12); find follows the cfg option"
+      },
+      {
+        "by": "INFRA-85",
+        "why": "export: tools/checks/react/profiler/cli.mjs -> packages/react/profiler/cli.mjs; test -> packages/react/test/profiler/project.test.mjs"
+      }
+    ]
+  },
+  "INFRA-85/M1": {
+    "kind": "patch",
+    "protects": "INFRA-85 PW-10 --build refuses a port that already answers, in preflight",
+    "file": "packages/react/profiler/cli.mjs",
+    "find": "if (build && appUp) problems.push(cfg.preflight.portInUse);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PW-10 ' packages/react/test/profiler/profiler.test.mjs",
+    "testFile": "packages/react/test/profiler/profiler.test.mjs",
+    "testName": "PW-10 "
+  },
+  "INFRA-85/M6": {
+    "kind": "patch",
+    "protects": "INFRA-85 PF-6 the served app does not outlive the run",
+    "file": "packages/react/profiler/cli.mjs",
+    "find": "await stopServer();",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PF-6 ' packages/react/test/profiler/project.test.mjs",
+    "testFile": "packages/react/test/profiler/project.test.mjs",
+    "testName": "PF-6 "
+  },
+  "INFRA-85/M7": {
+    "kind": "patch",
+    "protects": "INFRA-85 PF-4 lock false takes no lock",
+    "file": "packages/react/profiler/cli.mjs",
+    "find": "if (cfg.lock !== false) ",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PF-4 ' packages/react/test/profiler/project.test.mjs",
+    "testFile": "packages/react/test/profiler/project.test.mjs",
+    "testName": "PF-4 "
+  },
+  "INFRA-85/M12": {
+    "kind": "patch",
+    "protects": "INFRA-85 PB-1 no project path may enter the profiler",
+    "file": "packages/react/profiler/trace.mjs",
+    "find": "export function analyse(trace, names) {",
+    "replace": "export function analyse(trace, names) {\n  const legacyApp = 'apps/web';",
+    "test": "node --test --test-name-pattern='^PB-1 ' packages/react/test/profiler/boundary.test.mjs",
+    "testFile": "packages/react/test/profiler/boundary.test.mjs",
+    "testName": "PB-1 "
+  },
+  "INFRA-85/M13": {
+    "kind": "patch",
+    "protects": "INFRA-85 CA-1 the hook stub turns on the Components track",
+    "file": "packages/react/profiler/capture.mjs",
+    "find": "window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CA-1 ' packages/react/test/profiler/capture.test.mjs",
+    "testFile": "packages/react/test/profiler/capture.test.mjs",
+    "testName": "CA-1 "
+  }
+}

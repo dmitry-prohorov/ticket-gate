@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `@ticket-gate/engine`: `serve({ build, start, port, env }, { onSpawn })` (`serve.mjs`) refuses a busy port, builds, starts the server in its own process group and waits until the port answers; `portBusy(port)` is the shared refusal text, and `startWebServer(opts, onSpawn)` takes the same optional hand-over of its stop function. The served-test harness uses them; the guards are registered in `mutation-registry/`.
+- `@ticket-gate/react`: `ticket-gate profile`, the React render profiler (`profiler/`): `profile(cfg)`, `viteProfiling({ cmd, preview })` (`profile.mjs`) and `reactPack({ profile })` (`index.mjs`). Playwright is resolved from the consuming project; the guards are registered in `mutation-registry/`.
+- `@ticket-gate/supabase-next`: `profileHooks({ root, stack, apiUrl, mailUrl, email })` (`profile-hooks.mjs`) for the profiler's database reset and magic-link login, and `nextProfiling({ app })` (`profile-build.mjs`) for the build and start of a Next.js app.
 - `@ticket-gate/engine`: the assertions ratchet, `assertions(cfg)` (`checks/assertions.mjs`), and the `unguarded` mutation kind factory `unguardedKind({ from, fromHint, prefix })` (`checks/assertions-unguarded.mjs`, not registered by `resolveSetup`); the guards are registered in `mutation-registry/`.
 - `@ticket-gate/engine`: the `launchd` scheduler refuses a non-macOS platform with one line and exit 2; a scheduler's `install` may return the exit code.
 - `@ticket-gate/engine`: the environment variables are renamed to `TICKET_GATE_STACK_LOCK_{PATH,OWNER,WAIT_S,POLL_S,PRINT_S}`, `TICKET_GATE_E2E_JSON`, `TICKET_GATE_NIGHTLY_DIR` and `TICKET_GATE_NIGHTLY_MUTATION_MIN` (`env-name.mjs`). The previous names are still read when the new one is unset, with one deprecation line on stderr per name per process, and a name the engine sets is set under both for the deprecation release. The previous names are removed in 0.2.0. Output prefixes are unchanged.

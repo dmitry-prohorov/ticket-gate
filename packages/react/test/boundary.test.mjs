@@ -71,7 +71,7 @@ test('RB-2 imports node: or the package', () => {
       assert.ok(spec.startsWith('.'), `${f} imports ${spec}`);
       const target = posix.normalize(posix.join('.', spec));
       assert.ok(
-        !target.startsWith('..') && !target.includes('/'),
+        !target.startsWith('..'),
         `${f} imports ${spec}, which leaves the package`,
       );
     }

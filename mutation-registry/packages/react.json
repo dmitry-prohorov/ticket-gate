@@ -210,5 +210,45 @@
         "why": "export: tools/checks/react/compiler.mjs -> packages/react/compiler.mjs; test tools/checks/react/compiler-options.test.mjs -> packages/react/test/compiler-options.test.mjs"
       }
     ]
+  },
+  "INFRA-85/M5": {
+    "kind": "patch",
+    "protects": "INFRA-85 PR-2 a config without a lock is refused",
+    "file": "packages/react/profile.mjs",
+    "find": "if (cfg.lock !== false && (typeof cfg.lock !== 'string' || cfg.lock === ''))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^PR-2 ' packages/react/test/pack.test.mjs",
+    "testFile": "packages/react/test/pack.test.mjs",
+    "testName": "PR-2 "
+  },
+  "INFRA-85/M8": {
+    "kind": "patch",
+    "protects": "INFRA-85 PA-2 over budget exits 1 through the command",
+    "file": "packages/react/index.mjs",
+    "find": "return process.exitCode ?? 0;",
+    "replace": "return 0;",
+    "test": "node --test --test-name-pattern='^PA-2 ' packages/react/test/pack.test.mjs",
+    "testFile": "packages/react/test/pack.test.mjs",
+    "testName": "PA-2 "
+  },
+  "INFRA-85/M9": {
+    "kind": "patch",
+    "protects": "INFRA-85 PA-3 a thrown error exits 1",
+    "file": "packages/react/index.mjs",
+    "find": "return 1;",
+    "replace": "return 0;",
+    "test": "node --test --test-name-pattern='^PA-3 ' packages/react/test/pack.test.mjs",
+    "testFile": "packages/react/test/pack.test.mjs",
+    "testName": "PA-3 "
+  },
+  "INFRA-85/M11": {
+    "kind": "patch",
+    "protects": "INFRA-85 VP-1 the Vite preset starts the preview command",
+    "file": "packages/react/profile.mjs",
+    "find": "start: preview,",
+    "replace": "start: cmd,",
+    "test": "node --test --test-name-pattern='^VP-1 ' packages/react/test/pack.test.mjs",
+    "testFile": "packages/react/test/pack.test.mjs",
+    "testName": "VP-1 "
   }
 }

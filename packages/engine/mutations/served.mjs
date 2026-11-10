@@ -1,9 +1,6 @@
-import { spawn } from 'node:child_process';
-import { connect } from 'node:net';
 import { createHash } from 'node:crypto';
 
-import { safeKillGroup } from '../kill-group.mjs';
-import { ROOT } from '../root.mjs';
+import { portBusy, portInUse, startWebServer } from '../serve.mjs';
 import { applyPatch, restorePatch, sessionOf } from './harness.mjs';
 import { projectSetup } from './project.mjs';
 import { LIMITS, tail, verdict } from './verdict.mjs';
@@ -166,7 +163,7 @@ export function served(opts) {
     }),
     async refuse(_entries, io) {
       return (await io.portInUse(opts.port))
-        ? `port ${opts.port} is already in use: a stale server would serve old code. Stop it (lsof -i :${opts.port}), then re-run.`
+        ? portBusy(opts.port)
         : null;
     },
     async open(entries, io, state) {
@@ -213,66 +210,6 @@ export function served(opts) {
         /* best effort */
       }
     },
-  };
-}
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-const connects = (host, port) =>
-  new Promise((resolve) => {
-    const s = connect({ host, port });
-    s.once('connect', () => (s.destroy(), resolve(true)));
-    s.once('error', () => (s.destroy(), resolve(false)));
-  });
-
-/** Is something listening on this port (IPv4 or IPv6 loopback)? */
-const portInUse = async (port) =>
-  (await connects('127.0.0.1', port)) || (await connects('::1', port));
-
-const answers = (port) =>
-  fetch(`http://localhost:${port}`, { signal: AbortSignal.timeout(2000) })
-    .then(() => true)
-    .catch(() => false);
-
-// `opts.start` in its own process group; ready when `opts.port` answers.
-async function startWebServer(opts) {
-  const c = spawn('bash', ['-lc', opts.start], {
-    cwd: ROOT,
-    env: { ...process.env, ...opts.env },
-    detached: true,
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
-  let out = '';
-  let exited = false;
-  c.stdout.on('data', (d) => (out += d));
-  c.stderr.on('data', (d) => (out += d));
-  const gone = new Promise((resolve) => {
-    c.on('close', () => ((exited = true), resolve()));
-    c.on('error', (err) => ((out += String(err)), (exited = true), resolve()));
-  });
-  const stop = async () => {
-    if (!exited) {
-      safeKillGroup(c.pid, 'SIGTERM');
-      await Promise.race([gone, sleep(5000)]);
-    }
-    if (!exited) {
-      safeKillGroup(c.pid, 'SIGKILL');
-      await Promise.race([gone, sleep(2000)]);
-    }
-    for (let i = 0; i < 20 && (await portInUse(opts.port)); i++)
-      await sleep(250);
-  };
-  const died = () => exited;
-  const deadline = Date.now() + LIMITS.serve * 1000;
-  while (Date.now() < deadline && !exited) {
-    if (await answers(opts.port)) return { ok: true, out, stop, died };
-    await sleep(500);
-  }
-  return {
-    ok: false,
-    out: out || `no answer within ${LIMITS.serve} s`,
-    stop,
-    died,
   };
 }
 
