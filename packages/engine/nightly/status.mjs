@@ -22,7 +22,7 @@ const DEFAULT_CFG = {
 
 const localDay = (ms) => new Date(ms).toLocaleDateString('en-CA');
 
-/** The two "Move to CI" triggers over the last 7 days (N-R5). */
+/** The two "Move to CI" triggers over the last 7 days. */
 export function moveToCi({
   history,
   nowMs,

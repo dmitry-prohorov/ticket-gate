@@ -24,9 +24,9 @@ const PACK_DIR = [
 ].find((d) => d && existsSync(d));
 
 // Comments included, no allowlist: the engine, the pack and the react package are published, so no ticket id,
-// planning-doc path or project name may appear anywhere in their text.
+// planning-doc path, project rule file or project rule number may appear anywhere in their text.
 const PRIVATE_RE =
-  /\b(INFRA|FU)-?\d+|\bP\d-\d+|docs\/tasks/i;
+  /\b(INFRA|FU)-?\d+|\bP\d-\d+|docs\/tasks|\b(AGENTS|CLAUDE)\.md|\bhard rule\b|\bN-R\d|\bproposal \d|\.cursor\//i;
 
 // Every non-test .mjs under a package folder; test/ and node_modules/ are skipped.
 function mjsUnder(dir) {
@@ -89,6 +89,12 @@ test('ET-2 a planted line in a copy of the engine or the pack is reported', () =
         '// see FU12',
         '// P0-09 history',
         '// docs/tasks/contracts/x.md',
+        "const m = 'Blocked (AGENTS.md rule 16)';",
+        '// see CLAUDE.md',
+        '// hard rule 7',
+        '// N-R2 promotion',
+        '// proposal 4.7a',
+        '// mirrors .cursor/hooks/x.py',
       ]) {
         const p = join(dir, rel);
         const before = readFileSync(p, 'utf8');

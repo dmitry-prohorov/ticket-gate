@@ -116,7 +116,7 @@ const sortKeysDeep = (v) =>
             .map((k) => [k, sortKeysDeep(v[k])]),
         )
       : v;
-// Rule 3c compares only what changes the run: an area move, a new `protects`,
+// The selection compares only what changes the run: an area move, a new `protects`,
 // `testName` or `reaimed` item leaves the mutation and its test as they were.
 // The fields are the kind's `runFields`, behind `kind` itself.
 export const RUN_FIELDS = Object.freeze(['kind', ...patchKind.runFields]);

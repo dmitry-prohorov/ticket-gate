@@ -273,7 +273,7 @@ export async function runNightly(
       io.writeFile(marker, `${sha}\n`);
     }
 
-    // (6) env files: the main checkout's, copied as is (N-R1, hard rule 7)
+    // (6) env files: the main checkout's, copied as is; secrets in them are never logged
     for (const e of tree.env ?? []) {
       const src = join(main, e.path);
       if (!io.exists(src) && e.require === undefined) return fail(e.reason);

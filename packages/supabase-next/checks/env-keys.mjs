@@ -26,7 +26,7 @@ import { join } from 'node:path';
 
 // The default local JWT secret of every `supabase start` stack. Published by
 // Supabase, identical on every machine, and worthless against any hosted
-// project. It is not a secret (AGENTS.md hard rule 7 is about real keys).
+// project. It is not a secret.
 const LOCAL_DEMO_JWT_SECRET =
   'super-secret-jwt-token-with-at-least-32-characters-long';
 

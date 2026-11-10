@@ -59,7 +59,7 @@ const redDrift = (drift, flakySpecs) => ({
   drift,
 });
 
-/** Status of one run: error when there is no summary, red, amber, else green (N-R2 promotion). */
+/** Status of one run: error when there is no summary, red, amber, else green. */
 export function classifyRun({
   summary,
   reason,

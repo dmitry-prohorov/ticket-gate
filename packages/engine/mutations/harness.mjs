@@ -1,6 +1,6 @@
 // Sessions and harnesses (entry kinds and setup): which session runs an entry, and
 // how a patch is put on disk and taken off again. The pure grouping and
-// attribution functions disjointGroups/attribute (proposal 4.7a) join this
+// attribution functions disjointGroups/attribute join this
 // file; none names a platform.
 import { patchedSource } from './locate.mjs';
 import { tail, verdict } from './verdict.mjs';

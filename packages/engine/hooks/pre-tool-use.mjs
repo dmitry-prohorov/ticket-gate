@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 // PreToolUse hook for Claude Code: agents may push a feature branch and open
-// or edit its PR, but never rewrite shared history or land code (AGENTS.md
-// hard rule 16). Denied:
+// or edit its PR, but never rewrite shared history or land code. Denied:
 //   - `git push` with a force flag (-f, --force, --force-with-lease,
 //     --force-if-includes), a `+refspec`, --mirror, --all, --prune or a delete
 //     (-d, --delete, `:branch`);
@@ -9,7 +8,6 @@
 //     while main or master is checked out;
 //   - `gh pr merge|close`, `gh repo sync`, and a writing `gh api` call;
 //   - MCP git_push (it bypasses the refspec checks; push from Bash instead).
-// This mirrors .cursor/hooks/block-git-push.py.
 
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -94,7 +92,7 @@ const deny = (why) => {
       hookSpecificOutput: {
         hookEventName: 'PreToolUse',
         permissionDecision: 'deny',
-        permissionDecisionReason: `Blocked (AGENTS.md rule 16): ${why}. Agents may push a feature branch and open or edit its PR; they never force-push, delete a remote branch, push to main or master, merge or close a PR, sync a repo or make a writing gh api call. Do not retry another way; print the exact command for the user to run.`,
+        permissionDecisionReason: `Blocked by the ticket-gate push guard: ${why}. Agents may push a feature branch and open or edit its PR; they never force-push, delete a remote branch, push to main or master, merge or close a PR, sync a repo or make a writing gh api call. Do not retry another way; print the exact command for the user to run.`,
       },
     }),
   );

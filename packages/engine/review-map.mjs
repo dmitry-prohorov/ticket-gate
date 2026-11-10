@@ -392,7 +392,7 @@ export function renderMarkdown(map, { machine = 'count' } = {}) {
 export function renderSizeLine(size, { color = false } = {}) {
   const L = size.lines;
   const lines = [
-    `Size: ${L} changed lines (tests, e2e, .maestro, docs, db.types.ts, lockfile and i18n tables excluded).`,
+    `Size: ${L} changed lines (files in reviewMap.sizeExcluded not counted).`,
   ];
   const level = sizeLevel(L);
   if (level === 'warn' || level === 'oversize') {
@@ -401,7 +401,7 @@ export function renderSizeLine(size, { color = false } = {}) {
         `WARNING: ${L} > ${SIZE_WARN} changed lines: split candidate (${config.reviewMap.splitHint}).`,
       );
     else {
-      const o = `OVERSIZE: ${L} > ${SIZE_OVERSIZE} changed lines: the DoD gate blocks unless contracts/<ID>.md section 1 has an "oversize-accepted: <reason>" line.`;
+      const o = `OVERSIZE: ${L} > ${SIZE_OVERSIZE} changed lines: the DoD gate blocks unless ${config.dod?.contract.replace('{id}', '<ID>') ?? 'the ticket contract'} section 1 has an "oversize-accepted: <reason>" line.`;
       lines.push(color ? `\x1b[31m${o}\x1b[0m` : o);
     }
   }

@@ -3,7 +3,7 @@
 //
 // Blocks exactly one failure mode, the one that cost a full dev round on
 // a past ticket: an agent ticks a Definition-of-Done checkbox in a phase file
-// while the commands AGENTS.md requires are red, were skipped, or were never
+// while the configured verify command's steps are red, were skipped, or were never
 // run.
 //
 // It is deliberately cheap. It runs no test suite; it only reads the receipt
@@ -269,7 +269,7 @@ for (const id of FU ? tickedTickets : []) {
     const m = in80 && CONTRACT_FU.exec(raw.trim());
     if (!m) continue;
     const [, fu, verdict] = m;
-    const where = `contracts/${id}.md section 8.0 says ${fu} ${verdict}`;
+    const where = `${dod.contract.replace('{id}', id)} section 8.0 says ${fu} ${verdict}`;
     const file = `${FU.dir}/${fileIdOf(fu)}.md`;
     const text = followUpText(fu);
     if (text === null) {
@@ -305,8 +305,7 @@ if (followUpProblems.length) {
     `${ticked}\n\n` +
       'The follow-up files do not match what the contract says this ticket closes:\n' +
       followUpProblems.map((p) => `  ${p}`).join('\n') +
-      `\n\nUpdate ${FU.dir}/ as the orchestrator prompt's "Closing follow-ups" ` +
-      `step says: run \`${CMD.fu} close <FU> --by <ID> --sha <sha>\` for each \`closes\` FU, and add a ` +
+      `\n\nUpdate ${FU.dir}/: run \`${CMD.fu} close <FU> --by <ID> --sha <sha>\` for each \`closes\` FU, and add a ` +
       "`PARTIAL: <ID> ...` note to each `PARTIAL` one's body. If a fix was not made, mark it " +
       '`declined` in section 8.0 with the reason instead.',
   );
@@ -318,8 +317,8 @@ try {
 } catch {
   block(
     `${ticked}\n\n` +
-      'No verification receipt exists. AGENTS.md requires the "commands before done" to pass ' +
-      'before a ticket is declared done.\n\n' +
+      'No verification receipt exists. The verify command must pass before a ticket is ' +
+      'declared done.\n\n' +
       `Run \`${CMD.verify}\`, paste its output into the PR body, and only then leave the ` +
       'checkboxes ticked. If a box depends on a human-only step, untick it and list it under ' +
       '"Human steps" instead.',
