@@ -1,0 +1,314 @@
+{
+  "INFRA-14/M1": {
+    "kind": "patch",
+    "protects": "3 I2/I3 DS-2 unknown TOC type",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": "throw new Error(`unknown TOC type '${e.type}' for '${e.name}'`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DS-2 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-14/M2": {
+    "kind": "patch",
+    "protects": "3 I3/I7 DS-3 entry with no table",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": "throw new Error(`no table for ${e.type} '${e.name}'`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DS-3 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-14/M3": {
+    "kind": "patch",
+    "protects": "3 I5 DS-4 restrict lines dropped",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": "const RESTRICT = /^(?:--\\s*)?\\\\(?:un)?restrict\\b/;",
+    "replace": "const RESTRICT = /(?!)/;",
+    "test": "node --test --test-name-pattern='^DS-4 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-14/M4": {
+    "kind": "patch",
+    "protects": "3 I5 DS-4 SET lines dropped",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": "const SET_LINE = /^SET (?:statement_timeout|lock_timeout|idle_in_transaction_session_timeout|transaction_timeout|client_encoding|standard_conforming_strings|check_function_bodies|xmloption|client_min_messages|row_security|default_tablespace|default_table_access_method) = .*;$/;",
+    "replace": "const SET_LINE = /(?!)/;",
+    "test": "node --test --test-name-pattern='^DS-4 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-14/M5": {
+    "kind": "patch",
+    "protects": "3 I8 DS-5 overloads ordered by signature",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": "group.sort((a, b) => (a.sig < b.sig ? -1 : a.sig > b.sig ? 1 : 0));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DS-5 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-14/M6": {
+    "kind": "patch",
+    "protects": "3 I6 DS-7 stale file deleted",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": "for (const rel of stale) rmSync(join(outDir, rel));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DS-7 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-14/M7": {
+    "kind": "patch",
+    "protects": "3 I4 DS-9 table-less dump refused",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": "if (![...files.keys()].some((p) => p.startsWith('tables/'))) throw new Error(`the dump has no table: run ${reset} first`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DS-9 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside; the pnpm db:reset hint is the reset option"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-14/M8": {
+    "kind": "patch",
+    "protects": "3 I9 DS-10 cron $$ command refused",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": "if (row.command.includes('$$')) throw new Error(`cron job '${row.jobname}' command contains $$`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^DS-10 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-10 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-14/M13": {
+    "kind": "patch",
+    "protects": "3 DS-4 normalise() trims trailing blanks on entry-body lines",
+    "file": "packages/supabase-next/checks/db-schema.mjs",
+    "find": ".map((l) => l.replace(/[ \\t]+$/, ''));",
+    "replace": ".map((l) => l);",
+    "test": "node --test --test-name-pattern='^DS-4 ' packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/db-schema.test.mjs",
+    "testName": "DS-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/db-schema.mjs -> tools/checks/supabase-next/db-schema.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/db-schema.mjs -> packages/supabase-next/checks/db-schema.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-18/M5": {
+    "kind": "patch",
+    "protects": "G4/G11 group kill in runBounded",
+    "file": "packages/supabase-next/checks/kill-group.mjs",
+    "find": "export const killGroup = (pid, sig) => process.kill(-pid, sig);",
+    "replace": "export const killGroup = (pid, sig) => process.kill(pid, sig);",
+    "test": "node --test --test-name-pattern='^SP-B1 ' packages/supabase-next/test/checks/stack-preflight.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/stack-preflight.test.mjs",
+    "testName": "SP-B1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-47",
+        "why": "moved: tools/stack-preflight.mjs -> tools/kill-group.mjs (breaks the gate.config.mjs -> mutate-check -> stack-preflight cycle)"
+      },
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/kill-group.mjs -> tools/checks/supabase-next/kill-group.mjs; test moved to tools/checks/supabase-next/"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/kill-group.mjs -> packages/supabase-next/checks/kill-group.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-18/M7": {
+    "kind": "patch",
+    "protects": "G8 db unhealthy past grace",
+    "file": "packages/supabase-next/checks/stack-preflight.mjs",
+    "find": "export const GRACE_S = 60;",
+    "replace": "export const GRACE_S = 1e9;",
+    "test": "node --test --test-name-pattern='^SP-2 ' packages/supabase-next/test/checks/stack-preflight.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/stack-preflight.test.mjs",
+    "testName": "SP-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/stack-preflight.mjs -> tools/checks/supabase-next/stack-preflight.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/stack-preflight.mjs -> packages/supabase-next/checks/stack-preflight.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-18/M8": {
+    "kind": "patch",
+    "protects": "G8 unrecognised names fail",
+    "file": "packages/supabase-next/checks/stack-preflight.mjs",
+    "find": "if (unknown.length > 0) return { problems: [unrecognised(text)], warnings: [], transient: false };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SP-13 ' packages/supabase-next/test/checks/stack-preflight.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/stack-preflight.test.mjs",
+    "testName": "SP-13 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/stack-preflight.mjs -> tools/checks/supabase-next/stack-preflight.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/stack-preflight.mjs -> packages/supabase-next/checks/stack-preflight.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-18/M10": {
+    "kind": "patch",
+    "protects": "INFRA-18 G8 test SP-9: the preflight refuses when another process holds port 3000; without it e2e runs against a foreign server",
+    "file": "packages/supabase-next/checks/stack-preflight.mjs",
+    "find": "const holder = await io.portHolder(3000);",
+    "replace": "const holder = null;",
+    "test": "node --test --test-name-pattern='^SP-9 ' packages/supabase-next/test/checks/stack-preflight.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/stack-preflight.test.mjs",
+    "testName": "SP-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-75",
+        "why": "moved: tools/stack-preflight.mjs -> tools/checks/supabase-next/stack-preflight.mjs; test moved alongside"
+      },
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/stack-preflight.mjs -> packages/supabase-next/checks/stack-preflight.mjs; test alongside under test/checks/"
+      }
+    ]
+  },
+  "INFRA-75/M1": {
+    "kind": "patch",
+    "protects": "INFRA-75 5-6 env-keys refuses an anon key whose HMAC does not verify against the local demo secret",
+    "file": "packages/supabase-next/checks/env-keys.mjs",
+    "find": "if (!signatureIsValid(header, payload, signature)) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^EK-1 ' packages/supabase-next/test/checks/env-keys.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/env-keys.test.mjs",
+    "testName": "EK-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/env-keys.mjs -> packages/supabase-next/checks/env-keys.mjs; test alongside under test/checks/; test renamed INFRA-75 5-6 -> EK-1"
+      }
+    ]
+  },
+  "INFRA-75/M2": {
+    "kind": "patch",
+    "protects": "INFRA-75 5-6 env-keys refuses a non-anon key in a committed template",
+    "file": "packages/supabase-next/checks/env-keys.mjs",
+    "find": "if (claims.role !== 'anon') {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^EK-1 ' packages/supabase-next/test/checks/env-keys.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/env-keys.test.mjs",
+    "testName": "EK-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/env-keys.mjs -> packages/supabase-next/checks/env-keys.mjs; test alongside under test/checks/; test renamed INFRA-75 5-6 -> EK-1"
+      }
+    ]
+  },
+  "INFRA-75/M3": {
+    "kind": "patch",
+    "protects": "INFRA-75 5-5 the preflight health command uses the short preflight wait, not the ready wait",
+    "file": "packages/supabase-next/checks/stack.mjs",
+    "find": "`${cmd} --wait=${waits.preflight} --steps=${ids.join(',')}`,",
+    "replace": "`${cmd} --wait=${waits.ready} --steps=${ids.join(',')}`,",
+    "test": "node --test --test-name-pattern='^SK-2 ' packages/supabase-next/test/checks/stack.test.mjs",
+    "testFile": "packages/supabase-next/test/checks/stack.test.mjs",
+    "testName": "SK-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77b",
+        "why": "export: tools/checks/supabase-next/stack.mjs -> packages/supabase-next/checks/stack.mjs; test alongside under test/checks/; test renamed INFRA-75 5-5 -> SK-2"
+      }
+    ]
+  }
+}

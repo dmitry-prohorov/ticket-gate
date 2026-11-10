@@ -1,0 +1,17 @@
+[
+  {
+    "jobname": "notify-dispatch",
+    "schedule": "* * * * *",
+    "command": " select public.invoke_edge_function('notify-dispatch', '{\"mode\":\"send\"}'::jsonb); "
+  },
+  {
+    "jobname": "owner's-housekeeping",
+    "schedule": "0 3 * * *",
+    "command": "\n    delete from public.invitations where expires_at < now() - interval '30 days' and accepted_at is null;\n  "
+  },
+  {
+    "jobname": "materialize-reminders",
+    "schedule": "* * * * *",
+    "command": " select public.invoke_edge_function('materialize-reminders', '{\"mode\":\"queue\"}'::jsonb); "
+  }
+]

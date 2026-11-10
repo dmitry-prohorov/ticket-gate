@@ -107,7 +107,15 @@ function packList(name) {
 test('INFRA-47 5-5 tarballs ship no tests', () => {
   const required = {
     engine: ['LICENSE', 'README.md', 'package.json', 'bin/ticket-gate.mjs', 'config.mjs'],
-    'supabase-next': ['LICENSE', 'README.md', 'package.json', 'index.mjs'],
+    'supabase-next': [
+      'LICENSE',
+      'README.md',
+      'package.json',
+      'index.mjs',
+      'commands.mjs',
+      'checks/db-schema.mjs',
+      'checks/stack-preflight.mjs',
+    ],
     react: ['LICENSE', 'README.md', 'package.json', 'compiler.mjs'],
   };
   for (const name of PACKAGES) {
