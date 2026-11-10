@@ -90,8 +90,9 @@ export function publishProblems(src) {
 
 test('INFRA-47 5-10a only a tag push triggers publish', () => {
   assert.deepEqual(triggerProblems(text()), []);
+  // ci.yml is the read-only check workflow (test/ci-workflow.test.mjs); nothing else may exist.
   const workflows = repoFiles().filter((f) => f.startsWith('.github/'));
-  assert.deepEqual(workflows, [WORKFLOW], 'a second workflow or .github file exists');
+  assert.deepEqual(workflows, ['.github/workflows/ci.yml', WORKFLOW], 'a third workflow or .github file exists');
 });
 
 test('INFRA-47 5-10a the trigger check rejects planted triggers', () => {

@@ -67,6 +67,8 @@ export function scopeHits(root, files) {
   for (const f of files) {
     if (!f.endsWith('.mjs')) continue;
     if (/^packages\/[^/]+\/test\/fixtures\//.test(f)) continue;
+    // An example is a consumer's project: it imports the packages by name, as a reader's would.
+    if (/^examples\//.test(f)) continue;
     if (readFileSync(join(root, f), 'utf8').includes(SCOPE)) hits.push(f);
   }
   return hits;

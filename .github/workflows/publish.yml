@@ -1,7 +1,7 @@
 name: publish
 
-# Publishes both packages with provenance when a version tag is pushed. This is the only
-# workflow. It authenticates to npm with a short-lived OIDC token (trusted publishing), so
+# Publishes the packages with provenance when a version tag is pushed. It is the only workflow
+# that writes anywhere (ci.yml only reads). It authenticates to npm with a short-lived OIDC token (trusted publishing), so
 # it holds no registry secret. The npm-publish environment requires a reviewer.
 on:
   push:

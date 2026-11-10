@@ -1,12 +1,46 @@
 # ticket-gate
 
+[![CI](https://github.com/dmitry-prohorov/ticket-gate/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dmitry-prohorov/ticket-gate/actions/workflows/ci.yml)
+[![tests](https://img.shields.io/github/check-runs/dmitry-prohorov/ticket-gate/main?nameFilter=tests&label=tests&logo=github)](https://github.com/dmitry-prohorov/ticket-gate/actions/workflows/ci.yml)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D22-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![runtime dependencies](https://img.shields.io/badge/runtime%20dependencies-0-brightgreen)](packages/engine/package.json)
+[![Claude Code hooks](https://img.shields.io/badge/Claude%20Code-hooks-D97757?logo=anthropic&logoColor=white)](docs/getting-started.md#4-connect-the-hooks-to-claude-code)
+[![licence](https://img.shields.io/badge/licence-Apache--2.0-blue)](LICENSE)
+
 A configurable verification gate for agent-driven ticket work. It decides which checks a change requires, runs them in
 order, records a receipt of the result, and blocks an agent from declaring work done while that receipt is missing, stale
 or red. Projects describe their own steps in a `gate.config.mjs`; the engine ships no project knowledge.
 
 This is a pre-release (`0.1.0-rc.1`). The configuration surface may still change before `0.1.0`.
 
-Why it exists, why it is not assembled from existing tools, and why it is a separate repository: [docs/why.md](docs/why.md).
+## Documentation
+
+| Page | Read it to |
+|---|---|
+| [Getting started](docs/getting-started.md) | set up a gate in a project and connect the hooks, step by step |
+| [examples/basic](examples/basic) | copy a complete, tested project: config, DoD file, contract, hook settings |
+| [Configuration reference](docs/configuration.md) | look up every `defineGate` key, its default and what it does |
+| [Why ticket-gate exists](docs/why.md) | understand the problem, the alternatives considered, and the known limits |
+| This README | see the packages, the commands, and the larger features (mutation registry, score gate, selection) |
+
+## How it works in one minute
+
+```
+ agent edits code ──► ticket-gate verify ──► .turbo/ticket-verify.json (the receipt)
+                        │                         │
+                        │ runs only the steps     │ bound to the tree hash,
+                        │ the diff selects        │ green or red per step
+                        ▼                         ▼
+                   PR summary + review map   Stop hook: a ticked DoD box needs a
+                                             green receipt for this exact tree
+```
+
+1. `ticket-gate verify` diffs the branch against `base`, runs each step whose `when` matches a changed path (or reuses an
+   earlier green result on identical inputs), writes the receipt, and prints a summary to paste into the pull request.
+2. The **review map** puts each changed file in HUMAN, GATED or MACHINE, so the reviewer knows what to read.
+3. When the agent tries to stop, the **Stop hook** looks for newly ticked Definition of Done checkboxes. It blocks if the
+   receipt is missing, red or stale, or if a `(human)` box was ticked.
+4. The **PreToolUse hook** lets the agent push its feature branch, and denies force pushes, pushes to `main` and merges.
 
 ## Packages
 
@@ -67,11 +101,32 @@ export default defineGate({
   reviewMap: {
     rules: [],
   },
+  dod: {
+    files: ['tickets/phase-*.md'],
+    contract: 'tickets/{id}.md',
+  },
 });
 ```
 
-A step runs when its `when` matches the diff (`true` always runs it). `reuse: false` reruns a step every time; `reuse: { deny: [...] }` lets an earlier result stand and lists the paths that cannot affect the step. The engine validates the file on load and names the
-key to fix when something is wrong.
+A step runs when its `when` matches the diff (`true` always runs it). `reuse: false` reruns a step every time; `reuse: { deny: [...] }` lets an earlier result stand and lists the paths that cannot affect the step. `dod` names the Markdown files whose
+checkboxes the Stop hook guards; the hooks require it. With no `reviewMap.rules`, every changed file is HUMAN. The engine
+validates the file on load and names the key to fix when something is wrong.
+
+Then connect the hooks in `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "Stop": [{ "hooks": [{ "type": "command", "command": "npx --no-install ticket-gate hook stop" }] }],
+    "PreToolUse": [
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "npx --no-install ticket-gate hook pre-tool-use" }] }
+    ]
+  }
+}
+```
+
+and run `npx ticket-gate verify --dry-run` to see the plan. [Getting started](docs/getting-started.md) walks through each
+part; [examples/basic](examples/basic) is the same setup as a complete project.
 
 ## The mutation registry
 
@@ -178,7 +233,8 @@ pnpm test                         # every test, offline
 pnpm run check                    # pnpm test, the scrub (below), then the mutation registry check
 ```
 
-`pnpm run check` is the gate for a pull request. The scrub (`scripts/scrub.mjs`) scans the working tree and every commit
+`pnpm run check` is the gate for a pull request; the `CI` workflow (`.github/workflows/ci.yml`) runs it on every pull
+request and every push to `main`, with the tests on Node.js 22 and 24. It only reads: no secret, no write permission. The scrub (`scripts/scrub.mjs`) scans the working tree and every commit
 for material that does not belong in a public repository: hosted project references, tokens, user-shaped paths, planning
 documents, non-public email addresses. It reads an optional private denylist from the file named by `TICKET_GATE_DENYLIST`
 (a path outside every git work tree); without it the two denylist rows report `SKIPPED`.

@@ -1,0 +1,74 @@
+name: CI
+
+# Runs the pull-request gate (`pnpm run check`) on every pull request and on every push to main.
+# It only reads: no secret, no write permission, no publish. The README badges read this
+# workflow's status (CI) and the status of its `tests` job (tests).
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: tests (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.node }}
+
+      - run: corepack enable
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+
+  # One check run named exactly `tests`, green only when every Node version passed.
+  tests:
+    name: tests
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every Node version to pass
+        env:
+          RESULT: ${{ needs.test.result }}
+        run: test "$RESULT" = success
+
+  check:
+    name: scrub and mutation registry
+    runs-on: ubuntu-latest
+    steps:
+      # The scrub reads every commit, so fetch the whole history.
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+
+      - run: corepack enable
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm run scrub
+
+      - run: pnpm run mutations:check

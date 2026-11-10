@@ -48,4 +48,8 @@ npm install --save-exact --save-dev @ticket-gate/engine@0.1.0-rc.1 @ticket-gate/
 What the gate does, how to configure it and how to release it are in the repository README:
 https://github.com/dmitry-prohorov/ticket-gate#readme
 
+- Getting started: https://github.com/dmitry-prohorov/ticket-gate/blob/main/docs/getting-started.md
+- Configuration reference: https://github.com/dmitry-prohorov/ticket-gate/blob/main/docs/configuration.md
+- A complete example project: https://github.com/dmitry-prohorov/ticket-gate/tree/main/examples/basic
+
 Licence: Apache-2.0.

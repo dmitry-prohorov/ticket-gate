@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "npx --no-install ticket-gate hook stop" }] }
+    ],
+    "SubagentStop": [
+      { "hooks": [{ "type": "command", "command": "npx --no-install ticket-gate hook stop" }] }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "npx --no-install ticket-gate hook pre-tool-use" }]
+      }
+    ]
+  }
+}

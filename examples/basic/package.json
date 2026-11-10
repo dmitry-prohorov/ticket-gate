@@ -1,0 +1,13 @@
+{
+  "name": "ticket-gate-example-basic",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test",
+    "verify": "ticket-gate verify"
+  },
+  "devDependencies": {
+    "@ticket-gate/engine": "0.1.0-rc.1"
+  }
+}

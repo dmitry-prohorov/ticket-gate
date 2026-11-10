@@ -12,25 +12,26 @@ import { REPO, repoFiles } from './repo-files.mjs';
 
 const ALLOWED = [
   /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|\.gitignore|LICENSE|README\.md|CHANGELOG\.md|TODO\.md)$/,
-  /^docs\/why\.md$/,
+  /^docs\/(why|getting-started|configuration)\.md$/,
+  /^examples\/[a-z0-9-]+\/.+/,
   /^\.vscode\/settings\.json$/,
   /^packages\/(engine|supabase-next|react)\/.+/,
   /^scripts\/[^/]+\.mjs$/,
   /^mutation-registry\/.+\.json$/,
   /^test\/[^/]+\.mjs$/,
-  /^\.github\/workflows\/publish\.yml$/,
+  /^\.github\/workflows\/(publish|ci)\.yml$/,
 ];
 
 // Named so the failure says what is wrong, not only that a path is unlisted.
 const FORBIDDEN = [
   [/^gate\.config\.mjs$/, 'a project gate.config.mjs belongs to the consumer'],
   [/^\.ticket-gate\//, 'a project hook shim belongs to the consumer'],
-  [/^docs\/(?!why\.md$)/, 'docs/ is project material; only docs/why.md is public'],
+  [/^docs\/(?!(why|getting-started|configuration)\.md$)/, 'docs/ is project material; only the user docs pages are public'],
   [/^\.(claude|cursor|agents)\//, 'agent tooling is project material'],
   [/(^|\/)(AGENTS|MEMORY)\.md$/, 'agent memory is project material'],
   [/receipt[^/]*\.json$/, 'a receipt is a local verification artifact'],
   [/^templates\//, 'no templates ship at rc.1 (FU251)'],
-  [/^\.github\/(?!workflows\/publish\.yml$)/, 'publish.yml is the only workflow'],
+  [/^\.github\/(?!workflows\/(publish|ci)\.yml$)/, 'publish.yml and ci.yml are the only workflows'],
 ];
 
 export function shapeViolations(files) {
@@ -63,7 +64,8 @@ test('INFRA-47 5-2 the allowlist rejects each named intruder', () => {
     'AGENTS.md',
     'x.old-receipt.json',
     'templates/hook.mjs',
-    '.github/workflows/ci.yml',
+    '.github/workflows/release.yml',
+    'docs/guide.md',
     'stray.txt',
   ];
   assert.equal(shapeViolations(planted).length, planted.length);
@@ -71,6 +73,11 @@ test('INFRA-47 5-2 the allowlist rejects each named intruder', () => {
     shapeViolations([
       'packages/engine/test/fixtures/salesforce/gate.config.mjs',
       '.github/workflows/publish.yml',
+      '.github/workflows/ci.yml',
+      'docs/getting-started.md',
+      'docs/configuration.md',
+      'examples/basic/gate.config.mjs',
+      'examples/basic/.claude/settings.json',
       'README.md',
       'TODO.md',
       'docs/why.md',
