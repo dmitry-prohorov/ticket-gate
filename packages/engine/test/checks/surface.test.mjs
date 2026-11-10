@@ -236,12 +236,15 @@ test('SF-2c a pending entry needs an owner matching ownerPattern', () => {
 test('SF-2d strict and a missing baseline are input errors', () => {
   const strict = fixture({
     files: { 'tools/a.mjs': '' },
-    manifest: withSelf([entry('tools/a.mjs', 'data')], { strict: true }),
+    manifest: withSelf([entry('tools/a.mjs', 'data')], {
+      strict: 'yes',
+      budget: { check: 3, wiring: 1 },
+    }),
     baseline: BASE,
   });
   const s = strict.check();
   assert.equal(s.code, 2);
-  assert.match(s.lines[0], /^surface: strict mode is not supported yet$/);
+  assert.match(s.lines[0], /^surface: strict must be true or false$/);
 
   const missing = fixture({
     files: { 'tools/a.mjs': '' },
@@ -503,4 +506,210 @@ test('codeLines ignores quotes and comment markers inside a regex literal', () =
   const r = f.check();
   assert.equal(r.code, 1);
   assert.match(text(r), /\[rule 3\] tools\/c\.mjs: imports node:fs/);
+});
+
+const lines = (n) =>
+  Array.from({ length: n }, (_, i) => `export const v${i} = ${i};`).join('\n') +
+  '\n';
+const STRICT_BASE = { pending: [], budget: { check: 6 } };
+const strictFixture = ({ files, entries, budget, baseline = STRICT_BASE }) =>
+  fixture({
+    files,
+    manifest: withSelf(entries, { strict: true, budget }),
+    baseline,
+  });
+const CHECK_FILES = {
+  'tools/c1.mjs': `// c\n\n${lines(3)}/* x\n y */\n`,
+  'tools/c2.mjs': lines(2),
+  'tools/t.test.mjs': lines(4),
+  'tools/w.mjs': lines(4),
+  'tools/s.mjs': lines(4),
+};
+const CHECK_ENTRIES = [
+  entry(['tools/c1.mjs', 'tools/c2.mjs'], 'check'),
+  entry('tools/t.test.mjs', 'test'),
+  entry('tools/w.mjs', 'wiring'),
+  entry('tools/s.mjs', 'support'),
+];
+
+test('SF-11 strict needs budget.check and budget.wiring', () => {
+  const cases = [
+    [undefined, 'check'],
+    [{ check: -1, wiring: 1 }, 'check'],
+    [{ check: 3, wiring: 1.5 }, 'wiring'],
+    [{ check: '3', wiring: 1 }, 'check'],
+    [{ check: 3 }, 'wiring'],
+  ];
+  for (const [budget, key] of cases) {
+    const f = strictFixture({
+      files: { 'tools/a.mjs': '' },
+      entries: [entry('tools/a.mjs', 'data')],
+      budget,
+    });
+    const r = f.check();
+    assert.equal(r.code, 2, JSON.stringify(budget));
+    assert.equal(
+      r.lines[0],
+      `surface: strict needs budget.${key}, a non-negative integer`,
+    );
+  }
+});
+
+test('SF-2e a pending entry fails rule 2 in strict mode', () => {
+  const mk = (strict) =>
+    fixture({
+      files: { 'tools/a.mjs': '' },
+      manifest: withSelf([entry('tools/a.mjs', 'pending', { owner: 'TK-1' })], {
+        strict,
+        budget: { check: 9, wiring: 9 },
+      }),
+      baseline: { pending: ['tools/a.mjs'], budget: { check: 9 } },
+    });
+  const r = mk(true).check();
+  assert.equal(r.code, 1);
+  assert.match(
+    text(r),
+    /\[rule 2\] tools\/a\.mjs: pending entry in strict mode/,
+  );
+  assert.doesNotMatch(text(r), /not in the baseline|names no owner/);
+  assert.equal(mk(false).check().code, 0);
+});
+
+test('SF-5a check code lines over budget.check fail rule 5, equal passes', () => {
+  const mk = (check) =>
+    strictFixture({
+      files: CHECK_FILES,
+      entries: CHECK_ENTRIES,
+      budget: { check, wiring: 1 },
+      baseline: { pending: [], budget: { check: 9 } },
+    });
+  const over = mk(4).check();
+  assert.equal(over.code, 1);
+  assert.match(
+    text(over),
+    /\[rule 5\] tools\/surface\.json: check files have 5 code lines, over budget\.check 4/,
+  );
+  const ok = mk(5).check();
+  assert.equal(ok.code, 0, text(ok));
+  assert.equal(ok.lines.length, 4);
+  assert.equal(ok.lines[3], '  budget: check 5/5 code lines, wiring 1/1 files');
+});
+
+test('SF-5b budget.check over the baseline fails rule 5', () => {
+  const mk = (check) =>
+    strictFixture({
+      files: { 'tools/c.mjs': lines(3) },
+      entries: [entry('tools/c.mjs', 'check')],
+      budget: { check, wiring: 0 },
+      baseline: { pending: [], budget: { check: 5 } },
+    });
+  const over = mk(6).check();
+  assert.equal(over.code, 1);
+  assert.match(
+    text(over),
+    /\[rule 5\] tools\/surface\.json: budget\.check 6 is over 5 in tools\/surface-baseline\.json; the budget only goes down/,
+  );
+  const ok = mk(4).check();
+  assert.equal(ok.code, 0, text(ok));
+});
+
+test('SF-5c strict --update records budget.check and refuses a raise', () => {
+  const mk = (check, baseline = BASE) =>
+    strictFixture({
+      files: { 'tools/c.mjs': lines(3) },
+      entries: [entry('tools/c.mjs', 'check')],
+      budget: { check, wiring: 0 },
+      baseline,
+    });
+  const first = mk(6);
+  const u = first.check(['--update']);
+  assert.equal(u.code, 0, text(u));
+  assert.equal(
+    u.lines[0],
+    'surface: baseline tools/surface-baseline.json: 0 pending globs (removed 0), budget.check 6',
+  );
+  assert.deepEqual(JSON.parse(first.read(CFG.baseline)), {
+    comment: 'test baseline',
+    pending: [],
+    budget: { check: 6 },
+  });
+
+  const raise = mk(7, STRICT_BASE);
+  const before = raise.read(CFG.baseline);
+  const refused = raise.check(['--update']);
+  assert.equal(refused.code, 1);
+  assert.equal(
+    refused.lines[0],
+    'surface: refused: budget.check 7 is over 6 in tools/surface-baseline.json. A budget only goes down.',
+  );
+  assert.equal(refused.lines[1], CFG.fix);
+  assert.equal(raise.read(CFG.baseline), before);
+
+  const lower = mk(4, STRICT_BASE);
+  assert.equal(lower.check(['--update']).code, 0);
+  assert.equal(JSON.parse(lower.read(CFG.baseline)).budget.check, 4);
+});
+
+test('SF-5d strict with no baseline budget.check is an input error', () => {
+  const mk = (baseline) =>
+    strictFixture({
+      files: { 'tools/c.mjs': lines(1) },
+      entries: [entry('tools/c.mjs', 'check')],
+      budget: { check: 3, wiring: 0 },
+      baseline,
+    });
+  const none = mk(BASE).check();
+  assert.equal(none.code, 2);
+  assert.match(
+    text(none),
+    /has no budget\.check\. Fix: run the ratchet once with --update/,
+  );
+  const bad = mk({ pending: [], budget: { check: 'x' } }).check();
+  assert.equal(bad.code, 2);
+  assert.match(text(bad), /budget\.check must be a non-negative integer/);
+});
+
+test('SF-6b more wiring files than budget.wiring fail rule 6', () => {
+  const mk = (wiring) =>
+    strictFixture({
+      files: { 'tools/w1.mjs': '', 'tools/w2.mjs': '' },
+      entries: [entry(['tools/w1.mjs', 'tools/w2.mjs'], 'wiring')],
+      budget: { check: 0, wiring },
+      baseline: { pending: [], budget: { check: 0 } },
+    });
+  const over = mk(1).check();
+  assert.equal(over.code, 1);
+  assert.match(
+    text(over),
+    /\[rule 6\] tools\/surface\.json: 2 files of kind wiring \(tools\/w1\.mjs, tools\/w2\.mjs\), over budget\.wiring 1/,
+  );
+  assert.equal(mk(2).check().code, 0);
+});
+
+test('SF-9 non-strict ignores budget', () => {
+  for (const strict of [undefined, false]) {
+    const f = fixture({
+      files: {
+        'tools/c.mjs': lines(3),
+        'tools/w1.mjs': '',
+        'tools/w2.mjs': '',
+      },
+      manifest: withSelf(
+        [
+          entry('tools/c.mjs', 'check'),
+          entry(['tools/w1.mjs', 'tools/w2.mjs'], 'wiring'),
+        ],
+        { strict, budget: { check: 0, wiring: 0 } },
+      ),
+      baseline: BASE,
+    });
+    const r = f.check();
+    assert.equal(r.code, 0, text(r));
+    assert.equal(r.lines.length, 3);
+    assert.equal(f.check(['--update']).code, 0);
+    assert.deepEqual(JSON.parse(f.read(CFG.baseline)), {
+      comment: 'test baseline',
+      pending: [],
+    });
+  }
 });

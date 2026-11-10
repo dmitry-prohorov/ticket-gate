@@ -553,7 +553,12 @@
         "by": "INFRA-77a",
         "why": "export: tools/checks/engine/surface.mjs -> packages/engine/checks/surface.mjs; test tools/checks/engine/surface.test.mjs -> packages/engine/test/checks/surface.test.mjs"
       }
-    ]
+    ],
+    "retired": {
+      "by": "INFRA-82a",
+      "why": "strict is implemented; the 'not supported' throw is gone",
+      "supersededBy": "INFRA-82a/M1"
+    }
   },
   "INFRA-73/M15": {
     "kind": "patch",
@@ -602,6 +607,116 @@
         "why": "export: tools/checks/engine/docs-stale.mjs -> packages/engine/checks/docs-stale.mjs; test tools/checks/engine/docs-stale.test.mjs -> packages/engine/test/checks/docs-stale.test.mjs"
       }
     ]
+  },
+  "INFRA-82a/M1": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-2d R1 strict is a boolean",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (m.strict !== undefined && typeof m.strict !== 'boolean') throw inputError('strict must be true or false');",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-2d \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-2d "
+  },
+  "INFRA-82a/M2": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-11 R1 strict needs both budgets",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (!Number.isInteger(m.budget?.[key]) || m.budget[key] < 0) throw inputError(`strict needs budget.${key}, a non-negative integer`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-11 \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-11 "
+  },
+  "INFRA-82a/M3": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-2e rule 2 strict",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (strict) out.push([2, glob, 'pending entry in strict mode']);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-2e \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-2e "
+  },
+  "INFRA-82a/M4": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-5a rule 5 budget",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (strict && checkLines > manifest.budget.check) out.push([5, manifestPath, `check files have ${checkLines} code lines, over budget.check ${manifest.budget.check}`]);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-5a \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-5a "
+  },
+  "INFRA-82a/M5": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-5a rule 5 counts check files only",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (kind === 'check') checkLines += codeLines(text);",
+    "replace": "checkLines += codeLines(text);",
+    "test": "node --test --test-name-pattern=\"SF-5a \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-5a "
+  },
+  "INFRA-82a/M6": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-5a rule 5 boundary, equal passes",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (strict && checkLines > manifest.budget.check) out.push([5, manifestPath, `check files have ${checkLines} code lines, over budget.check ${manifest.budget.check}`]);",
+    "replace": "if (strict && checkLines >= manifest.budget.check) out.push([5, manifestPath, `check files have ${checkLines} code lines, over budget.check ${manifest.budget.check}`]);",
+    "test": "node --test --test-name-pattern=\"SF-5a \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-5a "
+  },
+  "INFRA-82a/M7": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-5b rule 5 down-only on check",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (strict && manifest.budget.check > floor) out.push([5, manifestPath, `budget.check ${manifest.budget.check} is over ${floor} in ${baselinePath}; the budget only goes down`]);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-5b \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-5b "
+  },
+  "INFRA-82a/M8": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-5c rule 5 down-only on --update",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (strict && manifest.budget.check > floor) return refuseBudget();",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-5c \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-5c "
+  },
+  "INFRA-82a/M9": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-5d R4 strict needs a floor",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (strict && !update && floor === undefined) throw inputError(`baseline ${baselinePath} has no budget.check. Fix: run the ratchet once with --update`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-5d \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-5d "
+  },
+  "INFRA-82a/M10": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-5d R4 baseline budget shape",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (b.budget !== undefined && !(Number.isInteger(b.budget?.check) && b.budget.check >= 0)) throw inputError(`baseline ${path}: budget.check must be a non-negative integer`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-5d \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-5d "
+  },
+  "INFRA-82a/M11": {
+    "kind": "patch",
+    "protects": "INFRA-82a 5 SF-6b rule 6 wiring",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "if (strict && wiring.length > manifest.budget.wiring) out.push([6, manifestPath, `${wiring.length} files of kind wiring (${wiring.join(', ')}), over budget.wiring ${manifest.budget.wiring}`]);",
+    "replace": "",
+    "test": "node --test --test-name-pattern=\"SF-6b \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-6b "
   },
   "INFRA-83b/M1": {
     "kind": "patch",
