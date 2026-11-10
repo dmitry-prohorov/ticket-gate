@@ -79,6 +79,258 @@
       }
     ]
   },
+  "INFRA-25a/M1": {
+    "kind": "patch",
+    "protects": "5.1 EA-1 a drop is detected",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (now < was) drops.push({ area, counter, was, now });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-1 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M2": {
+    "kind": "patch",
+    "protects": "5.1 EA-2 a rise fails as stale (R8)",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (now > was) rises.push({ area, counter, was, now });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-2 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M3": {
+    "kind": "patch",
+    "protects": "5.1 EA-3 receipt must be ok",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (receipt.ok !== true) return 'receipt not green';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-3 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M4": {
+    "kind": "patch",
+    "protects": "5.1 EA-4 receipt must not be partial",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (receipt.partial !== false) return 'receipt is partial';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-4 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M5": {
+    "kind": "patch",
+    "protects": "5.1 EA-5 receipt bound to this tree",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (receipt.treeHash !== io.treeHash()) return 'receipt is for another tree';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-5 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M6": {
+    "kind": "patch",
+    "protects": "5.1 EA-6 a --file run never covers",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (receipt.source !== 'registry') return 'receipt is from a --file run';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-6 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "find re-aimed: the --file receipt check reads receipt.source (INFRA-26a S5); the old ownFile compare is gone"
+      },
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M7": {
+    "kind": "patch",
+    "protects": "5.1 EA-7 mutations file unchanged since the run",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (entriesDigest(own) !== receipt.entriesDigest) return 'mutations changed';",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-7 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "find re-aimed: the specSha256 compare became the entriesDigest compare (INFRA-26a S5)"
+      },
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M8": {
+    "kind": "patch",
+    "protects": "5.1 EA-8 every dropped spec is named by a from",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "const missing = culprits.filter((spec) => !named.has(spec));",
+    "replace": "const missing = [];",
+    "test": "node --test --test-name-pattern='^EA-8 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-8 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M9": {
+    "kind": "patch",
+    "protects": "5.1 EA-9 an unguarded entry covers its spec",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "for (const [, e] of r.own) if (!e.retired && e.from) named.add(e.from);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-9 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "find re-aimed: named specs come from the ticket registry entries incl. unguarded (INFRA-26a S5)"
+      },
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M10": {
+    "kind": "patch",
+    "protects": "5.1 EA-11 --update refuses an uncovered drop",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (!cov.covered) return refuseUpdate(cov);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^EA-11 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-11 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-25a/M20": {
+    "kind": "patch",
+    "protects": "5.1 EA-13 a header that drops an area is a culprit",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "areas.has(a) && !now?.areas.split(', ').includes(a));",
+    "replace": "false);",
+    "test": "node --test --test-name-pattern='^EA-13 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-13 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
+  "INFRA-26a/M21": {
+    "kind": "patch",
+    "protects": "EA-7 own registry entries edited after the run uncover the drop",
+    "file": "packages/engine/checks/assertions.mjs",
+    "find": "if (entriesDigest(own) !== receipt.entriesDigest)",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^EA-7 ' packages/engine/test/checks/assertions.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions.test.mjs",
+    "testName": "EA-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-83a",
+        "why": "file moved: tools/check-e2e-assertions.mjs -> tools/checks/engine/assertions.mjs (engine shape, X1); test moved beside it; find unchanged"
+      },
+      {
+        "by": "INFRA-83b",
+        "why": "export: tools/checks/engine/assertions.mjs -> packages/engine/checks/assertions.mjs; test tools/checks/engine/assertions.test.mjs -> packages/engine/test/checks/assertions.test.mjs"
+      }
+    ]
+  },
   "INFRA-73/M1": {
     "kind": "patch",
     "protects": "INFRA-73 5 SF-1a an unlisted tracked file fails rule 1",
@@ -350,5 +602,45 @@
         "why": "export: tools/checks/engine/docs-stale.mjs -> packages/engine/checks/docs-stale.mjs; test tools/checks/engine/docs-stale.test.mjs -> packages/engine/test/checks/docs-stale.test.mjs"
       }
     ]
+  },
+  "INFRA-83b/M1": {
+    "kind": "patch",
+    "protects": "INFRA-83b UK-1 an unguarded entry needs from, title and why",
+    "file": "packages/engine/checks/assertions-unguarded.mjs",
+    "find": "if (!isStr(e[f])) out.push(`${f} must be a non-empty string`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^UK-1 ' packages/engine/test/checks/assertions-unguarded.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions-unguarded.test.mjs",
+    "testName": "UK-1 "
+  },
+  "INFRA-83b/M2": {
+    "kind": "patch",
+    "protects": "INFRA-83b UK-2 a from outside the configured shape is rejected",
+    "file": "packages/engine/checks/assertions-unguarded.mjs",
+    "find": "return e.from !== undefined && !from.test(String(e.from))",
+    "replace": "return false",
+    "test": "node --test --test-name-pattern='^UK-2 ' packages/engine/test/checks/assertions-unguarded.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions-unguarded.test.mjs",
+    "testName": "UK-2 "
+  },
+  "INFRA-83b/M3": {
+    "kind": "patch",
+    "protects": "INFRA-83b UK-3 the area file carries the configured prefix",
+    "file": "packages/engine/checks/assertions-unguarded.mjs",
+    "find": "`${prefix}${e.from}`",
+    "replace": "e.from",
+    "test": "node --test --test-name-pattern='^UK-3 ' packages/engine/test/checks/assertions-unguarded.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions-unguarded.test.mjs",
+    "testName": "UK-3 "
+  },
+  "INFRA-83b/M4": {
+    "kind": "patch",
+    "protects": "INFRA-83b UK-4 an unguarded entry is never run",
+    "file": "packages/engine/checks/assertions-unguarded.mjs",
+    "find": "runs: false,",
+    "replace": "runs: true,",
+    "test": "node --test --test-name-pattern='^UK-4 ' packages/engine/test/checks/assertions-unguarded.test.mjs",
+    "testFile": "packages/engine/test/checks/assertions-unguarded.test.mjs",
+    "testName": "UK-4 "
   }
 }
