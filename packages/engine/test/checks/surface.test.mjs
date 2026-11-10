@@ -470,6 +470,12 @@ test('SF-importsOf-str a quoted from, and from in a comment or string, are not s
   assert.deepEqual(importsOf(`const F = ['from', 'why'];\n${real}`), ['a', 'c', 'd', 'e', 'b']);
 });
 
+test('SF-importsOf-re a quote in a regex literal hides no import', () => {
+  assert.deepEqual(importsOf("const r = /`/;\nimport('x');\nconst t = `y`;\n"), ['x']);
+  assert.deepEqual(importsOf("const q = /['\"]/;\nimport a from 'a';\n"), ['a']);
+  assert.equal(codeLines("const r = /`/;\nimport('x');\n"), 2);
+});
+
 test('SF-8 owner counts are per glob, not per match squared', () => {
   const f = fixture({
     files: { 'tools/a.mjs': '', 'tools/b.mjs': '', 'tools/c.mjs': '' },

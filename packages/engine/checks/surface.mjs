@@ -85,9 +85,11 @@ function codeOf(text) {
     } else if (c === '/' && regexAllowed(out)) {
       out += c;
       let inClass = false;
+      // Quotes inside a regex body are blanked, so importsOf never reads one as a string start.
+      const body = (ch) => (ch === "'" || ch === '"' || ch === '`' ? ' ' : ch);
       for (i++; i < text.length && text[i] !== '\n'; i++) {
-        out += text[i];
-        if (text[i] === '\\') out += text[++i] ?? '';
+        out += body(text[i]);
+        if (text[i] === '\\') out += body(text[++i] ?? '');
         else if (text[i] === '[') inClass = true;
         else if (text[i] === ']') inClass = false;
         else if (text[i] === '/' && !inClass) break;

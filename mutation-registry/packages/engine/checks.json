@@ -728,6 +728,16 @@
     "testFile": "packages/engine/test/checks/surface.test.mjs",
     "testName": "SF-importsOf-str "
   },
+  "INFRA-82a/M13": {
+    "kind": "patch",
+    "protects": "INFRA-82a SF-importsOf-re a quote inside a regex literal does not open a string that hides imports",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "out += body(text[i]);",
+    "replace": "out += text[i];",
+    "test": "node --test --test-name-pattern=\"SF-importsOf-re \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-importsOf-re "
+  },
   "INFRA-83b/M1": {
     "kind": "patch",
     "protects": "INFRA-83b UK-1 an unguarded entry needs from, title and why",
