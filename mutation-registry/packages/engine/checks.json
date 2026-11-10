@@ -718,6 +718,16 @@
     "testFile": "packages/engine/test/checks/surface.test.mjs",
     "testName": "SF-6b "
   },
+  "INFRA-82a/M12": {
+    "kind": "patch",
+    "protects": "INFRA-82a SF-importsOf-str only a real import or export specifier counts, not a quoted from",
+    "file": "packages/engine/checks/surface.mjs",
+    "find": "new RegExp(`${STRING}|${re}`, 'gm')",
+    "replace": "new RegExp(re, 'gm')",
+    "test": "node --test --test-name-pattern=\"SF-importsOf-str \" packages/engine/test/checks/surface.test.mjs",
+    "testFile": "packages/engine/test/checks/surface.test.mjs",
+    "testName": "SF-importsOf-str "
+  },
   "INFRA-83b/M1": {
     "kind": "patch",
     "protects": "INFRA-83b UK-1 an unguarded entry needs from, title and why",

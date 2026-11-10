@@ -105,16 +105,20 @@ export function codeLines(text) {
   return codeOf(text).length;
 }
 
-/** Specifiers of `from '...'`, `import('...')` and `import '...'` on code lines. */
+/** A string literal, consumed first so a `from` or `import` inside one is never a specifier. */
+const STRING = '\'(?:[^\'\\\\\\n]|\\\\.)*\'|"(?:[^"\\\\\\n]|\\\\.)*"|`(?:[^`\\\\]|\\\\.)*`';
+
+/** Specifiers of `from '...'`, `import('...')` and `import '...'` on code lines, outside strings. */
 export function importsOf(text) {
   const code = codeOf(text).join('\n');
   const out = [];
   for (const re of [
-    /\bfrom\s*['"]([^'"]+)['"]/g,
-    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
-    /(?:^|[;{}])\s*import\s*['"]([^'"]+)['"]/gm,
+    /\bfrom\s*['"]([^'"]+)['"]/.source,
+    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/.source,
+    /(?:^|[;{}])\s*import\s*['"]([^'"]+)['"]/.source,
   ])
-    for (const m of code.matchAll(re)) out.push(m[1]);
+    for (const m of code.matchAll(new RegExp(`${STRING}|${re}`, 'gm')))
+      if (m[1] !== undefined) out.push(m[1]);
   return out;
 }
 

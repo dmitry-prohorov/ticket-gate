@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `@ticket-gate/engine`: fix: the surface ratchet read a quoted `'from'` (for example in a config array) as an import specifier; `importsOf` now skips string literals, so only real `import` and `export ... from` specifiers count; guarded by `INFRA-82a/M12`.
 - `@ticket-gate/engine`: the surface ratchet's `strict` mode: a `pending` entry fails, the code lines of `check` files over `budget.check` fail, more than `budget.wiring` files of kind `wiring` fail, and `budget.check` may only go down against the baseline (`--update` records it and refuses a raise); `strict: true` without both budgets is exit 2; non-strict is unchanged; the guards are registered in `mutation-registry/`.
 - `@ticket-gate/react`: `reactProfile({ config, runs, scenarios, keepTraces })` (`profile.mjs`), a nightly suite runner that profiles the build in a child process, records the median renders per scenario against budgets, goes amber for an advisory budget and red for a blocking one or for no numbers, names suspect merges, and hints when a scenario is stable enough to block; the guards are registered in `mutation-registry/`.
 - `@ticket-gate/engine`: `serve()` escalates a SIGINT during the build: the signal goes to the build's group, and a build still running after 5 s is killed with SIGKILL before the run exits 130, so a build that ignores SIGINT no longer outlives the run; a second SIGINT starts no second escalation.

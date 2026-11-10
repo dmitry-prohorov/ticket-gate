@@ -462,6 +462,14 @@ test('SF-importsOf finds from, dynamic and bare imports on code lines only', () 
   assert.deepEqual(importsOf(src), ['x', 'w', 'z']);
 });
 
+test('SF-importsOf-str a quoted from, and from in a comment or string, are not specifiers', () => {
+  assert.deepEqual(importsOf("const F = ['kind', 'from', 'why'];\n"), []);
+  assert.deepEqual(importsOf('const s = "x from \'y\'";\n// import a from \'c\'\n'), []);
+  const real =
+    "import a from 'a';\nimport 'b';\nexport * from 'c';\nexport { d } from 'd';\nconst m = await import('e');\n";
+  assert.deepEqual(importsOf(`const F = ['from', 'why'];\n${real}`), ['a', 'c', 'd', 'e', 'b']);
+});
+
 test('SF-8 owner counts are per glob, not per match squared', () => {
   const f = fixture({
     files: { 'tools/a.mjs': '', 'tools/b.mjs': '', 'tools/c.mjs': '' },
