@@ -1802,12 +1802,18 @@
   "INFRA-58a/M5": {
     "kind": "patch",
     "protects": "5 PH-1 packHooksAll collects each pack hook in packs order",
-    "file": "packages/engine/pack-hooks.mjs",
+    "file": "packages/engine/pack-hooks-all.mjs",
     "find": "out.push({ by: pack.name, value: pack[name] });",
     "replace": "",
     "test": "node --test --test-name-pattern='^PH-1 ' packages/engine/test/mutations/pack-hooks.test.mjs",
     "testFile": "packages/engine/test/mutations/pack-hooks.test.mjs",
-    "testName": "PH-1 "
+    "testName": "PH-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-66",
+        "why": "packHooksAll moved to a no-import module so config.mjs can read pack hooks without loading the project config: packages/engine/pack-hooks.mjs -> packages/engine/pack-hooks-all.mjs; test unchanged"
+      }
+    ]
   },
   "INFRA-62b/M6": {
     "kind": "patch",
@@ -1858,5 +1864,65 @@
     "test": "node --test --test-name-pattern='^GS-6 ' packages/engine/test/score-config.test.mjs",
     "testFile": "packages/engine/test/score-config.test.mjs",
     "testName": "GS-6 "
+  },
+  "INFRA-66/M3": {
+    "kind": "patch",
+    "protects": "SL-2 a name given by two packs is a config error naming both",
+    "file": "packages/engine/selection-config.mjs",
+    "find": "if (seen.has(item.name))",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^SL-2 ' packages/engine/test/selection-config.test.mjs",
+    "testFile": "packages/engine/test/selection-config.test.mjs",
+    "testName": "SL-2 "
+  },
+  "INFRA-66/M4": {
+    "kind": "patch",
+    "protects": "SL-4 pack rules run after the config rules",
+    "file": "packages/engine/selection-config.mjs",
+    "find": "if (own !== undefined) add(\"gate.config\", own);\n  for (const { by, value } of packHooksAll(hook, config)) add(by, value);",
+    "replace": "for (const { by, value } of packHooksAll(hook, config)) add(by, value);\n  if (own !== undefined) add(\"gate.config\", own);",
+    "test": "node --test --test-name-pattern='^SL-4 ' packages/engine/test/selection-config.test.mjs",
+    "testFile": "packages/engine/test/selection-config.test.mjs",
+    "testName": "SL-4 "
+  },
+  "INFRA-66/M5": {
+    "kind": "patch",
+    "protects": "SL-5 an unknown runner name is a config error",
+    "file": "packages/engine/selection-config.mjs",
+    "find": "fail(\"selection\", `no test runner named \"${runner}\"`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SL-5 ' packages/engine/test/selection-config.test.mjs",
+    "testFile": "packages/engine/test/selection-config.test.mjs",
+    "testName": "SL-5 "
+  },
+  "INFRA-66/M6": {
+    "kind": "patch",
+    "protects": "SL-6 selectionOf validates config.selection",
+    "file": "packages/engine/config.mjs",
+    "find": "selection: selectionOf(config, fail)",
+    "replace": "selection: config.selection",
+    "test": "node --test --test-name-pattern='^SL-6 ' packages/engine/test/selection-config.test.mjs",
+    "testFile": "packages/engine/test/selection-config.test.mjs",
+    "testName": "SL-6 "
+  },
+  "INFRA-66/M7": {
+    "kind": "patch",
+    "protects": "SL-8 two steps carrying nightly units are a config error",
+    "file": "packages/engine/config.mjs",
+    "find": "fail('steps', `only one step may carry nightly units: ${nightly[0].id}, ${nightly[1].id}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SL-8 ' packages/engine/test/selection-config.test.mjs",
+    "testFile": "packages/engine/test/selection-config.test.mjs",
+    "testName": "SL-8 "
+  },
+  "INFRA-66/M15": {
+    "kind": "patch",
+    "protects": "CW-1 nightlyStepOf finds the nightly-units step whatever its id",
+    "file": "packages/engine/plan.mjs",
+    "find": "(s) => s.units?.nightly",
+    "replace": "(s) => s.id === 'e2e'",
+    "test": "node --test --test-name-pattern='^CW-1 ' packages/engine/test/selection-config.test.mjs",
+    "testFile": "packages/engine/test/selection-config.test.mjs",
+    "testName": "CW-1 "
   }
 }

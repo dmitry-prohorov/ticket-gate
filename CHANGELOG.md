@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `@ticket-gate/engine`: affected-spec selection (`ticket-gate select`, `ticket-gate select check`), the `selection` key of `defineGate`, the graph sources (`graph/`), the Playwright runner (`runners/playwright.mjs`) and the selection engine (`selection/`); `selectionGraphs`, `selectionRules` and `testRunners` pack hooks are collected with `packHooksAll` (a duplicate name is a config error naming both packs); the selection guards are registered in `mutation-registry/`.
+- `@ticket-gate/engine`: `nightlyUnits({ selection, suite, full, runFrom })` (`selection/units.mjs`) is the `units` of a nightly-backed step; the Stop hook judges every unit result that carries a `mode`, not only a step named `e2e`.
+- `@ticket-gate/supabase-next`: removed the `e2e` hook and `e2eUnits()`; the `nightly` hook gains `read()`; adds the selection building blocks `supabaseFunctions`, `nextAppRoutes` and `workspaceExports`.
 - `@ticket-gate/engine`: the mutation score gate (`ticket-gate score`, the `score` key of `defineGate`, the Stryker adapter at `score/adapters/stryker.mjs`); a report that cannot be read or whose `schemaVersion` is not 1.x or 2.x exits 2; the score guards are registered in `mutation-registry/`.
 - `@ticket-gate/supabase-next`: `pnpmFilterInstall(filter)` builds the `score.baseInstall` of a pnpm workspace package.
 - `@ticket-gate/engine`: the mutation engine (`ticket-gate mutate`, `ticket-gate mutations check|select`), the `mutations` key of `defineGate`, `packHooksAll` for hooks every pack contributes to, and the `mutation-registry/` of this repository's own guards.

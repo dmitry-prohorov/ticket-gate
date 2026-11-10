@@ -243,3 +243,16 @@ test("GE-6 an affected result with a selected spec failed or absent from specs b
   assert.equal(out?.decision, "block");
   assert.match(out.reason, MSG);
 });
+
+test("GE-7 a result with another id carrying mode affected and a stale nightly blocks naming that id", () => {
+  const MSG =
+    /apex ran in affected mode without a fresh green or amber nightly: re-run `ticket-gate verify` \(it falls back to full\)/;
+  const { e2eReceipt, gate } = e2eProject();
+  e2eReceipt({ id: "apex", nightly: nightly({ status: "red" }) });
+  const out = gate();
+  assert.equal(out?.decision, "block");
+  assert.match(out.reason, MSG);
+  // control: the same result with a fresh green nightly approves
+  e2eReceipt({ id: "apex" });
+  assert.equal(gate(), null);
+});

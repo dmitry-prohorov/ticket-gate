@@ -8,6 +8,11 @@ With `supabaseNext({ mutations })` it also contributes the SQL mutation kind and
 
 `pnpmFilterInstall(filter)` (from `score.mjs`) builds the `score.baseInstall` of a pnpm workspace package for the engine's `score` gate.
 
+The pack's `nightly` hook has `read()`, the nightly record `{ latest, history }` that the engine's `nightlyUnits` plans from.
+The `e2e` hook and `e2eUnits()` of earlier release candidates are removed: the selection and the units slot live in the engine. The pack
+exports building blocks for the engine's selection hooks (`selection/supabase-rules.mjs`, `selection/next-routes.mjs`,
+`selection/workspace-exports.mjs`).
+
 A pack is optional. The engine reaches it only through the `packs` key of a project's `gate.config.mjs`; the
 project supplies the project-specific tools the pack calls. This package depends on the engine at the same exact
 version.

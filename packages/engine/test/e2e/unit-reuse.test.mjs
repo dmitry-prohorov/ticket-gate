@@ -1,12 +1,12 @@
-// e2e units are ledgered per unit and reused only on an identical unit digest.
+// Nightly-backed units are ledgered per unit and reused only on an identical unit digest.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { enterScratchProject } from "../../engine/test/scratch-project.mjs";
+import { enterScratchProject } from "../scratch-project.mjs";
 
-// the pack reads the project root through the engine at import
+// the planner reads the project root through the engine at import
 enterScratchProject();
-const { planSpecs } = await import("../e2e-units.mjs");
+const { planSpecs } = await import("../../selection/units.mjs");
 
 test("EI-5 units are reused only on an identical unit digest", () => {
   const line = (file, digest) => ({

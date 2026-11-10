@@ -373,14 +373,13 @@ for (const r of (receipt.results ?? []).filter((x) => x.status === 'reused')) {
   }
 }
 
-// An e2e result may come from a partial (affected) run. A receipt
-// with no mode is a full run, judged as above.
-const e2e = (receipt.results ?? []).find((x) => x.id === 'e2e');
-if (e2e) {
-  const r = e2e;
+// Any step's result may come from a partial (affected) run, whatever the step's id: a nightly-backed
+// step records a mode, selected specs and a knownRed list. A result with no mode is a full run,
+// judged as above.
+for (const r of (receipt.results ?? []).filter((x) => typeof x.id === 'string')) {
   const mode = r.mode ?? 'full';
   if (mode !== 'full' && mode !== 'affected') {
-    block(`${ticked}\n\nunknown e2e mode ${mode}: re-run \`${CMD.verify}\``);
+    block(`${ticked}\n\nunknown ${r.id} mode ${mode}: re-run \`${CMD.verify}\``);
   }
   const inside = (r.knownRed ?? []).filter((f) =>
     (r.selected ?? []).includes(f),
@@ -405,7 +404,7 @@ if (e2e) {
       )
     ) {
       block(
-        `${ticked}\n\ne2e ran in affected mode without a fresh green or amber nightly: re-run \`${CMD.verify}\` (it falls back to full)`,
+        `${ticked}\n\n${r.id} ran in affected mode without a fresh green or amber nightly: re-run \`${CMD.verify}\` (it falls back to full)`,
       );
     }
     const specs = r.specs ?? [];
@@ -419,7 +418,7 @@ if (e2e) {
       block(
         `${ticked}\n\n` +
           uncovered
-            .map((f) => `affected e2e did not pass selected spec ${f}`)
+            .map((f) => `affected ${r.id} did not pass selected spec ${f}`)
             .join('\n') +
           `\n\nRe-run \`${CMD.verify}\`.`,
       );
@@ -443,7 +442,7 @@ if (e2e) {
       }
       if (!match) {
         block(
-          `${ticked}\n\nreused e2e spec ${s.file} no longer matches its inputs: re-run \`${CMD.verify}\``,
+          `${ticked}\n\nreused ${r.id} spec ${s.file} no longer matches its inputs: re-run \`${CMD.verify}\``,
         );
       }
     }

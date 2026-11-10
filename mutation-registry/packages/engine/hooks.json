@@ -414,5 +414,15 @@
         "why": "re-registered in the public repo (D6): tools/gate/hooks/stop.mjs -> packages/engine/hooks/stop.mjs; test tools/gate-engine.test.mjs EI-3 -> packages/engine/test/engine-inputs.test.mjs EI-3"
       }
     ]
+  },
+  "INFRA-66/M14": {
+    "kind": "patch",
+    "protects": "GE-7 the stop hook judges every result with a string id",
+    "file": "packages/engine/hooks/stop.mjs",
+    "find": "(x) => typeof x.id === 'string'",
+    "replace": "(x) => x.id === 'e2e'",
+    "test": "node --test --test-name-pattern='^GE-7 ' packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testFile": "packages/engine/test/stop-hook-e2e-fu.test.mjs",
+    "testName": "GE-7 "
   }
 }

@@ -25,6 +25,10 @@ const selectorFailed = (e) => ({
 const unitsCmd = (s, sel) => s.units.cmd(sel.units, sel);
 const healthFn = (stack) => typeof stack.health === 'function';
 
+/** The step whose `units` carry the nightly-backed planner (`units.nightly`), whatever its id; or null. */
+export const nightlyStepOf = (gate) =>
+  gate.steps.find((s) => s.units?.nightly) ?? null;
+
 /** The ctx a step's `when`, `cmd` and `units.select` read. */
 export function planCtx(
   paths,

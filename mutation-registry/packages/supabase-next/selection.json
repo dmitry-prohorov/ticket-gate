@@ -1,0 +1,54 @@
+{
+  "INFRA-23a/M5": {
+    "kind": "patch",
+    "protects": "5 E-7 telegram function selects telegram",
+    "file": "packages/supabase-next/selection/supabase-rules.mjs",
+    "find": "if (sub.startsWith(prefix)) return { areas: [area] };",
+    "replace": "if (sub.startsWith(prefix)) return { areas: ['calendar'] };",
+    "test": "node --test --test-name-pattern='^E-7 ' packages/engine/test/e2e/selection/select.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/select.test.mjs",
+    "testName": "E-7 ",
+    "reaimed": [
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/e2e-select.mjs -> tools/e2e/engine/selection/select.mjs; test tools/e2e-select.test.mjs -> tools/e2e/engine/selection/select.test.mjs"
+      },
+      {
+        "by": "INFRA-65",
+        "why": "tools/e2e/engine/selection/select.mjs \"if (path.startsWith(TELEGRAM_FN)) areas.add('telegram');\" -> tools/e2e/supabase-next/supabase-rules.mjs \"if (sub.startsWith(prefix)) return { areas: [area] };\""
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/supabase-next/supabase-rules.mjs -> packages/supabase-next/selection/supabase-rules.mjs; test tools/e2e/engine/selection/select.test.mjs -> packages/engine/test/e2e/selection/select.test.mjs"
+      }
+    ]
+  },
+  "INFRA-23a/M9": {
+    "kind": "patch",
+    "protects": "5 C-3 orphan route entry",
+    "file": "packages/supabase-next/selection/next-routes.mjs",
+    "find": ".filter((e) => e.area === null)",
+    "replace": ".filter(() => false)",
+    "test": "node --test --test-name-pattern='^C-3 ' packages/engine/test/e2e/selection/check.test.mjs",
+    "testFile": "packages/engine/test/e2e/selection/check.test.mjs",
+    "testName": "C-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-26a",
+        "why": "find re-aimed: ${entry} became ${rel}"
+      },
+      {
+        "by": "INFRA-64",
+        "why": "move-only split: tools/check-e2e-areas.mjs -> tools/e2e/engine/selection/check.mjs; test tools/check-e2e-areas.test.mjs -> tools/e2e/engine/selection/check.test.mjs"
+      },
+      {
+        "by": "INFRA-65",
+        "why": "tools/e2e/engine/selection/check.mjs \"problems.push(`orphan-route ${rel}`);\" -> tools/e2e/supabase-next/next-routes.mjs \".filter((e) => e.area === null)\""
+      },
+      {
+        "by": "INFRA-66",
+        "why": "export: tools/e2e/supabase-next/next-routes.mjs -> packages/supabase-next/selection/next-routes.mjs; test tools/e2e/engine/selection/check.test.mjs -> packages/engine/test/e2e/selection/check.test.mjs"
+      }
+    ]
+  }
+}
