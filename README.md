@@ -86,8 +86,8 @@ A guard is only worth having if its test fails without it. `mutation-registry/` 
 This repository registers its own engine and pack guards the same way (`scripts/mutations.mjs` is its config):
 
 ```sh
-npm run mutations:check            # validate the registry (part of npm run check)
-npm run mutate -- --registry --all # apply every guard, expect its test to fail (run by the release script)
+pnpm run mutations:check         # validate the registry (part of pnpm run check)
+pnpm run mutate --registry --all # apply every guard, expect its test to fail (run by the release script)
 ```
 
 ## The score gate
@@ -172,12 +172,13 @@ hook of earlier release candidates is removed: a pack that provided one now prov
 ## Contributing
 
 ```sh
-npm ci            # installs the workspace links; nothing is downloaded
-npm test          # every test, offline
-npm run check     # npm test, the scrub (below), then the mutation registry check
+corepack enable                   # once: provides the pnpm version pinned in package.json
+pnpm install --frozen-lockfile    # installs the dev tools and links the workspace packages
+pnpm test                         # every test, offline
+pnpm run check                    # pnpm test, the scrub (below), then the mutation registry check
 ```
 
-`npm run check` is the gate for a pull request. The scrub (`scripts/scrub.mjs`) scans the working tree and every commit
+`pnpm run check` is the gate for a pull request. The scrub (`scripts/scrub.mjs`) scans the working tree and every commit
 for material that does not belong in a public repository: hosted project references, tokens, user-shaped paths, planning
 documents, non-public email addresses. It reads an optional private denylist from the file named by `TICKET_GATE_DENYLIST`
 (a path outside every git work tree); without it the two denylist rows report `SKIPPED`.
@@ -190,7 +191,7 @@ Maintainers only. Publishing runs from CI, by trusted publishing with provenance
 
 1. Write the changes under `## Unreleased` in `CHANGELOG.md`.
 2. On `main` with a clean tree, with `gitleaks` and `trufflehog` installed and `TICKET_GATE_DENYLIST` exported:
-   `npm run release -- <version>` (add `--dry-run` to check the gates only). It runs the scrub and both scanners, runs
+   `pnpm run release <version>` (add `--dry-run` to check the gates only). It runs the scrub and both scanners, runs
    the tests, proves every registry guard with `mutate --registry --all`, sets both versions and the exact engine dependency, moves the changelog entry, commits and tags. It does
    not push and does not publish.
 3. Push `main`, then push the tag it printed. The tag push starts the `publish` workflow, which waits on the

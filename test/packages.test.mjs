@@ -95,12 +95,13 @@ test('INFRA-47 5-4b scope scan catches a planted import', () => {
   }
 });
 
+// npm packs because the npm CLI publishes (publish.yml); pnpm only manages the workspace.
 function packList(name) {
-  const out = execFileSync(
-    'npm',
-    ['pack', '--dry-run', '--json', '--ignore-scripts', '-w', `packages/${name}`],
-    { cwd: REPO, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] },
-  );
+  const out = execFileSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], {
+    cwd: join(REPO, 'packages', name),
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  });
   return JSON.parse(out)[0].files.map((f) => f.path);
 }
 
@@ -189,7 +190,7 @@ test('INFRA-47 5-6 bin has a node shebang and pack imports resolve', () => {
         assert.equal(
           resolved,
           join(engineDir, m[1]),
-          `#engine/${m[1]} in ${e.name} resolves outside the engine package; run npm ci`,
+          `#engine/${m[1]} in ${e.name} resolves outside the engine package; run pnpm install`,
         );
       }
     }

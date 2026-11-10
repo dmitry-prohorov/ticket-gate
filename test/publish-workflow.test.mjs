@@ -69,8 +69,9 @@ export function publishProblems(src) {
   if (!/\*-\*\)\s*echo "tag=next"/.test(c)) problems.push('no next dist-tag branch on a hyphenated tag');
   if (!/\*\)\s*echo "tag=latest"/.test(c)) problems.push('no latest branch');
   if (!/node scripts\/release\.mjs --verify-tag "\$GITHUB_REF_NAME"/.test(c)) problems.push('no --verify-tag step');
-  if (!/^\s*-\s*run:\s*npm ci\s*$/m.test(c)) problems.push('no npm ci');
-  if (!/^\s*-\s*run:\s*npm test\s*$/m.test(c)) problems.push('no npm test');
+  if (!/^\s*-\s*run:\s*corepack enable\s*$/m.test(c)) problems.push('no corepack enable');
+  if (!/^\s*-\s*run:\s*pnpm install --frozen-lockfile\s*$/m.test(c)) problems.push('no pnpm install --frozen-lockfile');
+  if (!/^\s*-\s*run:\s*pnpm test\s*$/m.test(c)) problems.push('no pnpm test');
   const publishes = c.split('\n').filter((l) => l.includes(PUBLISH));
   if (publishes.length !== 3) problems.push(`expected 3 publish lines, found ${publishes.length}`);
   for (const l of publishes) {
@@ -114,7 +115,7 @@ test('INFRA-47 5-10b OIDC permissions and no secrets', () => {
 test(`INFRA-47 5-10c ${PUBLISH} appears only in publish.yml`, () => {
   const offenders = repoFiles().filter((f) => {
     if (f === WORKFLOW || f === 'README.md' || f === 'CHANGELOG.md') return false;
-    if (f === 'package-lock.json') return false;
+    if (f === 'pnpm-lock.yaml') return false;
     return readFileSync(join(REPO, f), 'utf8').includes(PUBLISH);
   });
   assert.deepEqual(offenders, []);
@@ -129,6 +130,7 @@ test('INFRA-47 5-10d prerelease goes to next with provenance', () => {
   assert.notDeepEqual(publishProblems(good.replace(/(actions\/checkout)@[0-9a-f]{40}/, '$1@v4')), []);
   assert.notDeepEqual(publishProblems(good.replace('persist-credentials: false', 'persist-credentials: true')), []);
   assert.notDeepEqual(publishProblems(good.replace('--verify-tag', '--noop')), []);
+  assert.notDeepEqual(publishProblems(good.replace('--frozen-lockfile', '')), []);
   assert.notDeepEqual(
     publishProblems(
       good

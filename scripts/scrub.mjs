@@ -288,7 +288,7 @@ function main() {
   }
   for (const scanner of ['gitleaks', 'trufflehog']) {
     const found = spawnSync(scanner, ['--version'], { stdio: 'ignore' }).error === undefined;
-    out.push(`R10 ${scanner}: ${found ? 'installed (npm run release runs it)' : 'not installed (human step H2)'}`);
+    out.push(`R10 ${scanner}: ${found ? 'installed (pnpm run release runs it)' : 'not installed (human step H2)'}`);
   }
   out.push(
     'R10 release runs: gitleaks detect --source . --redact --no-banner ; trufflehog git file://. --fail --no-update',

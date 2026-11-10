@@ -35,7 +35,7 @@ function binDir(omit) {
   if (BIN_DIRS[key]) return BIN_DIRS[key];
   const dir = tmp('tg-rel-bin-');
   sh(join(dir, 'git'), `echo "git $*" >> "$STUB_LOG"\nexec "${REAL_GIT}" "$@"`);
-  sh(join(dir, 'npm'), 'echo "npm $*" >> "$STUB_LOG"\nexit 0');
+  sh(join(dir, 'pnpm'), 'echo "pnpm $*" >> "$STUB_LOG"\nexit 0');
   if (omit !== 'gitleaks')
     sh(join(dir, 'gitleaks'), 'echo "gitleaks $*" >> "$STUB_LOG"\necho clean\nexit ${GITLEAKS_EXIT:-0}');
   if (omit !== 'trufflehog')
@@ -43,7 +43,7 @@ function binDir(omit) {
   return (BIN_DIRS[key] = dir);
 }
 
-/** A per-run stub set: recording git and npm, scanners that exit as told. */
+/** A per-run stub set: recording git and pnpm, scanners that exit as told. */
 function stubs({ gitleaks = 0, trufflehog = 0, omit } = {}) {
   const log = join(tmp('tg-rel-log-'), 'calls.log');
   writeFileSync(log, '');
@@ -203,8 +203,8 @@ test('INFRA-47 5-9e happy path tags and moves CHANGELOG, never pushes', () => {
 
   const calls = r.bin.calls();
   assert.ok(calls.some((c) => /^git tag -a /.test(c)), 'the spawn recorder sees the tag');
-  assert.ok(calls.includes('npm run mutate -- --registry --all'), 'every registry guard is proven before the tag');
-  assert.deepEqual(calls.filter((c) => /^git (push|remote)|^npm (publish|login)/.test(c)), []);
+  assert.ok(calls.includes('pnpm run mutate --registry --all'), 'every registry guard is proven before the tag');
+  assert.deepEqual(calls.filter((c) => /^git (push|remote)|^p?npm (publish|login)/.test(c)), []);
 });
 
 test('INFRA-47 5-9e an empty Unreleased with no entry refuses before any commit', () => {

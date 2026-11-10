@@ -31,9 +31,9 @@ try {
 export default defineGate({
   mutations: { dir: 'mutation-registry' },
   commands: {
-    mutate: 'npm run mutate --',
-    checkMutations: 'npm run mutations:check',
-    checkMutationsScript: 'npm run mutations:check',
+    mutate: 'pnpm run mutate',
+    checkMutations: 'pnpm run mutations:check',
+    checkMutationsScript: 'pnpm run mutations:check',
   },
 });
 `,

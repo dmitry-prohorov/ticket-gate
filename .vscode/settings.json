@@ -1,0 +1,5 @@
+{
+  // No jsconfig.json here, so JS files use the editor's implicit project config.
+  // Keep checkJs on, but drop strict mode (noImplicitAny) for untyped params.
+  "js/ts.implicitProjectConfig.strict": false
+}

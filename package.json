@@ -1,14 +1,14 @@
 {
   "name": "ticket-gate-workspace",
   "private": true,
-  "workspaces": ["packages/*"],
+  "packageManager": "pnpm@12.4.2",
   "engines": { "node": ">=22" },
   "scripts": {
     "test": "node --test \"packages/*/test/**/*.test.mjs\" \"test/**/*.test.mjs\" \"scripts/*.test.mjs\"",
     "scrub": "node scripts/scrub.mjs",
     "mutate": "node scripts/mutations.mjs mutate",
     "mutations:check": "node scripts/mutations.mjs mutations check",
-    "check": "npm test && npm run scrub && npm run mutations:check",
+    "check": "pnpm test && pnpm run scrub && pnpm run mutations:check",
     "release": "node scripts/release.mjs"
   },
   "devDependencies": {

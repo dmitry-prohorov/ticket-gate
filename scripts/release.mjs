@@ -12,7 +12,7 @@
 //
 // Order, stopping at the first failure: clean tree on main; version shape; tag absent;
 // scrub with the denylist required; both scanners present, then run, output kept under
-// .release/<version>/; npm test; every registry guard killed; versions and the exact internal dependency set; the
+// .release/<version>/; pnpm test; every registry guard killed; versions and the exact internal dependency set; the
 // CHANGELOG entry; release commit (only when a file changed); annotated tag.
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -178,7 +178,7 @@ function main() {
 
   if (dryRun) {
     say(`release: dry run for ${tag}. Gates 1-5 passed; nothing was written.`);
-    say('would run: both scanners, npm test, npm run mutate -- --registry --all, set versions, move the CHANGELOG, commit, tag.');
+    say('would run: both scanners, pnpm test, pnpm run mutate --registry --all, set versions, move the CHANGELOG, commit, tag.');
     return;
   }
 
@@ -193,10 +193,10 @@ function main() {
   }
 
   // 6. tests
-  if (run('npm', ['test'], { stdio: 'inherit' }).status !== 0)
-    fail(1, 'npm test failed. Fix it and rerun; nothing was tagged.');
+  if (run('pnpm', ['test'], { stdio: 'inherit' }).status !== 0)
+    fail(1, 'pnpm test failed. Fix it and rerun; nothing was tagged.');
   // 6b. every guard in mutation-registry/ must still be bitten by its test
-  if (run('npm', ['run', 'mutate', '--', '--registry', '--all'], { stdio: 'inherit' }).status !== 0)
+  if (run('pnpm', ['run', 'mutate', '--registry', '--all'], { stdio: 'inherit' }).status !== 0)
     fail(1, 'a mutation-registry guard survived or errored. Read the output above, fix the test or the guard, rerun; nothing was tagged.');
 
   // 7. versions, 8. CHANGELOG
@@ -216,9 +216,9 @@ function main() {
   }
   const problems = versionProblems(workspacePackages(), version);
   if (problems.length) fail(1, `manifests still disagree after the edit:\n  ${problems.join('\n  ')}`);
-  if (changed.some((f) => f.endsWith('package.json')) && existsSync(join(ROOT, 'package-lock.json'))) {
-    const lock = run('npm', ['install', '--package-lock-only', '--offline', '--ignore-scripts']);
-    if (lock.status !== 0) fail(1, `could not refresh package-lock.json:\n${lock.stderr}`);
+  if (changed.some((f) => f.endsWith('package.json')) && existsSync(join(ROOT, 'pnpm-lock.yaml'))) {
+    const lock = run('pnpm', ['install', '--lockfile-only', '--offline', '--ignore-scripts']);
+    if (lock.status !== 0) fail(1, `could not refresh pnpm-lock.yaml:\n${lock.stderr}`);
   }
 
   // 9. release commit (only when a file changed), annotated tag

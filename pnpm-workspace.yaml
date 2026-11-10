@@ -1,0 +1,6 @@
+packages:
+  - packages/*
+
+# The packs depend on the engine by exact version (not workspace:) so the npm CLI can publish
+# them. Link that version to packages/engine instead of fetching it from the registry.
+linkWorkspacePackages: true

@@ -11,7 +11,7 @@ import { pathToFileURL } from 'node:url';
 import { REPO, repoFiles } from './repo-files.mjs';
 
 const ALLOWED = [
-  /^(package\.json|package-lock\.json|\.gitignore|LICENSE|README\.md|CHANGELOG\.md)$/,
+  /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|\.gitignore|LICENSE|README\.md|CHANGELOG\.md)$/,
   /^packages\/(engine|supabase-next|react)\/.+/,
   /^scripts\/[^/]+\.mjs$/,
   /^mutation-registry\/.+\.json$/,
@@ -73,10 +73,10 @@ test('INFRA-47 5-2 the allowlist rejects each named intruder', () => {
   );
 });
 
-test('INFRA-47 5-11 README names npm test and npm run check', () => {
+test('INFRA-47 5-11 README names pnpm test and pnpm run check', () => {
   const readme = readFileSync(join(REPO, 'README.md'), 'utf8');
-  assert.match(readme, /npm test\b/);
-  assert.match(readme, /npm run check\b/);
+  assert.match(readme, /pnpm test\b/);
+  assert.match(readme, /pnpm run check\b/);
 });
 
 // The README's example is code a reader will paste; it must load and validate.
