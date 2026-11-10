@@ -1,0 +1,102 @@
+{
+  "FU133/M5": {
+    "kind": "patch",
+    "protects": "5 CC-6 test files are not scanned",
+    "file": "packages/react/test/__tests__/compiler-cli.mjs",
+    "find": "\\.(test|spec)\\.[jt]sx?$|",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CC-6 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "exclude is the shim's option to reactCompiler; test moved to tools/checks/react/compiler.test.mjs, it runs the shim"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: project value in tools/check-react-compiler.mjs -> the test binding packages/react/test/__tests__/compiler-cli.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M10": {
+    "kind": "patch",
+    "protects": "5 CC-6 e2e/ is not scanned",
+    "file": "packages/react/test/__tests__/compiler-cli.mjs",
+    "find": "e2e|",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CC-6 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "exclude is the shim's option to reactCompiler; test moved to tools/checks/react/compiler.test.mjs, it runs the shim"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: project value in tools/check-react-compiler.mjs -> the test binding packages/react/test/__tests__/compiler-cli.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M11": {
+    "kind": "patch",
+    "protects": "5 CC-6 .maestro/ is not scanned",
+    "file": "packages/react/test/__tests__/compiler-cli.mjs",
+    "find": "\\.maestro|",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CC-6 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "exclude is the shim's option to reactCompiler; test moved to tools/checks/react/compiler.test.mjs, it runs the shim"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: project value in tools/check-react-compiler.mjs -> the test binding packages/react/test/__tests__/compiler-cli.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M12": {
+    "kind": "patch",
+    "protects": "5 CC-6 __tests__/ is not scanned",
+    "file": "packages/react/test/__tests__/compiler-cli.mjs",
+    "find": "|__tests__",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CC-6 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "exclude is the shim's option to reactCompiler; test moved to tools/checks/react/compiler.test.mjs, it runs the shim"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: project value in tools/check-react-compiler.mjs -> the test binding packages/react/test/__tests__/compiler-cli.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  },
+  "FU133/M13": {
+    "kind": "patch",
+    "protects": "5 CC-6 .d.ts is not scanned",
+    "file": "packages/react/test/__tests__/compiler-cli.mjs",
+    "find": "\\.d\\.ts$|",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CC-6 ' packages/react/test/compiler.test.mjs",
+    "testFile": "packages/react/test/compiler.test.mjs",
+    "testName": "CC-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-76",
+        "why": "exclude is the shim's option to reactCompiler; test moved to tools/checks/react/compiler.test.mjs, it runs the shim"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: project value in tools/check-react-compiler.mjs -> the test binding packages/react/test/__tests__/compiler-cli.mjs; test tools/checks/react/compiler.test.mjs -> packages/react/test/compiler.test.mjs"
+      }
+    ]
+  }
+}

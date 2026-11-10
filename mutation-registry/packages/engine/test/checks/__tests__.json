@@ -1,0 +1,22 @@
+{
+  "INFRA-10/M6": {
+    "kind": "patch",
+    "protects": "5 DUP-4 within-package clone over 20 lines fails",
+    "file": "packages/engine/test/checks/__tests__/dup-cli.mjs",
+    "find": "withinMax: 20,",
+    "replace": "withinMax: 21,",
+    "test": "node --test --test-name-pattern='^DUP-4 ' packages/engine/test/checks/duplication.test.mjs",
+    "testFile": "packages/engine/test/checks/duplication.test.mjs",
+    "testName": "DUP-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-74",
+        "why": "moved: WITHIN_PACKAGE_MAX_LINES becomes the withinMax value in gate-ratchets.mjs"
+      },
+      {
+        "by": "INFRA-77a",
+        "why": "export: project value in tools/gate-ratchets.mjs -> the test binding packages/engine/test/checks/__tests__/dup-cli.mjs; test tools/checks/engine/duplication.test.mjs -> packages/engine/test/checks/duplication.test.mjs"
+      }
+    ]
+  }
+}

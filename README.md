@@ -13,9 +13,10 @@ Why it exists, why it is not assembled from existing tools, and why it is a sepa
 | Package | What it is |
 |---|---|
 | `@ticket-gate/engine` | The CLI (`ticket-gate`), the configuration API, the hooks, the receipt and ledger code. No runtime dependencies. |
+| `@ticket-gate/react` | The React Compiler bailout ratchet: `reactCompiler(options)` in `compiler.mjs`. It depends on the engine; `@babel/core` and `babel-plugin-react-compiler` resolve from your project. |
 | `@ticket-gate/supabase-next` | A pack for projects built on Supabase and Next.js: stack handling, SQL and end-to-end test selection, ratchets. It depends on the engine. |
 
-Both require Node.js 22 or newer.
+All require Node.js 22 or newer.
 
 ## Install
 
@@ -41,6 +42,10 @@ unreviewed. Update by editing the version yourself.
 | `move-check [--base=REF]` | Prove a move-only diff; exit 1 while lines are unmatched. |
 | `fu list\|show\|next\|close\|check` | Work with the follow-up register. |
 | `ratchet <name> [args]` | Run a configured ratchet (`--update` where it has one). |
+| `ratchet --all [--update]` | Run every ratchet whose entry has `group: 'check'`, in config order, and exit with the worst code. A throwing ratchet is reported as exit 2 and the next one still runs. Exit 2 when none has the group. |
+| `cache-report [<session>\|<path.jsonl>] [--json]` | Price the cache use of a Claude Code session transcript. |
+| `docs-stale` | List the docs pages whose sources changed since they were stamped. Needs `docs: { stamped: [...] }` in the config; exit 2 without it. |
+| `<name> [args]` | A command a pack contributes through its `packCommands` hook. A name an engine command already uses, or that two packs give, is a config error. |
 | `mutate <ID>` / `mutate --registry (--ids=\|--all\|--changed)` | Prove each registered guard bites: apply its patch, run its test, expect a failure, restore the file. Needs `mutations` in the config. |
 | `mutate --rotate --ledger=<dir> [--budget-min=<n>] [--batch=<n>] [--deadline=<ISO>] [--sha=<sha>]` | One budgeted rotation over the live registry: batches of `mutate --registry --ids=`, never-run keys first then the oldest proof, results appended to `<dir>/mutations.jsonl`. Without `--deadline` the budget is soft: the batch in flight at its end finishes. Takes the stack lock; exit 1 when a guard survived. Needs `mutations` in the config. |
 | `mutations check [--fix]` / `mutations select [--affected --paths=]` | Validate (and repair) the mutation registry; list the entries a diff selects. |

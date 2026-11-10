@@ -11,5 +11,10 @@
     "check": "npm test && npm run scrub && npm run mutations:check",
     "release": "node scripts/release.mjs"
   },
-  "devDependencies": { "typescript": "5.9.3" }
+  "devDependencies": {
+    "@babel/core": "7.29.7",
+    "babel-plugin-react-compiler": "1.0.0",
+    "jscpd": "4.3.0",
+    "typescript": "5.9.3"
+  }
 }

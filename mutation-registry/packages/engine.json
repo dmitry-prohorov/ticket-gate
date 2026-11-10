@@ -1924,5 +1924,71 @@
     "test": "node --test --test-name-pattern='^CW-1 ' packages/engine/test/selection-config.test.mjs",
     "testFile": "packages/engine/test/selection-config.test.mjs",
     "testName": "CW-1 "
+  },
+  "INFRA-77a/M7": {
+    "kind": "patch",
+    "protects": "5 PC-2 two packs naming one command is a config error",
+    "file": "packages/engine/commands-config.mjs",
+    "find": "      if (Object.hasOwn(out, name)) fail('packs', `command \"${name}\" is given by ${out[name].by} and ${by}`);",
+    "replace": "      if (false) fail('packs', `command \"${name}\" is given by ${out[name].by} and ${by}`);",
+    "test": "node --test --test-name-pattern='^PC-2 ' packages/engine/test/pack-commands.test.mjs",
+    "testFile": "packages/engine/test/pack-commands.test.mjs",
+    "testName": "PC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-77a",
+        "why": "guard line now tests own keys (Object.hasOwn) so a pack command named constructor is not a duplicate"
+      }
+    ]
+  },
+  "INFRA-77a/M8": {
+    "kind": "patch",
+    "protects": "5 PC-3 a pack naming an engine command is a config error",
+    "file": "packages/engine/commands-config.mjs",
+    "find": "      if (ENGINE_COMMANDS.includes(name)) fail('packs', `${by} names the engine command \"${name}\"`);",
+    "replace": "      if (false) fail('packs', `${by} names the engine command \"${name}\"`);",
+    "test": "node --test --test-name-pattern='^PC-3 ' packages/engine/test/pack-commands.test.mjs",
+    "testFile": "packages/engine/test/pack-commands.test.mjs",
+    "testName": "PC-3 "
+  },
+  "INFRA-77a/M10": {
+    "kind": "patch",
+    "protects": "5 DS-3 an empty docs.stamped is a config error",
+    "file": "packages/engine/commands-config.mjs",
+    "find": "  if (!Array.isArray(docs.stamped) || docs.stamped.length === 0 || !docs.stamped.every((d) => typeof d === 'string' && d))",
+    "replace": "  if (!Array.isArray(docs.stamped) || false || !docs.stamped.every((d) => typeof d === 'string' && d))",
+    "test": "node --test --test-name-pattern='^DS-3 ' packages/engine/test/checks-cli.test.mjs",
+    "testFile": "packages/engine/test/checks-cli.test.mjs",
+    "testName": "DS-3 "
+  },
+  "INFRA-77a/M11": {
+    "kind": "patch",
+    "protects": "5 PC-4 ENGINE_COMMANDS lists every command of the bin",
+    "file": "packages/engine/commands-config.mjs",
+    "find": "  'cache-report',",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^PC-4 ' packages/engine/test/pack-commands.test.mjs",
+    "testFile": "packages/engine/test/pack-commands.test.mjs",
+    "testName": "PC-4 "
+  },
+  "INFRA-77a/M12": {
+    "kind": "patch",
+    "protects": "5 RA-5 a ratchet group other than check is a config error",
+    "file": "packages/engine/config.mjs",
+    "find": "    if (entry.group !== undefined && entry.group !== 'check')",
+    "replace": "    if (false)",
+    "test": "node --test --test-name-pattern='^RA-5 ' packages/engine/test/ratchet-all.test.mjs",
+    "testFile": "packages/engine/test/ratchet-all.test.mjs",
+    "testName": "RA-5 "
+  },
+  "INFRA-77a/M13": {
+    "kind": "patch",
+    "protects": "5 PC-2 the gate carries the pack commands",
+    "file": "packages/engine/config.mjs",
+    "find": "    packCommands: packCommandsOf(config, fail),",
+    "replace": "    packCommands: {},",
+    "test": "node --test --test-name-pattern='^PC-2 ' packages/engine/test/pack-commands.test.mjs",
+    "testFile": "packages/engine/test/pack-commands.test.mjs",
+    "testName": "PC-2 "
   }
 }

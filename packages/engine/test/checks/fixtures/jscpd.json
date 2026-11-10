@@ -1,0 +1,27 @@
+{
+  "minTokens": 50,
+  "minLines": 6,
+  "mode": "mild",
+  "format": ["typescript", "tsx", "javascript", "jsx"],
+  "path": ["apps/web", "apps/mobile", "packages/core/src"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/dist/**",
+    "**/.expo/**",
+    "**/.turbo/**",
+    "**/ios/**",
+    "**/android/**",
+    "**/*.d.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/__tests__/**",
+    "**/e2e/**"
+  ],
+  "gitignore": false,
+  "reporters": ["json"],
+  "output": ".turbo/jscpd",
+  "absolute": false,
+  "silent": true
+}

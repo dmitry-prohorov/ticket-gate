@@ -15,7 +15,8 @@ const USAGE = `usage: ticket-gate <command> [args]
   review-map [--base=REF] [--full]
   move-check [--base=REF]     prove a move-only diff (exit 1 while lines are unmatched)
   fu list|show|next|close|check [args]
-  ratchet <name> [args]       run a configured ratchet (--update where it has one)
+  ratchet <name> [args] | ratchet --all [--update]
+                              run a configured ratchet; --all runs every ratchet with group "check"
   mutate <ID> | --registry (--ids=|--all|--changed) [--dry-run --typecheck --digest --only --file --defer]
                               | --rotate --ledger=<dir> [--budget-min= --batch= --deadline= --sha=]
                               prove a ticket's registry guards bite (needs mutations in gate.config.mjs)
@@ -23,7 +24,10 @@ const USAGE = `usage: ticket-gate <command> [args]
   mutations select [--affected --paths=]   list the registry entries a diff selects
   select [--test-list | --replay=REV --count=N | --for=FILES | --drift=REPORT | --load-time] | select check
                               pick the e2e specs a diff reaches, or check the spec headers (needs selection in gate.config.mjs)
-  score --base=REF [--files= --report= --base-report=]   judge a mutation report (needs score in gate.config.mjs)`;
+  score --base=REF [--files= --report= --base-report=]   judge a mutation report (needs score in gate.config.mjs)
+  cache-report [<session>|<path.jsonl>] [--json]   price the cache use of a Claude Code session
+  docs-stale                  list the docs pages whose sources changed (needs docs in gate.config.mjs)
+  <pack command> [args]       a command a pack adds through packCommands`;
 
 const say = (s) => console.log(s);
 const warn = (s) => console.error(s);
@@ -113,9 +117,78 @@ async function ratchet(name, args) {
     update: args.includes('--update'),
     baseline,
   });
-  (result.code === 0 ? say : warn)(result.lines.join('\n'));
-  process.exitCode = result.code;
+  const code = Number.isInteger(result.code) ? result.code : 2;
+  (code === 0 ? say : warn)(result.lines.join('\n'));
+  if (code !== result.code) warn(`ratchet ${name}: exit 2 (code not an integer)`);
+  process.exitCode = code;
   return Number(process.exitCode);
+}
+
+/** Run every ratchet with group "check", in config order; resolves to the worst exit code. */
+async function ratchetAll(args) {
+  const { GATE, ROOT: root } = await import('../project.mjs');
+  const list = Object.entries(GATE.ratchets ?? {}).filter(([, e]) => e.group === 'check');
+  if (list.length === 0) {
+    warn('ratchet --all: no ratchet has group "check"; set group: \'check\' on a ratchet in gate.config.mjs');
+    return 2;
+  }
+  let worst = 0;
+  const failed = [];
+  for (const [name, entry] of list) {
+    let code;
+    try {
+      const result = await entry.check({
+        root,
+        args,
+        update: args.includes('--update'),
+        baseline: entry.baseline ?? null,
+      });
+      code = Number.isInteger(result.code) ? result.code : 2;
+      if (code !== result.code) result.lines = [...(result.lines ?? []), 'exit 2 (code not an integer)'];
+      (code === 0 ? say : warn)(result.lines.join('\n'));
+      (code === 0 ? say : warn)(`ratchet ${name}: ${code === 0 ? 'ok' : `exit ${code}`}`);
+    } catch (e) {
+      code = 2;
+      warn(`ratchet ${name}: exit 2 (threw: ${e.message})`);
+    }
+    if (code !== 0) failed.push(name);
+    worst = Math.max(worst, code);
+  }
+  const tail = failed.length > 0 ? `: ${failed.join(', ')}` : '';
+  (worst === 0 ? say : warn)(`ratchet --all: ${list.length} ran, ${failed.length} failed${tail}`);
+  return worst;
+}
+
+async function cacheReport(args) {
+  const { ROOT } = await import('../root.mjs');
+  const { runCacheReport } = await import('../checks/cache-report.mjs');
+  let result;
+  try {
+    result = runCacheReport({ root: ROOT, args });
+  } catch (e) {
+    warn(`cache-report: ${e.message}`);
+    return 1;
+  }
+  (result.code === 0 ? say : warn)(result.lines.join('\n'));
+  return result.code;
+}
+
+async function docsStale(args) {
+  const { GATE, ROOT: root } = await import('../project.mjs');
+  if (!GATE.docs) {
+    warn('docs-stale: FAIL docs is not configured: add docs.stamped to gate.config.mjs');
+    return 2;
+  }
+  const { docsStale: stale } = await import('../checks/docs-stale.mjs');
+  const { stamped, ext, exclude } = GATE.docs;
+  const result = stale({
+    root,
+    dirs: stamped,
+    ...(ext !== undefined ? { ext } : {}),
+    ...(exclude !== undefined ? { exclude } : {}),
+  });
+  say(result.lines.join('\n'));
+  return result.code;
 }
 
 /** Dispatch `argv` (without node and the script); resolves to the exit code. */
@@ -151,7 +224,17 @@ export async function run(argv) {
   if (cmd === 'select') return select(rest);
   if (cmd === 'hook') return hook(rest[0]);
   if (cmd === 'fu') return fu(rest);
-  if (cmd === 'ratchet') return ratchet(rest[0], rest.slice(1));
+  if (cmd === 'ratchet') return rest[0] === '--all' ? ratchetAll(rest.slice(1)) : ratchet(rest[0], rest.slice(1));
+  if (cmd === 'cache-report') return cacheReport(rest);
+  if (cmd === 'docs-stale') return docsStale(rest);
+  // No gate.config.mjs means no pack commands: fall through to the unknown-command line.
+  const { GATE, ROOT: root } = await import('../project.mjs').catch((e) => {
+    // Only a missing gate.config.mjs means "no pack commands"; a missing import inside it is the user's error.
+    if (e?.code !== 'ERR_MODULE_NOT_FOUND' || !e.url?.endsWith('/gate.config.mjs')) throw e;
+    return { GATE: { packCommands: {} }, ROOT: process.cwd() };
+  });
+  const own = Object.hasOwn(GATE.packCommands, cmd) ? GATE.packCommands[cmd] : undefined;
+  if (own) return Number((await own.run(rest, { root, gate: GATE })) ?? 0);
   warn(`ticket-gate: unknown command ${cmd}\n${USAGE}`);
   return 2;
 }
