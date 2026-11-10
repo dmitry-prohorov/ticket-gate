@@ -7,8 +7,7 @@
 // without one is a pack that does not do that:
 //   mutationKinds     { sql }                      the mutation kinds this pack contributes
 //   mutationHarnesses [nextServed(opts)] or []     the served-test harness, when `mutations` is given
-//   nightly    { line(nowMs), read() }       the dry-run's nightly status line; `read()` is the
-//              nightly record `{ latest, history }` the engine's nightly units plan from
+//   nightlyPayloads  [supabase-stack]            the nightly's Supabase payload, only when `nightlyStack` is given
 //   sqlRanges  { H1_REASON, migrationFacts, migrationReadRanges }   migration read ranges
 //   packCommands  { 'stack-preflight', 'db-schema' }   CLI commands, each only when its option is given
 // It also carries `e2eWhen` for gate.config.mjs's e2e step.
@@ -24,23 +23,17 @@ import {
   migrationFacts,
   migrationReadRanges,
 } from './sql-ranges.mjs';
+import { supabaseStack } from './nightly/stack-payload.mjs';
 import { e2eWhen } from './step-defaults.mjs';
 
-export function supabaseNext({ tools: project, mutations, sql, stackPreflight, dbSchema } = {}) {
+export function supabaseNext({ tools: project, mutations, sql, stackPreflight, dbSchema, nightlyStack } = {}) {
   bindTools(project);
   return {
     name: 'supabase-next',
     version: '0.0.0-local',
     mutationKinds: sql ? mutationKindsWith(sql) : mutationKinds,
     mutationHarnesses: mutations ? mutationHarnesses(mutations) : [],
-    nightly: {
-      line(nowMs) {
-        const { nightlyDir, readNightly, statusLines } = tools.nightly;
-        const { latest, history } = readNightly(nightlyDir());
-        return statusLines({ latest, history, queued: 0 }, nowMs)[0];
-      },
-      read: () => tools.nightly.readNightly(tools.nightly.nightlyDir()),
-    },
+    ...(nightlyStack ? { nightlyPayloads: [supabaseStack(nightlyStack)] } : {}),
     sqlRanges: { H1_REASON, migrationFacts, migrationReadRanges },
     packCommands: packCommandsFor({ stackPreflight, dbSchema }),
     e2eWhen,

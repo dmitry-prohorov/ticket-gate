@@ -1,7 +1,7 @@
 // The project modules this pack calls, injected by supabaseNext({ tools }) in index.mjs
 // (gate.config.mjs passes them). The pack imports nothing outside tools/gate/ and node:.
-// Keys: nightly, e2eAreas (module
-// namespaces, or any object with the same named exports).
+// Keys: e2eAreas (a module
+// namespace, or any object with the same named exports).
 let bound = null;
 
 export function bindTools(tools) {

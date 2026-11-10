@@ -1,0 +1,540 @@
+{
+  "INFRA-22/M12": {
+    "kind": "patch",
+    "protects": "5 N-1 idle rule",
+    "file": "packages/engine/nightly/schedule.mjs",
+    "find": "holder !== null || (released !== null && nowMs - Date.parse(released.lastReleasedAt) < IDLE_MS)",
+    "replace": "holder !== null",
+    "test": "node --test --test-name-pattern='^N-1 ' packages/engine/test/nightly/schedule.test.mjs",
+    "testFile": "packages/engine/test/nightly/schedule.test.mjs",
+    "testName": "N-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-e2e.mjs -> tools/nightly/engine/schedule.mjs; test tools/nightly-e2e.test.mjs -> tools/nightly/engine/schedule.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/schedule.mjs -> packages/engine/nightly/schedule.mjs; test tools/nightly/engine/schedule.test.mjs -> packages/engine/test/nightly/schedule.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M13": {
+    "kind": "patch",
+    "protects": "5 N-1 skipped-busy at the deadline",
+    "file": "packages/engine/nightly/schedule.mjs",
+    "find": "return nowMs + RETRY_MS <= deadlineMs ? 'defer' : 'skipped-busy';",
+    "replace": "return 'defer';",
+    "test": "node --test --test-name-pattern='^N-1 ' packages/engine/test/nightly/schedule.test.mjs",
+    "testFile": "packages/engine/test/nightly/schedule.test.mjs",
+    "testName": "N-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-e2e.mjs -> tools/nightly/engine/schedule.mjs; test tools/nightly-e2e.test.mjs -> tools/nightly/engine/schedule.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/schedule.mjs -> packages/engine/nightly/schedule.mjs; test tools/nightly/engine/schedule.test.mjs -> packages/engine/test/nightly/schedule.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M15": {
+    "kind": "patch",
+    "protects": "5 N-4 token only in the nightly worktree",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "io.writeFile(join(wt, e.path), text);",
+    "replace": "io.writeFile(join(main, e.path), text);",
+    "test": "node --test --test-name-pattern='^N-4 ' packages/engine/test/nightly/run.test.mjs",
+    "testFile": "packages/engine/test/nightly/run.test.mjs",
+    "testName": "N-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-e2e.mjs -> tools/nightly/engine/run.mjs; test tools/nightly-e2e.test.mjs -> tools/nightly/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-68b",
+        "why": "seam: the env file copy is generic (env loop over config.env), source main, target worktree"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/run.test.mjs -> packages/engine/test/nightly/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M16": {
+    "kind": "patch",
+    "protects": "5 T-2 flaky 2 of 7 promotes to red",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": "export const FLAKY_PROMOTE = { of: 7, min: 2 };",
+    "replace": "export const FLAKY_PROMOTE = { of: 7, min: 99 };",
+    "test": "node --test --test-name-pattern='^T-2 ' packages/engine/test/nightly/record.test.mjs",
+    "testFile": "packages/engine/test/nightly/record.test.mjs",
+    "testName": "T-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/record.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/record.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/record.mjs -> packages/engine/nightly/record.mjs; test tools/nightly/engine/record.test.mjs -> packages/engine/test/nightly/record.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M17": {
+    "kind": "patch",
+    "protects": "5 T-3 freshness counts only reached runs",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": "r.reachedPlaywright === true",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^T-3 ' packages/engine/test/nightly/record.test.mjs",
+    "testFile": "packages/engine/test/nightly/record.test.mjs",
+    "testName": "T-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/record.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/record.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/record.mjs -> packages/engine/nightly/record.mjs; test tools/nightly/engine/record.test.mjs -> packages/engine/test/nightly/record.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M18": {
+    "kind": "patch",
+    "protects": "5 T-1 red on a failed test",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": "summary.stats.unexpected > 0",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^T-1 ' packages/engine/test/nightly/record.test.mjs",
+    "testFile": "packages/engine/test/nightly/record.test.mjs",
+    "testName": "T-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/record.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/record.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/record.mjs -> packages/engine/nightly/record.mjs; test tools/nightly/engine/record.test.mjs -> packages/engine/test/nightly/record.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M19": {
+    "kind": "patch",
+    "protects": "5 T-1 amber on a flaky test",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": "summary.stats.flaky > 0",
+    "replace": "false",
+    "test": "node --test --test-name-pattern='^T-1 ' packages/engine/test/nightly/record.test.mjs",
+    "testFile": "packages/engine/test/nightly/record.test.mjs",
+    "testName": "T-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/record.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/record.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/record.mjs -> packages/engine/nightly/record.mjs; test tools/nightly/engine/record.test.mjs -> packages/engine/test/nightly/record.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M20": {
+    "kind": "patch",
+    "protects": "5 T-4 suspects first",
+    "file": "packages/engine/nightly/seed.mjs",
+    "find": "return [...suspects, ...others];",
+    "replace": "return [...others, ...suspects];",
+    "test": "node --test --test-name-pattern='^T-4 ' packages/engine/test/nightly/seed.test.mjs",
+    "testFile": "packages/engine/test/nightly/seed.test.mjs",
+    "testName": "T-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/seed.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/seed.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/seed.mjs -> packages/engine/nightly/seed.mjs; test tools/nightly/engine/seed.test.mjs -> packages/engine/test/nightly/seed.test.mjs"
+      }
+    ]
+  },
+  "INFRA-22/M21": {
+    "kind": "patch",
+    "protects": "5 N-4 no main token ends the run token-missing",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "if (value === null) return fail(e.reason);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^N-4 ' packages/engine/test/nightly/run.test.mjs",
+    "testFile": "packages/engine/test/nightly/run.test.mjs",
+    "testName": "N-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-e2e.mjs -> tools/nightly/engine/run.mjs; test tools/nightly-e2e.test.mjs -> tools/nightly/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-68b",
+        "why": "seam: the token-missing check is the generic env loop's required-value check"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/run.test.mjs -> packages/engine/test/nightly/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-23a/M11": {
+    "kind": "patch",
+    "protects": "5 T-9 map-drift red",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": "if (drift.length > 0) return redDrift(drift, flakySpecs);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^T-9 ' packages/engine/test/nightly/record.test.mjs",
+    "testFile": "packages/engine/test/nightly/record.test.mjs",
+    "testName": "T-9 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/record.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/record.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/record.mjs -> packages/engine/nightly/record.mjs; test tools/nightly/engine/record.test.mjs -> packages/engine/test/nightly/record.test.mjs"
+      }
+    ]
+  },
+  "INFRA-28/M8": {
+    "kind": "patch",
+    "protects": "NS-M1 statusLines prints the mutations line",
+    "file": "packages/engine/nightly/status.mjs",
+    "find": "lines.push(...mutationLines(latest, history, nowMs, git));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='NS-M1 ' packages/engine/test/nightly/rotation-status.test.mjs",
+    "testFile": "packages/engine/test/nightly/rotation-status.test.mjs",
+    "testName": "NS-M1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-status.mjs -> tools/nightly/engine/status.mjs; test tools/nightly-status.test.mjs -> tools/nightly/engine/rotation-status.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/status.mjs -> packages/engine/nightly/status.mjs; test tools/nightly/engine/rotation-status.test.mjs -> packages/engine/test/nightly/rotation-status.test.mjs"
+      }
+    ]
+  },
+  "INFRA-28/M10": {
+    "kind": "patch",
+    "protects": "NM-6 a throwing phase is recorded in mutations and never fails the e2e record",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": ".catch((e) => phaseError(e))",
+    "replace": "",
+    "test": "node --test --test-name-pattern='NM-6 ' packages/engine/test/nightly/run-mutations.test.mjs",
+    "testFile": "packages/engine/test/nightly/run-mutations.test.mjs",
+    "testName": "NM-6 ",
+    "reaimed": [
+      {
+        "by": "INFRA-60",
+        "why": "the guarded call now runs @ticket-gate/engine rotate.mjs through runMutationPhase; find unchanged"
+      },
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-e2e.mjs -> tools/nightly/engine/run.mjs; test tools/nightly-e2e.test.mjs -> tools/nightly/engine/run-mutations.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/run-mutations.test.mjs -> packages/engine/test/nightly/run-mutations.test.mjs"
+      }
+    ]
+  },
+  "INFRA-60/MN5": {
+    "kind": "patch",
+    "protects": "INFRA-60 5#NM-2b the nightly hands the rotation its stack lock owner, so each batch passes the lock the nightly holds",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "env: { FP_STACK_LOCK_OWNER: holderId },",
+    "replace": "env: {},",
+    "test": "node --test --test-name-pattern='NM-2b ' packages/engine/test/nightly/run-mutations.test.mjs",
+    "testFile": "packages/engine/test/nightly/run-mutations.test.mjs",
+    "testName": "NM-2b ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-e2e.mjs -> tools/nightly/engine/run.mjs; test tools/nightly-e2e.test.mjs -> tools/nightly/engine/run-mutations.test.mjs"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/run-mutations.test.mjs -> packages/engine/test/nightly/run-mutations.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M1": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 S2-REC (D4): a one-suite night writes no suites key, so the v1 record keeps exactly the 2.4 keys; without the guard every consumer's line gains suites: {}",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "...(Object.keys(suites).length > 0 ? { suites } : {}),",
+    "replace": "suites,",
+    "test": "node --test --test-name-pattern='^N-5 ' packages/engine/test/nightly/run.test.mjs",
+    "testFile": "packages/engine/test/nightly/run.test.mjs",
+    "testName": "N-5 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/run.test.mjs -> packages/engine/test/nightly/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M2": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 SC-1 (D13.1): nightly:status prints statusLine(record) of every suite after the first; without it a second suite is invisible in the status",
+    "file": "packages/engine/nightly/status.mjs",
+    "find": "if (view) lines.push(suite.runner.statusLine(view));",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SC-1 ' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/status.mjs -> packages/engine/nightly/status.mjs; test tools/nightly/engine/suite-contract.test.mjs -> packages/engine/test/nightly/suite-contract.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M3": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 SC-2 (D13.2): flaky 2-of-7 promotion reads only that suite past records; without it a spec flaky in one suite promotes in another",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": ".map((r) => suiteView(r, suite))",
+    "replace": ".map((r) => r)",
+    "test": "node --test --test-name-pattern='^SC-2 ' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/record.mjs -> packages/engine/nightly/record.mjs; test tools/nightly/engine/suite-contract.test.mjs -> packages/engine/test/nightly/suite-contract.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M4": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 SC-2 (D13.2): move-to-CI trigger 1 counts a cut-short night per suite name; without it a later suite cut-short is never counted for that suite",
+    "file": "packages/engine/nightly/status.mjs",
+    "find": "suiteView(r, suite)?.reason === 'cut-short'",
+    "replace": "r.reason === 'cut-short'",
+    "test": "node --test --test-name-pattern='^SC-2 ' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/status.mjs -> packages/engine/nightly/status.mjs; test tools/nightly/engine/suite-contract.test.mjs -> packages/engine/test/nightly/suite-contract.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M5": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 SC-3 (D13.3): every configured suite runs in config order; without it only the first suite runs",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "for (const [i, suite] of config.suites.entries()) {",
+    "replace": "for (const [i, suite] of config.suites.slice(0, 1).entries()) {",
+    "test": "node --test --test-name-pattern='^SC-3 ' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/suite-contract.test.mjs -> packages/engine/test/nightly/suite-contract.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M6": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 SC-3 (D13.3): each suite is killed at its own limitS; without it every suite inherits the first suite limit",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "limitS: suite.limitS,",
+    "replace": "limitS: config.suites[0].limitS,",
+    "test": "node --test --test-name-pattern='^SC-3 ' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/suite-contract.test.mjs -> packages/engine/test/nightly/suite-contract.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M7": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 NS-S2: a payload preflight reason (org-down, docker-down) ends the night before fetch, worktree or stack; without it the night runs on a dead org or stack",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "if (pf.reason) return fail(pf.reason);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^NS-S2 ' packages/engine/test/nightly/seam.test.mjs",
+    "testFile": "packages/engine/test/nightly/seam.test.mjs",
+    "testName": "NS-S2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/seam.test.mjs -> packages/engine/test/nightly/seam.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M8": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 NS-S3: a night whose payloads have no after records finalReset null; without it a reset that never ran is recorded as pass",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "if (withAfter.length === 0) return null;",
+    "replace": "if (withAfter.length === 0) return 'pass';",
+    "test": "node --test --test-name-pattern='^NS-S3 ' packages/engine/test/nightly/seam.test.mjs",
+    "testFile": "packages/engine/test/nightly/seam.test.mjs",
+    "testName": "NS-S3 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/seam.test.mjs -> packages/engine/test/nightly/seam.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M9": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 SC-4 (D13.4): traces retention deletes only the traces directory of a night past keep.traces; without it the night report goes too",
+    "file": "packages/engine/nightly/record.mjs",
+    "find": "rmSync(join(nightDir, 'traces'), { recursive: true, force: true });",
+    "replace": "rmSync(nightDir, { recursive: true, force: true });",
+    "test": "node --test --test-name-pattern='^SC-4 ' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-4 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/record.mjs -> packages/engine/nightly/record.mjs; test tools/nightly/engine/suite-contract.test.mjs -> packages/engine/test/nightly/suite-contract.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M10": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 SC-1 (D13.1): a runner extra is stored as suites.<name>.extra; without it a profile suite numbers never reach the record",
+    "file": "packages/engine/nightly/run.mjs",
+    "find": "...(res.extra !== undefined ? { extra: res.extra } : {}),",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^SC-1 ' packages/engine/test/nightly/suite-contract.test.mjs",
+    "testFile": "packages/engine/test/nightly/suite-contract.test.mjs",
+    "testName": "SC-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/run.mjs -> packages/engine/nightly/run.mjs; test tools/nightly/engine/suite-contract.test.mjs -> packages/engine/test/nightly/suite-contract.test.mjs"
+      }
+    ]
+  },
+  "INFRA-68b/M11": {
+    "kind": "patch",
+    "protects": "INFRA-68b 5 NB-1 (fact 4): the boundary test catches a project literal in a tools/nightly/engine module",
+    "file": "packages/engine/nightly/schedule.mjs",
+    "find": "export function decide({ holder, released, nowMs, deadlineMs }) {",
+    "replace": "export function decide({ holder, released, nowMs, deadlineMs }) {\n  const legacy = 'supabase/functions';",
+    "test": "node --test --test-name-pattern='^NB-1 ' packages/engine/test/nightly/boundary.test.mjs",
+    "testFile": "packages/engine/test/nightly/boundary.test.mjs",
+    "testName": "NB-1 ",
+    "reaimed": [
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/engine/schedule.mjs -> packages/engine/nightly/schedule.mjs; test tools/nightly/engine/boundary.test.mjs -> packages/engine/test/nightly/boundary.test.mjs"
+      }
+    ]
+  },
+  "INFRA-69/M4": {
+    "kind": "patch",
+    "protects": "5 NU-1 nightlyRecord reads the gate's nightly dir",
+    "file": "packages/engine/nightly/gate.mjs",
+    "find": "return gate?.nightly ? readNightly(nightlyDir()) : null;",
+    "replace": "return null;",
+    "test": "node --test --test-name-pattern='^NU-1 ' packages/engine/test/e2e/units.test.mjs",
+    "testFile": "packages/engine/test/e2e/units.test.mjs",
+    "testName": "NU-1 "
+  },
+  "INFRA-69/M5": {
+    "kind": "patch",
+    "protects": "5 ER-5 recordE2eRun appends the e2e run line",
+    "file": "packages/engine/nightly/gate.mjs",
+    "find": "if (line) appendE2eRun(dir, line);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^ER-5 ' packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testFile": "packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testName": "ER-5 "
+  },
+  "INFRA-69/M6": {
+    "kind": "patch",
+    "protects": "5 ER-3 only full runs forced by the nightly count as forced",
+    "file": "packages/engine/nightly/e2e-runs.mjs",
+    "find": "r.mode === 'full' && typeof r.why === 'string' && r.why.startsWith('nightly ')",
+    "replace": "r.mode === 'full'",
+    "test": "node --test --test-name-pattern='^ER-3 ' packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testFile": "packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testName": "ER-3 "
+  },
+  "INFRA-69/M7": {
+    "kind": "patch",
+    "protects": "5 ER-3 runs older than 14 days leave the forced share",
+    "file": "packages/engine/nightly/e2e-runs.mjs",
+    "find": "nowMs - Date.parse(r.ranAt) <= FORCED_WINDOW_MS",
+    "replace": "true",
+    "test": "node --test --test-name-pattern='^ER-3 ' packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testFile": "packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testName": "ER-3 "
+  },
+  "INFRA-69/M8": {
+    "kind": "patch",
+    "protects": "5 ER-2 the e2e runs file keeps the newest max lines",
+    "file": "packages/engine/nightly/e2e-runs.mjs",
+    "find": ".slice(-max)",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^ER-2 ' packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testFile": "packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testName": "ER-2 "
+  },
+  "INFRA-69/M9": {
+    "kind": "patch",
+    "protects": "5 ER-4 move-to-ci 2 is met over the forced-full share",
+    "file": "packages/engine/nightly/status.mjs",
+    "find": "met: queued >= 3 || (share !== null && share > FORCED_MAX)",
+    "replace": "met: queued >= 3",
+    "test": "node --test --test-name-pattern='^ER-4 ' packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testFile": "packages/engine/test/nightly/e2e-runs.test.mjs",
+    "testName": "ER-4 "
+  },
+  "INFRA-69/M10": {
+    "kind": "patch",
+    "protects": "5 NX-1 nightly status reads the e2e runs file",
+    "file": "packages/engine/nightly/status.mjs",
+    "find": "e2eRuns: readE2eRuns(nightlyDir())",
+    "replace": "e2eRuns: []",
+    "test": "node --test --test-name-pattern='^NX-1 ' packages/engine/test/nightly/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/nightly/synthetic-project.test.mjs",
+    "testName": "NX-1 "
+  },
+  "INFRA-69/M11": {
+    "kind": "patch",
+    "protects": "5 NC-5 nightlyLine reads the nightly only when the gate has one",
+    "file": "packages/engine/nightly/gate.mjs",
+    "find": "const cfg = gate?.nightly;",
+    "replace": "const cfg = undefined;",
+    "test": "node --test --test-name-pattern='^NC-5 ' packages/engine/test/nightly-config.test.mjs",
+    "testFile": "packages/engine/test/nightly-config.test.mjs",
+    "testName": "NC-5 "
+  },
+  "INFRA-69/M12": {
+    "kind": "patch",
+    "protects": "5 NX-1 payload io overrides reach the runner",
+    "file": "packages/engine/nightly/cli.mjs",
+    "find": "...Object.assign({}, ...cfg.payloads.map((p) => p.io ?? {})),",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^NX-1 ' packages/engine/test/nightly/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/nightly/synthetic-project.test.mjs",
+    "testName": "NX-1 "
+  }
+}

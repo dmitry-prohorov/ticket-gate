@@ -59,6 +59,26 @@
     "testFile": "packages/engine/test/e2e/synthetic-project.test.mjs",
     "testName": "SP-4 "
   },
+  "INFRA-69/M13": {
+    "kind": "patch",
+    "protects": "5 NX-3 nightly without a nightly key exits 2 with the not-configured line",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "if (!GATE.nightly) {",
+    "replace": "if (false) {",
+    "test": "node --test --test-name-pattern='^NX-3 ' packages/engine/test/nightly/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/nightly/synthetic-project.test.mjs",
+    "testName": "NX-3 "
+  },
+  "INFRA-69/M14": {
+    "kind": "patch",
+    "protects": "5 NX-1 the nightly command is dispatched",
+    "file": "packages/engine/bin/ticket-gate.mjs",
+    "find": "if (cmd === 'nightly') return nightly(rest);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^NX-1 ' packages/engine/test/nightly/synthetic-project.test.mjs",
+    "testFile": "packages/engine/test/nightly/synthetic-project.test.mjs",
+    "testName": "NX-1 "
+  },
   "INFRA-77a/M1": {
     "kind": "patch",
     "protects": "5 CR-1 cache-report is a command of the bin",

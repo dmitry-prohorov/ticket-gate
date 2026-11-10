@@ -1,0 +1,226 @@
+{
+  "config": {
+    "rootDir": "/x/apps/web/e2e",
+    "projects": [
+      {
+        "name": "chromium"
+      },
+      {
+        "name": "chromium-ny"
+      }
+    ],
+    "workers": 4
+  },
+  "suites": [
+    {
+      "title": "calendar.spec.ts",
+      "file": "calendar.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "calendar",
+          "file": "calendar.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "shows the week",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1200,
+                      "retry": 0,
+                      "startTime": "2026-01-15T01:10:00.000Z",
+                      "attachments": [],
+                      "errors": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "calendar.spec.ts-10",
+              "file": "calendar.spec.ts",
+              "line": 10,
+              "column": 5
+            }
+          ],
+          "suites": [
+            {
+              "title": "week view",
+              "file": "calendar.spec.ts",
+              "line": 3,
+              "column": 6,
+              "specs": [
+                {
+                  "title": "moves an event",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 0,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 1200,
+                          "retry": 0,
+                          "startTime": "2026-01-15T01:10:00.000Z",
+                          "attachments": [],
+                          "errors": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "calendar.spec.ts-20",
+                  "file": "calendar.spec.ts",
+                  "line": 20,
+                  "column": 5
+                }
+              ],
+              "suites": []
+            }
+          ]
+        },
+        {
+          "title": "zones",
+          "file": "calendar.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "shows times in the family zone @newyork",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium-ny",
+                  "projectName": "chromium-ny",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1200,
+                      "retry": 0,
+                      "startTime": "2026-01-15T01:10:00.000Z",
+                      "attachments": [],
+                      "errors": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "calendar.spec.ts-30",
+              "file": "calendar.spec.ts",
+              "line": 30,
+              "column": 5
+            }
+          ],
+          "suites": []
+        }
+      ]
+    },
+    {
+      "title": "family.spec.ts",
+      "file": "family.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "lists members",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1200,
+                  "retry": 0,
+                  "startTime": "2026-01-15T01:10:00.000Z",
+                  "attachments": [],
+                  "errors": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "family.spec.ts-5",
+          "file": "family.spec.ts",
+          "line": 5,
+          "column": 5
+        },
+        {
+          "title": "skipped on purpose",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "skipped",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 0,
+                  "retry": 0,
+                  "startTime": "2026-01-15T01:10:00.000Z",
+                  "attachments": [],
+                  "errors": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "family.spec.ts-9",
+          "file": "family.spec.ts",
+          "line": 9,
+          "column": 5
+        }
+      ],
+      "suites": []
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-01-15T01:10:00.000Z",
+    "duration": 600000,
+    "expected": 4,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 1
+  }
+}

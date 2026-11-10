@@ -1,7 +1,8 @@
 // The nightly units planner: which mode a run takes, which units are known red, which are reused,
-// and how nightlyUnits plans from a selection and the pack's nightly record.
-// Pure functions over plain data; the one project-bound piece is the planner's nightly hook.
+// and how nightlyUnits plans from a selection and the gate's nightly record.
+// Pure functions over plain data; the one project-bound piece is the gate's nightly record.
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -9,15 +10,19 @@ import { test } from "node:test";
 import { defineSelection } from "../../selection/define.mjs";
 import { CONFIG_URL, enterScratchProject } from "../scratch-project.mjs";
 
-// The scratch project's gate config has one pack whose nightly hook reads nightly.json from the
-// project root; a missing file is a missing record.
-enterScratchProject(`import { readFileSync } from 'node:fs';
-import { defineGate, step } from '${CONFIG_URL}';
+// The scratch project's gate config has a minimal nightly; the scratch project is a git repo, so
+// the nightly dir is <project>/.turbo/nightly, where the tests write the record. A missing
+// latest.json is a missing record.
+enterScratchProject(`import { defineGate, step } from '${CONFIG_URL}';
 export default defineGate({
   steps: [step({ id: 'a', when: true, cmd: 'x', reuse: false })],
-  packs: [{ name: 'nu-pack', version: '0.0.0', nightly: { read: () => JSON.parse(readFileSync('nightly.json', 'utf8')) } }],
+  nightly: {
+    suites: [{ name: 'web', runner: { run: async () => ({}) }, limitS: 60 }],
+    worktree: { dir: 'nightly-wt', install: ['node', '-e', '0'] },
+  },
 });
 `);
+execFileSync("git", ["init", "-q"], { cwd: process.cwd() });
 const {
   affectedListLines,
   chooseE2eMode,
@@ -32,6 +37,8 @@ const {
   E2E_LIST,
 } = await import("../../selection/units.mjs");
 const { NIGHTLY_MAX_AGE_MS } = await import("../../digest.mjs");
+const { nightlyDir } = await import("../../nightly/record.mjs");
+const { GATE } = await import("../../project.mjs");
 
 const HOUR = 3_600_000;
 const NOW = Date.parse("2026-11-01T12:00:00.000Z");
@@ -265,8 +272,12 @@ const planCtx = (over = {}) => ({
   ...over,
 });
 
-test("NU-1 nightlyUnits plans affected on a fresh green record read through the pack nightly hook; cmd is the runner command with --test-list <runFrom>/.turbo/e2e-selection.txt", async () => {
-  writeFileSync(join(ROOT_DIR, "nightly.json"), JSON.stringify(nightlyRecord()));
+test("NU-1 nightlyUnits plans affected on a fresh green record read from the gate's nightly dir; cmd is the runner command with --test-list <runFrom>/.turbo/e2e-selection.txt", async () => {
+  mkdirSync(nightlyDir(), { recursive: true });
+  writeFileSync(
+    join(nightlyDir(), "latest.json"),
+    JSON.stringify(nightlyRecord().latest),
+  );
   const units = nightlyUnits({
     selection: selectionOf(),
     suite: "web",
@@ -304,24 +315,11 @@ test("NU-1 nightlyUnits plans affected on a fresh green record read through the 
   );
 });
 
-test("NU-2 no nightly hook gives full with why nightly missing", async () => {
+test("NU-2 no gate nightly key gives full with why nightly missing", async () => {
   const opts = { selection: selectionOf(), suite: "web", full: "run all", runFrom: "." };
   const run = { flag: "auto", nowMs: NOW, fresh: false, state: STATE };
-  for (const gate of [
-    { packs: [] },
-    { packs: [{ nightly: {} }] },
-    {
-      packs: [
-        {
-          nightly: {
-            read: () => {
-              throw new Error("no file");
-            },
-          },
-        },
-      ],
-    },
-  ]) {
+  // the record is on disk (NU-1 wrote it); only the gate's nightly key decides whether it is read
+  for (const gate of [{ steps: GATE.steps }, { ...GATE, nightly: undefined }]) {
     const plan = await planE2e(["src/a.txt"], "basesha", run, { ...opts, gate });
     assert.equal(plan.mode, "full");
     assert.equal(plan.why, "nightly missing");

@@ -1925,6 +1925,56 @@
     "testFile": "packages/engine/test/selection-config.test.mjs",
     "testName": "CW-1 "
   },
+  "INFRA-69/M1": {
+    "kind": "patch",
+    "protects": "5 NC-2 a payload name given by gate.config and a pack is a config error naming both",
+    "file": "packages/engine/nightly-config.mjs",
+    "find": "if (seen.has(p.name)) fail('nightly', `payload \"${p.name}\" is given by ${seen.get(p.name)} and ${by}`);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^NC-2 ' packages/engine/test/nightly-config.test.mjs",
+    "testFile": "packages/engine/test/nightly-config.test.mjs",
+    "testName": "NC-2 "
+  },
+  "INFRA-69/M2": {
+    "kind": "patch",
+    "protects": "5 NC-1 a pack's nightlyPayloads are collected after the config payloads",
+    "file": "packages/engine/nightly-config.mjs",
+    "find": "for (const { by, value } of packHooksAll('nightlyPayloads', config)) add(by, value);",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^NC-1 ' packages/engine/test/nightly-config.test.mjs",
+    "testFile": "packages/engine/test/nightly-config.test.mjs",
+    "testName": "NC-1 "
+  },
+  "INFRA-69/M3": {
+    "kind": "patch",
+    "protects": "5 NC-1 defineGate validates and fills the nightly key",
+    "file": "packages/engine/config.mjs",
+    "find": "{ nightly: nightlyOf(config, fail) }",
+    "replace": "{ nightly: config.nightly }",
+    "test": "node --test --test-name-pattern='^NC-1 ' packages/engine/test/nightly-config.test.mjs",
+    "testFile": "packages/engine/test/nightly-config.test.mjs",
+    "testName": "NC-1 "
+  },
+  "INFRA-69/M17": {
+    "kind": "patch",
+    "protects": "5 NC-6 loadGateConfig re-defines a frozen gate whose pack payload is already collected without a duplicate-name error",
+    "file": "packages/engine/nightly-config.mjs",
+    "find": "if (payloads.includes(p)) continue;",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^NC-6 ' packages/engine/test/nightly-config.test.mjs",
+    "testFile": "packages/engine/test/nightly-config.test.mjs",
+    "testName": "NC-6 "
+  },
+  "INFRA-69/M18": {
+    "kind": "patch",
+    "protects": "5 CL-N1 verify records one e2e-runs line for the nightly step of a gate with a nightly key",
+    "file": "packages/engine/cli.mjs",
+    "find": "recordE2eRun({ gate: GATE, results, id: nightlyId, ranAt });",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^CL-N1 ' packages/engine/test/cli.test.mjs",
+    "testFile": "packages/engine/test/cli.test.mjs",
+    "testName": "CL-N1 "
+  },
   "INFRA-77a/M7": {
     "kind": "patch",
     "protects": "5 PC-2 two packs naming one command is a config error",

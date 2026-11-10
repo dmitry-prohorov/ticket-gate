@@ -8,8 +8,8 @@ With `supabaseNext({ mutations })` it also contributes the SQL mutation kind and
 
 `pnpmFilterInstall(filter)` (from `score.mjs`) builds the `score.baseInstall` of a pnpm workspace package for the engine's `score` gate.
 
-The pack's `nightly` hook has `read()`, the nightly record `{ latest, history }` that the engine's `nightlyUnits` plans from.
-The `e2e` hook and `e2eUnits()` of earlier release candidates are removed: the selection and the units slot live in the engine. The pack
+`supabaseNext({ nightlyStack: { preflight, reset } })` contributes the Supabase stack as a payload of the engine's nightly through the `nightlyPayloads` hook (`nightly/stack-payload.mjs`): docker must be up, the stack running; it is reset before the suites and again after them. `preflight` and `reset` are argv arrays.
+The `nightly` hook (with its `read()`), the `e2e` hook and `e2eUnits()` of earlier release candidates are removed; the engine reads the nightly record from the gate's `nightly` key: the selection and the units slot live in the engine. The pack
 exports building blocks for the engine's selection hooks (`selection/supabase-rules.mjs`, `selection/next-routes.mjs`,
 `selection/workspace-exports.mjs`).
 

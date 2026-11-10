@@ -27,6 +27,32 @@ const ALLOWED = {
     [P + 'STACK_LOCK_POLL_S']: 1,
     [P + 'STACK_LOCK_PRINT_S']: 1,
   },
+  // nightly variable names handed off with the export; the TICKET_GATE_* rename removes them
+  'packages/engine/nightly/record.mjs': { [P + 'NIGHTLY_DIR']: 2 },
+  'packages/engine/nightly/run.mjs': {
+    [P + 'STACK_LOCK_OWNER']: 2,
+    [P + 'NIGHTLY_MUTATION_MIN']: 1,
+  },
+  'packages/engine/mutations/rotation-status.mjs': { [P + 'NIGHTLY_MUTATION_MIN']: 1 },
+  // the ported nightly tests set the same handed-off names
+  'packages/engine/test/nightly/__tests__/status-helpers.mjs': {
+    [P + 'NIGHTLY_DIR']: 1,
+    [P + 'STACK_LOCK_OWNER']: 1,
+  },
+  'packages/engine/test/nightly/__tests__/world.mjs': {
+    [P + 'NIGHTLY_DIR']: 2,
+    [P + 'STACK_LOCK_OWNER']: 1,
+  },
+  'packages/engine/test/nightly/rotation-status.test.mjs': { [P + 'NIGHTLY_MUTATION_MIN']: 1 },
+  'packages/engine/test/nightly/run-mutations.test.mjs': { [P + 'STACK_LOCK_OWNER']: 4 },
+  'packages/engine/test/nightly/run.test.mjs': { [P + 'STACK_LOCK_OWNER']: 2 },
+  'packages/engine/test/nightly/seam.test.mjs': { [P + 'STACK_LOCK_OWNER']: 3 },
+  'packages/engine/test/nightly/status-fixtures.test.mjs': {
+    [P + 'NIGHTLY_DIR']: 1,
+    [P + 'STACK_LOCK_OWNER']: 1,
+  },
+  // the registry entry whose find is the run.mjs line that sets the handed-off lock owner name
+  'mutation-registry/packages/engine/nightly.json': { [P + 'STACK_LOCK_OWNER']: 1 },
 };
 
 /** Every needle hit in `files` (relative to `root`) beyond what `allowed` permits for that file. */

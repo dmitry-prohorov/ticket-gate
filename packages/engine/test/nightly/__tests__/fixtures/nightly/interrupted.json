@@ -1,0 +1,61 @@
+{
+  "config": {
+    "rootDir": "/x/apps/web/e2e",
+    "projects": [
+      {
+        "name": "chromium"
+      },
+      {
+        "name": "chromium-ny"
+      }
+    ],
+    "workers": 4
+  },
+  "suites": [
+    {
+      "title": "calendar.spec.ts",
+      "file": "calendar.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "shows the week",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "skipped",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "interrupted",
+                  "duration": 0,
+                  "retry": 0,
+                  "startTime": "2026-01-15T01:10:00.000Z",
+                  "attachments": [],
+                  "errors": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "calendar.spec.ts-10",
+          "file": "calendar.spec.ts",
+          "line": 10,
+          "column": 5
+        }
+      ],
+      "suites": []
+    }
+  ],
+  "errors": [
+    {
+      "message": "Timed out waiting 1800s for the entire test run"
+    }
+  ]
+}

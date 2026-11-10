@@ -3,7 +3,9 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import {
+  existsSync,
   mkdirSync,
+  readFileSync,
   mkdtempSync,
   realpathSync,
   rmSync,
@@ -291,4 +293,48 @@ test('CL-10 move-check [--base=REF] prints unmatched lines, exits 1 while any re
     stray.stderr,
     /unknown argument --bogus\. Usage: ticket-gate move-check/,
   );
+});
+
+// A gate whose one step carries nightly units, run through `verify`.
+const e2eProject = (nightly) => {
+  const dir = project();
+  put(
+    dir,
+    'gate.config.mjs',
+    `import { defineGate, step } from ${JSON.stringify(CONFIG_URL)};
+export default defineGate({
+  steps: [step({ id: 'e2e', when: true, cmd: 'x', reuse: false, units: { nightly: { finish: (r) => ({ ...r, mode: 'full', why: 'w' }) },
+    select: () => ({ mode: 'full', why: 'w', units: ['u'], plan: { mode: 'full' } }), cmd: () => 'node -e 0' } })],
+  dod: { files: ['plans/phase-*.md'], contract: 'plans/contracts/{id}.md' },
+  reviewMap: { splitHint: 'split' },
+  ${nightly}
+});
+`,
+  );
+  return dir;
+};
+const withGit = (dir) => {
+  const git = (...a) =>
+    execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd: dir, stdio: 'pipe' });
+  git('init', '-q', '-b', 'main');
+  git('add', '-A');
+  git('commit', '-qm', 'one');
+  git('checkout', '-qb', 'feat');
+  writeFileSync(join(dir, 'new.txt'), 'x\n');
+  return dir;
+};
+
+test('CL-N1 verify appends one e2e-runs line for the nightly step, and none without a nightly key', () => {
+  const nightly = `nightly: { suites: [{ name: 'web', runner: { run: async () => ({}) }, limitS: 60 }],
+      worktree: { dir: 'wt', install: ['node', '-e', '0'] } }`;
+  const on = withGit(e2eProject(nightly));
+  const r = bin(on, ['verify']);
+  const file = join(on, '.turbo', 'nightly', 'e2e-runs.jsonl');
+  assert.ok(existsSync(file), r.stdout + r.stderr);
+  const rows = readFileSync(file, 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.equal(rows.length, 1);
+  assert.deepEqual(Object.keys(rows[0]).sort(), ['mode', 'ms', 'ranAt', 'why']);
+  const off = withGit(e2eProject(''));
+  bin(off, ['verify']);
+  assert.equal(existsSync(join(off, '.turbo', 'nightly')), false);
 });

@@ -1,0 +1,36 @@
+{
+  "INFRA-22/M14": {
+    "kind": "patch",
+    "protects": "INFRA-22 test N-2: the nightly returns status error reason docker-down when Docker is not up; without it the run proceeds and fails opaquely",
+    "file": "packages/supabase-next/nightly/stack-payload.mjs",
+    "find": "if (!(await io.dockerUp())) return { reason: 'docker-down' };",
+    "replace": "",
+    "test": "node --test --test-name-pattern='^N-2 ' packages/engine/test/nightly/run.test.mjs",
+    "testFile": "packages/engine/test/nightly/run.test.mjs",
+    "testName": "N-2 ",
+    "reaimed": [
+      {
+        "by": "INFRA-68a",
+        "why": "move-only split: tools/nightly-e2e.mjs -> tools/nightly/engine/run.mjs; test tools/nightly-e2e.test.mjs -> tools/nightly/engine/run.test.mjs"
+      },
+      {
+        "by": "INFRA-68b",
+        "why": "seam: the docker-up preflight moved to the supabase-next stack payload (supabaseStack().preflight)"
+      },
+      {
+        "by": "INFRA-69",
+        "why": "export: tools/nightly/supabase-next/stack-payload.mjs -> packages/supabase-next/nightly/stack-payload.mjs; test tools/nightly/engine/run.test.mjs -> packages/engine/test/nightly/run.test.mjs"
+      }
+    ]
+  },
+  "INFRA-69/M16": {
+    "kind": "patch",
+    "protects": "5 SS-1 supabaseStack without preflight or reset argv throws",
+    "file": "packages/supabase-next/nightly/stack-payload.mjs",
+    "find": "if (\n    !Array.isArray(preflight) ||\n    preflight.length === 0 ||\n    !Array.isArray(reset) ||\n    reset.length === 0\n  )",
+    "replace": "if (false)",
+    "test": "node --test --test-name-pattern='^SS-1 ' packages/supabase-next/test/nightly/stack-payload.test.mjs",
+    "testFile": "packages/supabase-next/test/nightly/stack-payload.test.mjs",
+    "testName": "SS-1 "
+  }
+}
