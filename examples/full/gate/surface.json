@@ -1,9 +1,0 @@
-{
-  "comment": "Every file of the gate's own tooling, with the one kind that decides what it may do. Run `ticket-gate ratchet surface`.",
-  "entries": [
-    { "match": ["gate.config.mjs"], "kind": "wiring", "why": "the gate config: it imports the local pack and the suite runner" },
-    { "match": ["gate/*.json", "gate/registry/*.json"], "kind": "data", "why": "baselines, manifests and the mutation registry" },
-    { "match": ["gate/db.mjs"], "kind": "support", "why": "the stand-in database stack" },
-    { "match": ["gate/pack.mjs", "gate/nightly-suite.mjs"], "kind": "wiring", "why": "connects the project to engine hooks" }
-  ]
-}

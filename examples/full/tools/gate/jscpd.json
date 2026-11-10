@@ -1,5 +1,5 @@
 {
-  "path": ["src", "app"],
+  "path": ["../../src", "../../app"],
   "format": ["javascript"],
   "minLines": 3,
   "minTokens": 30,

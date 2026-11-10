@@ -2,7 +2,7 @@
 // A stand-in for a local database stack, so the example runs anywhere: the "database" is
 // .turbo/db.json. A real project would call docker, supabase, sf or its own scripts here.
 //
-//   node gate/db.mjs up | health | reset | migrate | status
+//   node tools/gate/db.mjs up | health | reset | migrate | status
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -20,7 +20,7 @@ if (cmd === 'up') {
   console.log('db: up');
 } else if (cmd === 'health') {
   if (!read()?.up) {
-    console.error('db: down. Start it with: node gate/db.mjs up');
+    console.error('db: down. Start it with: node tools/gate/db.mjs up');
     process.exit(1);
   }
   console.log('db: healthy');
@@ -36,6 +36,6 @@ if (cmd === 'up') {
   const s = read();
   console.log(s ? `db: ${s.up ? 'up' : 'down'}, ${s.applied.length} migration(s) applied` : 'db: never started');
 } else {
-  console.error('usage: node gate/db.mjs up | health | reset | migrate | status');
+  console.error('usage: node tools/gate/db.mjs up | health | reset | migrate | status');
   process.exit(2);
 }

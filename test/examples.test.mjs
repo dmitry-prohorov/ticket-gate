@@ -148,8 +148,8 @@ test('EX-2 examples/full: a ticket branch through verify, the stack, the registr
     assert.equal(dry.code, 0, dry.out);
     for (const line of [
       /RUN\s+node --check src\/cart\.mjs/,
-      /RUN\s+node gate\/db\.mjs health/,
-      /RUN\s+node gate\/db\.mjs migrate/,
+      /RUN\s+node tools\/gate\/db\.mjs health/,
+      /RUN\s+node tools\/gate\/db\.mjs migrate/,
       /RUN\s+npm run e2e/,
       /HUMAN\s+deploy the branch to staging/,
       /`db\/migrations\/002_discount\.sql` \+1 -0 - H1 database migration/,
@@ -157,7 +157,7 @@ test('EX-2 examples/full: a ticket branch through verify, the stack, the registr
       /apply it to a copy of production first/,
     ])
       assert.match(dry.out, line);
-    assert.doesNotMatch(dry.out, /RUN\s+node gate\/db\.mjs reset/, 'migrate satisfies the reset');
+    assert.doesNotMatch(dry.out, /RUN\s+node tools\/gate\/db\.mjs reset/, 'migrate satisfies the reset');
 
     const sel = tg(dir, ['select']);
     assert.match(sel.out, /^ {2}checkout\.spec\.mjs$/m);
@@ -167,7 +167,7 @@ test('EX-2 examples/full: a ticket branch through verify, the stack, the registr
     assert.equal(down.code, 1, down.out);
     assert.match(down.out, /STOPPED \(db:health red\): npm run e2e/);
 
-    execFileSync(process.execPath, ['gate/db.mjs', 'up'], { cwd: dir, stdio: 'pipe' });
+    execFileSync(process.execPath, ['tools/gate/db.mjs', 'up'], { cwd: dir, stdio: 'pipe' });
     const up = tg(dir, ['verify']);
     assert.equal(up.code, 0, up.out);
     assert.match(up.out, /npm test: ℹ pass 5 \(reused from .+\)\s+\[REUSED\]/);

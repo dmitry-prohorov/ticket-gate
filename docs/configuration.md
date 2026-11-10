@@ -8,6 +8,9 @@ import { defineGate, step } from '@ticket-gate/engine';
 export default defineGate({ /* keys below */ });
 ```
 
+To keep the root tidy, `gate.config.mjs` can be one line that re-exports a config kept elsewhere, such as
+`export { default } from './tools/gate/config.mjs';`. Paths inside the config stay relative to the project root.
+
 `defineGate` validates the object and freezes it. An unknown key or a bad value throws
 `gate.config: <key>: <what is wrong>`. The hooks load the file again and validate it again, so a plain object that skipped
 `defineGate` is still checked. The hooks also require `steps` (non-empty), `reviewMap` and `dod`.

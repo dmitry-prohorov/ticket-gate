@@ -5,7 +5,7 @@
 import { spawnSync } from 'node:child_process';
 
 const db = (root, ...args) =>
-  spawnSync(process.execPath, ['gate/db.mjs', ...args], { cwd: root, encoding: 'utf8' });
+  spawnSync(process.execPath, ['tools/gate/db.mjs', ...args], { cwd: root, encoding: 'utf8' });
 
 export function shopPack() {
   return {

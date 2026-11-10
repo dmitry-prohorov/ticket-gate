@@ -1,31 +1,36 @@
 # Example: every engine feature in one project
 
-A small shop (a cart, a catalog, two pages, a database) whose [`gate.config.mjs`](gate.config.mjs) sets every key of
-`defineGate` with a value that works. It uses `@ticket-gate/engine` only; no pack is installed. Where a pack would add
-something, a project-local pack ([`gate/pack.mjs`](gate/pack.mjs)) shows how.
+A small shop (a cart, a catalog, two pages, a database) whose gate config ([`tools/gate/config.mjs`](tools/gate/config.mjs))
+sets every key of `defineGate` with a value that works. It uses `@ticket-gate/engine` only; no pack is installed. Where a pack would add
+something, a project-local pack ([`tools/gate/pack.mjs`](tools/gate/pack.mjs)) shows how.
 
 Start with [examples/basic](../basic) if you have not set up a gate before. This repository's tests run this project end
 to end (`test/examples.test.mjs`, EX-2), so every output below is real.
 
 ## What is where
 
+The app is `src/`, `app/`, `test/`, `e2e/` and `db/`. The gate's code and data live in `tools/gate/`; only
+`gate.config.mjs` stays at the root, because that is the file name the engine searches for. `tickets/`, `followups/`
+and `docs/` are the team's own documents, which the gate reads.
+
 ```
 examples/full/
-├── gate.config.mjs               the gate: every defineGate key
+├── gate.config.mjs               one line: re-exports tools/gate/config.mjs (the engine looks for this name)
 ├── package.json                  scripts: test, e2e, gate; engine, typescript and jscpd pinned
-├── .jscpd.json                   jscpd settings for the duplication ratchet
 ├── src/cart.mjs, src/catalog.mjs core logic (GATED: the mutation registry guards it)
 ├── app/checkout.mjs, app/catalog.mjs   pages (the roots of the e2e import graph)
 ├── test/*.test.mjs               unit tests
 ├── e2e/*.spec.mjs                end-to-end specs; line 1 names their areas
 ├── e2e/fixtures/cart.json        e2e input only (dataPaths)
 ├── db/migrations/*.sql           the "database" (HUMAN in the review map)
-├── gate/
+├── tools/gate/                   everything the gate needs, out of the app's way
+│   ├── config.mjs                the gate: every defineGate key
 │   ├── db.mjs                    a stand-in database stack: up | health | reset | migrate | status
 │   ├── pack.mjs                  a local pack: a CLI command and a nightly payload
 │   ├── nightly-suite.mjs         a nightly suite runner for node:test specs
 │   ├── registry/src.json         the mutation registry (area: src)
 │   ├── surface.json              what each gate tooling file is allowed to be
+│   ├── jscpd.json                jscpd settings for the duplication ratchet
 │   └── *.json                    ratchet baselines (module-size, surface, duplication, assertions)
 ├── docs/guide/pricing.md         a page stamped with its sources (docs-stale)
 ├── tickets/phase-1.md            DoD checkboxes for ticket T-2
@@ -65,7 +70,7 @@ npm install            # until the first release is on npm: npm install --save-e
 git init -b main && git add -A && git commit -m "start"
 ```
 
-The baselines in `gate/` are already seeded. In your own project, seed each one once, on the main branch:
+The baselines in `tools/gate/` are already seeded. In your own project, seed each one once, on the main branch:
 `ticket-gate ratchet module-size --update --seed`, `surface --update --seed`, `duplication --update` and
 `assertions --update`.
 
@@ -75,9 +80,9 @@ The baselines in `gate/` are already seeded. In your own project, seed each one 
 $ npx ticket-gate ratchet --all
 module-size: 8 files measured, 0 baselined, none grew
 ratchet module-size: ok
-surface: OK 10 tracked files, 4 entries, 6 globs
+surface: OK 12 tracked files, 5 entries, 7 globs
 ratchet surface: ok
-duplication: 0 gated clone(s), all in gate/duplication.json (0 allowed, 0 debt).
+duplication: 0 gated clone(s), all in tools/gate/duplication.json (0 allowed, 0 debt).
 ratchet duplication: ok
 assertions: 2 specs, 2 areas match the baseline
 ratchet assertions: ok
@@ -117,8 +122,8 @@ Branch touches 2 path(s).
   RUN    node --check src/cart.mjs   (selected by when)
   RUN    npm test   (selected by when)
   RUN    npx --no-install ticket-gate ratchet --all   (selected by when)
-  RUN    node gate/db.mjs health   (the db stack must be healthy before its steps run)
-  RUN    node gate/db.mjs migrate   (selected by when)
+  RUN    node tools/gate/db.mjs health   (the db stack must be healthy before its steps run)
+  RUN    node tools/gate/db.mjs migrate   (selected by when)
   RUN    npm run e2e   (selected by when)
   HUMAN  deploy the branch to staging and click through the checkout   (selected by when)
 mutation-registry: 1 selected (T-2/M1), 0 Playwright-backed deferred to the nightly
@@ -130,7 +135,7 @@ mutation-registry: 1 selected (T-2/M1), 0 Playwright-backed deferred to the nigh
 - `src/cart.mjs` +3 -0 - G1 core logic: the mutation registry
 
 Human steps:
-- apply it to a copy of production first: node gate/db.mjs migrate
+- apply it to a copy of production first: node tools/gate/db.mjs migrate
 ```
 
 - `syntax` checks only the changed `.mjs` files, because its `cmd` is a function of the diff.
@@ -155,8 +160,8 @@ A change under `e2e/fixtures/` or to `package.json` (`selection.triggers`) selec
 ```
 $ npx ticket-gate verify
 ...
-node gate/db.mjs health: failed (0m00s)  [FAIL]
-node gate/db.mjs migrate: not run (stopped: db:health red)  [STOPPED]
+node tools/gate/db.mjs health: failed (0m00s)  [FAIL]
+node tools/gate/db.mjs migrate: not run (stopped: db:health red)  [STOPPED]
 npm run e2e: not run (stopped: db:health red)  [STOPPED]
 verify:ticket FAILED (failures: .turbo/ticket-verify-failures.md). Do not tick a DoD checkbox until this is green.
 ```
@@ -164,12 +169,12 @@ verify:ticket FAILED (failures: .turbo/ticket-verify-failures.md). Do not tick a
 ### Verify, with the database up
 
 ```
-$ node gate/db.mjs up && npx ticket-gate verify
+$ node tools/gate/db.mjs up && npx ticket-gate verify
 node --check src/cart.mjs: passed (0m00s)
 npm test: ℹ pass 5 (reused from 2026-11-10T06:59:58.726Z)  [REUSED]
 npx --no-install ticket-gate ratchet --all: ratchet --all: 4 ran, 0 failed (0m01s)
-node gate/db.mjs health: db: healthy (0m00s)
-node gate/db.mjs migrate: db: migrated, 2 new migration(s) (0m00s)
+node tools/gate/db.mjs health: db: healthy (0m00s)
+node tools/gate/db.mjs migrate: db: migrated, 2 new migration(s) (0m00s)
 npm run e2e: ℹ pass 2 (0m01s)
 deploy the branch to staging and click through the checkout: passed  [HUMAN]
 Not selected: db-reset
@@ -218,7 +223,7 @@ requires `followups/FU1.md` to be `status: done`. T-2 declines FU1, so nothing i
 ## The nightly and the pack
 
 ```
-$ npx ticket-gate db-status          # a command from gate/pack.mjs (packCommands)
+$ npx ticket-gate db-status          # a command from tools/gate/pack.mjs (packCommands)
 db: never started
 
 $ npx ticket-gate nightly status
@@ -232,7 +237,7 @@ add to your crontab: 0 1 * * * cd <repo> && npx ticket-gate nightly run
 
 `nightly run` needs a git remote (`nightly.remote`, default `origin/main`). It checks out a fresh worktree, runs
 `npm ci`, and runs the pack's `db` payload preflight: it skips the night when the database is down. It then resets the
-database, runs the `e2e` suite through `gate/nightly-suite.mjs`, resets the database again, and records the night.
+database, runs the `e2e` suite through `tools/gate/nightly-suite.mjs`, resets the database again, and records the night.
 `nightly status` exits 3 until a night is on record.
 
 For Playwright suites, the engine ships `playwrightSuite` (`nightly/suites.mjs`) and the `playwright` selection runner
