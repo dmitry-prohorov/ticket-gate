@@ -1,0 +1,22 @@
+{
+  "T-2/M1": {
+    "kind": "patch",
+    "protects": "1.1 the discount starts at exactly 10 items",
+    "file": "src/cart.mjs",
+    "find": "if (items >= 10) return Math.round(sum * 0.9);",
+    "replace": "if (items > 10) return Math.round(sum * 0.9);",
+    "test": "node --test --test-name-pattern='^total takes 10% off' test/cart.test.mjs",
+    "testFile": "test/cart.test.mjs",
+    "testName": "total takes 10% off"
+  },
+  "T-2/M2": {
+    "kind": "patch",
+    "protects": "1.2 an unknown sku is refused, not priced at zero",
+    "file": "src/catalog.mjs",
+    "find": "if (!(sku in PRICES)) throw new RangeError(`unknown sku ${sku}`);",
+    "replace": "if (!(sku in PRICES)) return 0;",
+    "test": "node --test --test-name-pattern='^priceOf refuses' test/catalog.test.mjs",
+    "testFile": "test/catalog.test.mjs",
+    "testName": "priceOf refuses"
+  }
+}

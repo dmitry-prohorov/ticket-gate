@@ -13,6 +13,7 @@ export default defineGate({ /* keys below */ });
 `defineGate` is still checked. The hooks also require `steps` (non-empty), `reviewMap` and `dod`.
 
 New to the tool? Start with [getting-started.md](getting-started.md) and [examples/basic](../examples/basic).
+[examples/full](../examples/full) sets every key below in one working project.
 
 | Key | Required | Section |
 |---|---|---|

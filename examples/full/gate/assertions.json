@@ -1,0 +1,21 @@
+{
+  "comment": "Never edit by hand: run ticket-gate ratchet assertions --update.",
+  "areas": {
+    "checkout": {
+      "asserts": 1
+    },
+    "catalog": {
+      "asserts": 1
+    }
+  },
+  "specs": {
+    "catalog.spec.mjs": {
+      "areas": "catalog",
+      "asserts": 1
+    },
+    "checkout.spec.mjs": {
+      "areas": "checkout",
+      "asserts": 1
+    }
+  }
+}

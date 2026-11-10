@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Docs: `examples/full`, a project that sets every `defineGate` key with the engine alone (steps, a stack, the review map, DoD, follow-ups, precheck, four ratchets, the mutation registry, selection, docs-stale, score, the nightly and a local pack), run end to end by `test/examples.test.mjs` (EX-2).
 - Docs: `docs/getting-started.md` (setup, the DoD file, the Claude Code hooks, `verify` flags, CI), `docs/configuration.md` (every `defineGate` key), and `examples/basic`, a complete project that `test/examples.test.mjs` runs end to end; the README's minimal config now has the `dod` the hooks require.
 - Repository: the read-only `CI` workflow (`.github/workflows/ci.yml`) runs the tests on Node.js 22 and 24, the scrub and the mutation registry check on every pull request and push to `main`; `test/ci-workflow.test.mjs` keeps it without secrets, write permissions or publishing. The README shows its CI and tests badges.
 - `@ticket-gate/engine`: fix: the surface ratchet read a quoted `'from'` (for example in a config array) as an import specifier; `importsOf` now skips string literals, so only real `import` and `export ... from` specifiers count; guarded by `INFRA-82a/M12`; a quote inside a regex literal no longer opens a string that hides the imports after it (`INFRA-82a/M13`).

@@ -1,0 +1,9 @@
+{
+  "path": ["src", "app"],
+  "format": ["javascript"],
+  "minLines": 3,
+  "minTokens": 30,
+  "reporters": ["json"],
+  "output": ".turbo/jscpd",
+  "silent": true
+}

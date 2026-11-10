@@ -1,0 +1,16 @@
+{
+  "name": "ticket-gate-example-full",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "e2e": "node --test \"e2e/*.spec.mjs\"",
+    "gate": "ticket-gate verify"
+  },
+  "devDependencies": {
+    "@ticket-gate/engine": "0.1.0-rc.1",
+    "jscpd": "4.3.0",
+    "typescript": "5.9.3"
+  }
+}

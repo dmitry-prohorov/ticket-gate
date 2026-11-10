@@ -184,6 +184,8 @@ Check out with enough history for the merge base (`fetch-depth: 0` with `actions
 
 ## Next steps
 
+[examples/full](../examples/full) shows each of these configured and running in one project.
+
 - Make review rules content-aware: `match` receives `{ path, added, removed, addedLines, depsChanged }`. The example
   sends any file that adds `eval(` to HUMAN. See [configuration.md](configuration.md#reviewmap).
 - Add ratchets: metrics that may only improve (duplication, assertion counts, compiler bailouts). See

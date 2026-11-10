@@ -19,6 +19,7 @@ This is a pre-release (`0.1.0-rc.1`). The configuration surface may still change
 |---|---|
 | [Getting started](docs/getting-started.md) | set up a gate in a project and connect the hooks, step by step |
 | [examples/basic](examples/basic) | copy a complete, tested project: config, DoD file, contract, hook settings |
+| [examples/full](examples/full) | see every engine feature configured and run: stacks, ratchets, mutation registry, selection, nightly, a local pack |
 | [Configuration reference](docs/configuration.md) | look up every `defineGate` key, its default and what it does |
 | [Why ticket-gate exists](docs/why.md) | understand the problem, the alternatives considered, and the known limits |
 | This README | see the packages, the commands, and the larger features (mutation registry, score gate, selection) |
