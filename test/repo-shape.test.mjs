@@ -11,7 +11,9 @@ import { pathToFileURL } from 'node:url';
 import { REPO, repoFiles } from './repo-files.mjs';
 
 const ALLOWED = [
-  /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|\.gitignore|LICENSE|README\.md|CHANGELOG\.md)$/,
+  /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|\.gitignore|LICENSE|README\.md|CHANGELOG\.md|TODO\.md)$/,
+  /^docs\/why\.md$/,
+  /^\.vscode\/settings\.json$/,
   /^packages\/(engine|supabase-next|react)\/.+/,
   /^scripts\/[^/]+\.mjs$/,
   /^mutation-registry\/.+\.json$/,
@@ -23,7 +25,7 @@ const ALLOWED = [
 const FORBIDDEN = [
   [/^gate\.config\.mjs$/, 'a project gate.config.mjs belongs to the consumer'],
   [/^\.ticket-gate\//, 'a project hook shim belongs to the consumer'],
-  [/^docs\//, 'docs/ is project material'],
+  [/^docs\/(?!why\.md$)/, 'docs/ is project material; only docs/why.md is public'],
   [/^\.(claude|cursor|agents)\//, 'agent tooling is project material'],
   [/(^|\/)(AGENTS|MEMORY)\.md$/, 'agent memory is project material'],
   [/receipt[^/]*\.json$/, 'a receipt is a local verification artifact'],
@@ -55,7 +57,9 @@ test('INFRA-47 5-2 the allowlist rejects each named intruder', () => {
   const planted = [
     'gate.config.mjs',
     'docs/tasks/a.md',
+    'docs/plan.md',
     '.claude/settings.json',
+    '.vscode/launch.json',
     'AGENTS.md',
     'x.old-receipt.json',
     'templates/hook.mjs',
@@ -68,6 +72,9 @@ test('INFRA-47 5-2 the allowlist rejects each named intruder', () => {
       'packages/engine/test/fixtures/salesforce/gate.config.mjs',
       '.github/workflows/publish.yml',
       'README.md',
+      'TODO.md',
+      'docs/why.md',
+      '.vscode/settings.json',
     ]),
     [],
   );
