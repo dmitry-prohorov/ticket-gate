@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `@ticket-gate/engine`: fix: a step's `summary` (`pick`, `allTasksLines` and the last-line default) reads coloured output as plain text, so a step run under `FORCE_COLOR` (as `node --test` sets for its children in a terminal) keeps its picked line instead of falling back to `passed`.
 - Docs: `examples/full`, a project that sets every `defineGate` key with the engine alone (steps, a stack, the review map, DoD, follow-ups, precheck, four ratchets, the mutation registry, selection, docs-stale, score, the nightly and a local pack), run end to end by `test/examples.test.mjs` (EX-2).
 - Docs: `docs/getting-started.md` (setup, the DoD file, the Claude Code hooks, `verify` flags, CI), `docs/configuration.md` (every `defineGate` key), and `examples/basic`, a complete project that `test/examples.test.mjs` runs end to end; the README's minimal config now has the `dod` the hooks require.
 - Repository: the read-only `CI` workflow (`.github/workflows/ci.yml`) runs the tests on Node.js 22 and 24, the scrub and the mutation registry check on every pull request and push to `main`; `test/ci-workflow.test.mjs` keeps it without secrets, write permissions or publishing. The README shows its CI and tests badges.

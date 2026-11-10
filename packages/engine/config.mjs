@@ -75,11 +75,17 @@ const DEFAULT_OVERSIZE_WAIVER = /^(?:- )?oversize-accepted: \S/;
 const TIERS = ['HUMAN', 'GATED', 'MACHINE'];
 const BRANCH_NAME = /^[A-Za-z0-9._/-]+$/;
 
-export function pick(out, patterns) {
-  const lines = out
+// A step run under FORCE_COLOR (set by `node --test` in a terminal) colours its output.
+const ANSI = /\x1b\[[0-9;]*m/g;
+
+const outLines = (out) =>
+  out
     .split('\n')
-    .map((l) => l.trim())
+    .map((l) => l.replace(ANSI, '').trim())
     .filter(Boolean);
+
+export function pick(out, patterns) {
+  const lines = outLines(out);
   for (const re of patterns) {
     const hits = lines.filter((l) => re.test(l));
     if (hits.length) return hits[hits.length - 1];
@@ -89,18 +95,12 @@ export function pick(out, patterns) {
 
 /** turbo prints one "Tasks:" line per sub-command; a false green hides in the ones you drop. */
 export function allTasksLines(out) {
-  const hits = out
-    .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => /^Tasks:/.test(l));
+  const hits = outLines(out).filter((l) => /^Tasks:/.test(l));
   return hits.length ? hits.join(' | ') : null;
 }
 
 const lastLine = (out) => {
-  const lines = out
-    .split('\n')
-    .map((l) => l.trim())
-    .filter(Boolean);
+  const lines = outLines(out);
   return lines.length ? lines[lines.length - 1] : null;
 };
 

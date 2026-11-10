@@ -28,7 +28,7 @@ test('PS-1 projectSetup throws until a setup is bound, then returns it', () => {
   assert.match(before, /bindSetup\(setupOf\(gate\)\)/);
 
   const after = run(
-    "const s = { marker: 1 }; console.log(bindSetup(s) === s, projectSetup() === s);",
+    "const s = { marker: 1 }; console.log(`${bindSetup(s) === s} ${projectSetup() === s}`);",
   );
   assert.equal(after.trim(), 'true true');
 });

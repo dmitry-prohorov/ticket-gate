@@ -961,6 +961,11 @@ test("P81 pick, allTasksLines allTasksLines joins every Tasks line and pick take
   assert.equal(allTasksLines("x"), null);
 });
 
+test("P81b pick and allTasksLines read coloured output as plain text", () => {
+  assert.equal(pick("\x1b[34mℹ pass 5\x1b[39m\n", [/^ℹ pass \d+/]), "ℹ pass 5");
+  assert.equal(allTasksLines("\x1b[1mTasks:\x1b[0m 2 successful"), "Tasks: 2 successful");
+});
+
 test("P81 GC-P3 planned steps carry no limitS, reuse, stack or option key", () => {
   const config = stackGate({ reuse: { deny: [] } });
   const { steps, notRun } = plan(config, ["db/m.sql", "web/x"], {
